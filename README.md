@@ -22,7 +22,7 @@ $ LightViz
 
     -h, --help                output usage information
     -V, --version             output the version number
-    -p, --port [3000]         Start web server with given port
+    -p, --port [8080]         Start web server with given port
     -d, --data [directory]    Data directory to serve
     -s, --server-only         Do not open the web browser
 

@@ -36,6 +36,7 @@ $ LightViz
 ```sh
 $ git clone https://github.com/Kitware/tonic.git
 $ cd tonic
+$ npm run global
 $ npm install
 $ cd tonic-applications/light-viz
 ```
@@ -53,4 +54,4 @@ getting started guide, advanced documentation, and API descriptions.
 
 Fork our repository and do great things. At [Kitware](http://www.kitware.com),
 we've been contributing to open-source software for 15 years and counting, and
-want to make **arctic-viewer** useful to as many people as possible.
+want to make **light-viz** useful to as many people as possible.

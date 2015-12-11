@@ -25,7 +25,8 @@ module.exports = {
       { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192'},
       { test: /\.css$/, loader: "style-loader!css-loader!autoprefixer-loader?browsers=last 2 version" },
       { test: /\.c$/i, loader: "shader" },
-      { test: require.resolve("./lib/index.js"), loader: "expose?LightViz" }
+      { test: require.resolve("./lib/index.js"), loader: "expose?LightViz" },
+      { test: /\.json$/, loader: 'json-loader' }
     ]
   },
   jshint: {

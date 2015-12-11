@@ -186,6 +186,10 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         # Disable interactor-based render calls
         simple.GetRenderView().EnableRenderOnInteraction = 0
 
+        simple.Cone()
+        simple.Show()
+        simple.Render()
+
 # =============================================================================
 # Main: Parse args and start server
 # =============================================================================

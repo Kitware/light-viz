@@ -14,8 +14,8 @@
     "shelljs": "0.5.3"
   },
   "devDependencies": {
-    "tonic-io": "1.0.0",
-    "tonic-ui": "1.0.0",
+    "tonic-io": "1.1.0",
+    "tonic-ui": "1.1.0",
     "tonic-core": "1.0.0",
 
     "font-awesome": "4.4.0",
@@ -36,6 +36,10 @@
     "build:debug": "webpack --display-modules",
     "build:release": "webpack -p",
 
+    "fix-autobahn": "sed -i '' 's/WAMP_FEATURES = {/var WAMP_FEATURES = {/' ./node_modules/autobahn/lib/session.js && sed -i '' 's/var var WAMP_FEATURES = {/var WAMP_FEATURES = {/' ./node_modules/autobahn/lib/session.js",
+    "postinstall": "npm run fix-autobahn",
+
+    "pretest": "npm run fix-autobahn",
     "test": "./bin/run-dev.js",
 
     "commit": "git cz",

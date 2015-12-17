@@ -3,38 +3,46 @@
   "description": "Scientific Visualization application for tailored post-processing",
   "license": "BSD-3-Clause",
   "version": "0.0.0-semantically-release",
-  "main": "./lib/light-viz.js",
+  "main": "./lib/app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/Kitware/light-viz.git"
   },
   "dependencies": {
-    "commander": "2.8.1",
+    "commander": "2.9.0",
     "open": "0.0.5",
     "shelljs": "0.5.3"
   },
   "devDependencies": {
-    "tonic-io": "1.1.0",
-    "tonic-ui": "1.1.0",
+    "tonic-io": "1.1.2",
+    "tonic-ui": "1.1.1",
     "tonic-core": "1.0.0",
 
-    "font-awesome": "4.4.0",
-    "mout": "0.11.0",
+    "font-awesome": "4.5.0",
+    "mout": "0.11.1",
     "normalize.css": "3.0.3",
-    "react": "0.14.0",
-    "react-dom": "0.14.0",
+    "react": "0.14.3",
+    "react-dom": "0.14.3",
+    "react-router": "1.0.2",
+    "history": "1.13.1",
 
     "autobahn": "0.9.6",
     "gl-matrix": "2.3.1",
     "hammerjs": "2.0.4",
-    "monologue.js": "0.3.3",
+    "monologue.js": "0.3.4",
 
-    "cz-conventional-changelog": "1.1.4"
+    "react-hot-loader": "1.3.0",
+    "webpack-dev-server": "1.14.0",
+
+    "cz-conventional-changelog": "1.1.5"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --progress --colors",
     "build:debug": "webpack --display-modules",
-    "build:release": "webpack -p",
+    "build:release": "webpack -p --progress --colors",
+
+    "start": "webpack-dev-server --content-base ./dist/ --hot --progress --colors ",
+    "open": "open http://localhost:8080/webpack-dev-server/#/",
 
     "fix-autobahn": "sed -i '' 's/WAMP_FEATURES = {/var WAMP_FEATURES = {/' ./node_modules/autobahn/lib/session.js && sed -i '' 's/var var WAMP_FEATURES = {/var WAMP_FEATURES = {/' ./node_modules/autobahn/lib/session.js",
     "postinstall": "npm run fix-autobahn",

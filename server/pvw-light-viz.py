@@ -84,6 +84,7 @@ import os
 # import paraview modules.
 from paraview.web import wamp      as pv_wamp
 from paraview.web import protocols as pv_protocols
+import light_viz_protocols as lv_protocols
 
 # import RPC annotation
 from autobahn.wamp import register as exportRpc
@@ -165,20 +166,19 @@ class LightVizServer(pv_wamp.PVServerProtocol):
 
     def initialize(self):
         # Bring used components
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebStartupRemoteConnection(LightVizServer.dsHost, LightVizServer.dsPort, LightVizServer.rsHost, LightVizServer.rsPort, LightVizServer.rcPort))
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebStartupPluginLoader(LightVizServer.plugins))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebFileListing(LightVizServer.dataDir, "Home", LightVizServer.excludeRegex, LightVizServer.groupRegex))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebProxyManager(allowedProxiesFile=LightVizServer.proxies, baseDir=LightVizServer.dataDir, fileToLoad=LightVizServer.fileToLoad, allowUnconfiguredReaders=LightVizServer.allReaders))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebColorManager(pathToColorMaps=LightVizServer.colorPalette))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebMouseHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort())
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPortImageDelivery())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPortGeometryDelivery())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebTimeHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebSelectionHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebWidgetManager())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebKeyValuePairStore())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebSaveData(baseSavePath=LightVizServer.saveDataDir))
+
+        self.registerVtkWebProtocol(lv_protocols.LightVizViewportSize())
 
         # Update authentication key to use
         self.updateSecret(LightVizServer.authKey)

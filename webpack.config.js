@@ -2,7 +2,7 @@ var webpack = require('webpack');
 
 module.exports = {
   plugins: [],
-  entry: './lib/index.js',
+  entry: './lib/app.js',
   output: {
     path: './dist',
     filename: 'LightViz.js',
@@ -12,11 +12,11 @@ module.exports = {
       {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: "jshint-loader!babel" // ?optional[]=runtime&optimisation.react.inlineElements
+          loader: "jshint-loader!babel?presets[]=react,presets[]=es2015" // ?optional[]=runtime&optimisation.react.inlineElements
       },{
           test: /\.js$/,
           include: /tonic-/,
-          loader: "babel" // ?optional[]=runtime&optimisation.react.inlineElements
+          loader: "babel?presets[]=react,presets[]=es2015" // ?optional[]=runtime&optimisation.react.inlineElements
       }
     ],
     loaders: [
@@ -25,7 +25,7 @@ module.exports = {
       { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192'},
       { test: /\.css$/, loader: "style-loader!css-loader!autoprefixer-loader?browsers=last 2 version" },
       { test: /\.c$/i, loader: "shader" },
-      { test: require.resolve("./lib/index.js"), loader: "expose?LightViz" },
+      { test: require.resolve("./lib/app.js"), loader: "expose?LightViz" },
       { test: /\.json$/, loader: 'json-loader' }
     ]
   },

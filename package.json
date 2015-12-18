@@ -14,9 +14,9 @@
     "shelljs": "0.5.3"
   },
   "devDependencies": {
-    "tonic-io": "1.1.2",
-    "tonic-ui": "1.1.1",
-    "tonic-core": "1.0.0",
+    "tonic-io": "1.1.4",
+    "tonic-ui": "1.1.2",
+    "tonic-core": "1.0.1",
 
     "font-awesome": "4.5.0",
     "mout": "0.11.1",

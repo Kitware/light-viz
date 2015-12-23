@@ -84,6 +84,7 @@ import os
 # import paraview modules.
 from paraview.web import wamp      as pv_wamp
 from paraview.web import protocols as pv_protocols
+
 import light_viz_protocols as lv_protocols
 
 # import RPC annotation
@@ -124,61 +125,21 @@ class LightVizServer(pv_wamp.PVServerProtocol):
 
     @staticmethod
     def add_arguments(parser):
-        parser.add_argument("--data-dir", default=os.getcwd(), help="path to data directory to list, or else multiple directories given as 'name1=path1|name2=path2|...'", dest="path")
-        parser.add_argument("--load-file", default=None, help="File to load if any based on data-dir base path", dest="file")
-        parser.add_argument("--color-palette-file", default=None, help="File to load to define a set of color map", dest="palettes")
-        parser.add_argument("--ds-host", default=None, help="Hostname to connect to for DataServer", dest="dsHost")
-        parser.add_argument("--ds-port", default=11111, type=int, help="Port number to connect to for DataServer", dest="dsPort")
-        parser.add_argument("--rs-host", default=None, help="Hostname to connect to for RenderServer", dest="rsHost")
-        parser.add_argument("--rs-port", default=11111, type=int, help="Port number to connect to for RenderServer", dest="rsPort")
-        parser.add_argument("--reverse-connect-port", default=-1, type=int, help="If supplied, a reverse connection will be established on the given port", dest="reverseConnectPort")
-        parser.add_argument("--exclude-regex", default="^\\.|~$|^\\$", help="Regular expression for file filtering", dest="exclude")
-        parser.add_argument("--group-regex", default="[0-9]+\\.", help="Regular expression for grouping files", dest="group")
-        parser.add_argument("--plugins", default="", help="List of fully qualified path names to plugin objects to load", dest="plugins")
-        parser.add_argument("--proxies", default=None, help="Path to a file with json text containing filters to load", dest="proxies")
-        parser.add_argument("--no-auto-readers", help="If provided, disables ability to use non-configured readers", action="store_true", dest="no_auto_readers")
-        parser.add_argument("--save-data-dir", default='', help="Server directory under which all data will be saved", dest="saveDataDir")
+        parser.add_argument("--data", default=os.getcwd(), help="path to data directory to list", dest="data")
 
     @staticmethod
     def configure(args):
         LightVizServer.authKey         = args.authKey
-        LightVizServer.dataDir         = args.path
-        LightVizServer.dsHost          = args.dsHost
-        LightVizServer.dsPort          = args.dsPort
-        LightVizServer.rsHost          = args.rsHost
-        LightVizServer.rsPort          = args.rsPort
-        LightVizServer.rcPort          = args.reverseConnectPort
-        LightVizServer.excludeRegex    = args.exclude
-        LightVizServer.groupRegex      = args.group
-        LightVizServer.plugins         = args.plugins
-        LightVizServer.proxies         = args.proxies
-        LightVizServer.colorPalette    = args.palettes
-        LightVizServer.allReaders      = not args.no_auto_readers
-
-        # If no save directory is provided, default it to the data directory
-        if args.saveDataDir == '':
-            LightVizServer.saveDataDir = LightVizServer.dataDir
-        else:
-            LightVizServer.saveDataDir = args.saveDataDir
-
-        if args.file:
-            LightVizServer.fileToLoad  = os.path.join(args.path, args.file)
+        LightVizServer.data            = args.data
 
     def initialize(self):
         # Bring used components
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebFileListing(LightVizServer.dataDir, "Home", LightVizServer.excludeRegex, LightVizServer.groupRegex))
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebProxyManager(allowedProxiesFile=LightVizServer.proxies, baseDir=LightVizServer.dataDir, fileToLoad=LightVizServer.fileToLoad, allowUnconfiguredReaders=LightVizServer.allReaders))
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebColorManager(pathToColorMaps=LightVizServer.colorPalette))
+        self.registerVtkWebProtocol(pv_protocols.ParaViewWebFileListing(LightVizServer.data, "Home", LightVizServer.excludeRegex, LightVizServer.groupRegex))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebMouseHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort())
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPortGeometryDelivery())
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebTimeHandler())
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebSelectionHandler())
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebWidgetManager())
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebKeyValuePairStore())
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebSaveData(baseSavePath=LightVizServer.saveDataDir))
 
-        self.registerVtkWebProtocol(lv_protocols.LightVizViewportSize())
+        # self.registerVtkWebProtocol(lv_protocols.LightVizViewportSize())
+        self.registerVtkWebProtocol(lv_protocols.LightVizDatasets(LightVizServer.data))
 
         # Update authentication key to use
         self.updateSecret(LightVizServer.authKey)
@@ -186,9 +147,9 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         # Disable interactor-based render calls
         simple.GetRenderView().EnableRenderOnInteraction = 0
 
-        simple.Cone()
-        simple.Show()
-        simple.Render()
+        # simple.Cone()
+        # simple.Show()
+        # simple.Render()
 
 # =============================================================================
 # Main: Parse args and start server
@@ -196,7 +157,7 @@ class LightVizServer(pv_wamp.PVServerProtocol):
 
 if __name__ == "__main__":
     # Create argument parser
-    parser = argparse.ArgumentParser(description="ParaView Web Visualizer")
+    parser = argparse.ArgumentParser(description="LightViz")
 
     # Add arguments
     server.add_arguments(parser)

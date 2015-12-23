@@ -1,11 +1,11 @@
 #! /usr/bin/env node
 
-require('shelljs/global');
-
 var fs = require('fs'),
     path = require('path'),
     program = require('commander'),
     paraview = process.env.PARAVIEW_HOME;
+
+require('shelljs/global');
 
 program
   .version('1.0.0')
@@ -34,7 +34,8 @@ if(!paraview) {
 }
 
 if (!process.argv.slice(2).length) {
-    return program.outputHelp();
+    program.outputHelp();
+    process.exit(0);
 }
 
 var pvPythonExecs = find(paraview).filter(function(file) { return file.match(/pvpython$/) || file.match(/pvpython.exe$/); });
@@ -42,7 +43,13 @@ if(pvPythonExecs.length < 1) {
     console.log('Could not find pvpython in your ParaView HOME directory ($PARAVIEW_HOME)');
     program.outputHelp();
 } else {
-    var cmdLine = [ pvPythonExecs[0], '-dr', path.normalize(path.join(__dirname, '../server/pvw-light-viz.py')), '--content', path.normalize(path.join(__dirname, '../dist')), '--port', program.port ];
+    const cmdLine = [
+        pvPythonExecs[0], '-dr',
+        path.normalize(path.join(__dirname, '../server/pvw-light-viz.py')),
+        '--content', path.normalize(path.join(__dirname, '../dist')),
+        '--port', program.port,
+        '--data', program.data,
+    ];
 
     console.log('\n===============================================================================');
     console.log('| Execute:');

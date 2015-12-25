@@ -39,7 +39,11 @@ from vtkCommonDataModelPython import *
 #         view = self.getView(viewId)
 #         view.ViewSize = [ width, height ]
 
-
+# =============================================================================
+#
+# Dataset management
+#
+# =============================================================================
 
 class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
@@ -57,6 +61,9 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
                     metadata = json.loads(fd.read())
                     self.datasets.append(metadata)
                     self.datasetMap[metadata['name']] = { 'path':  os.path.dirname(indexPath), 'meta': metadata }
+
+    def getInput(self):
+        return self.dataset
 
     # RpcName: mouseInteraction => viewport.mouse.interaction
     @exportRpc("light.viz.dataset.list")
@@ -107,9 +114,87 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         else:
             # Select data array
             vtkSMPVRepresentationProxy.SetScalarColoring(self.datasetRep.SMProxy, field, vtkDataObject.POINT)
-            lutProxy = simple.GetColorTransferFunction(field)
+            lutProxy = self.datasetRep.LookupTable
+            # lutProxy = simple.GetColorTransferFunction(field)
             for array in self.activeMeta['data']['arrays']:
                 if array['name'] == field:
-                    vtkSMTransferFunctionProxy.RescaleTransferFunction(lut, array['range'][0], array['range'][1], False)
+                    vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+
+        simple.Render()
+
+# =============================================================================
+#
+# Clip management
+#
+# =============================================================================
+
+class LightVizClip(pv_protocols.ParaViewWebProtocol):
+
+    def __init__(self, dataset_manager):
+        super(LightVizClip, self).__init__()
+        self.ds = dataset_manager
+        self.clipX = None
+        self.clipY = None
+        self.clipZ = None
+        self.representation = None
+
+    @exportRpc("light.viz.clip.position")
+    def updatePosition(self, x, y, z):
+        bounds = self.ds.activeMeta['data']['bounds']
+        if self.clipX:
+            self.clipX.ClipType.Origin = [float(x)/100.0*(bounds[1]-bounds[0]) + bounds[0], 0, 0]
+        if self.clipY:
+            self.clipY.ClipType.Origin = [0, float(y)/100.0*(bounds[3]-bounds[2]) + bounds[2], 0]
+        if self.clipZ:
+            self.clipZ.ClipType.Origin = [0, 0, float(z)/100.0*(bounds[5]-bounds[4]) + bounds[4]]
+
+    @exportRpc("light.viz.clip.insideout")
+    def updateInsideOut(self, x, y, z):
+        if self.clipX:
+            self.clipX.InsideOut = 1 if x else 0
+        if self.clipY:
+            self.clipY.InsideOut = 1 if y else 0
+        if self.clipZ:
+            self.clipZ.InsideOut = 1 if z else 0
+
+    @exportRpc("light.viz.clip.color")
+    def updateColorBy(self, field):
+        if representation:
+            if field == '__SOLID':
+                self.representation.ColorArrayName = ''
+            else:
+                # Select data array
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                lutProxy = self.representation.LookupTable
+                # lutProxy = simple.GetColorTransferFunction(field)
+                for array in self.ds.activeMeta['data']['arrays']:
+                    if array['name'] == field:
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+
+            simple.Render()
+
+    @exportRpc("light.viz.clip.enable")
+    def enableClip(self, enable):
+        if enable and self.ds.getInput():
+            if not self.clipX:
+                bounds = self.ds.activeMeta['data']['bounds']
+                center = [(bounds[i*2] + bounds[i*2+1])*.05 for i in range(3)]
+                self.clipX = simple.Clip(Input=self.ds.getInput())
+                self.clipY = simple.Clip(Input=self.clipX)
+                self.clipZ = simple.Clip(Input=self.clipY)
+
+                self.clipX.ClipType.Origin = center
+                self.clipX.ClipType.Normal = [1, 0, 0]
+                self.clipY.ClipType.Origin = center
+                self.clipY.ClipType.Normal = [0, 1, 0]
+                self.clipZ.ClipType.Origin = center
+                self.clipZ.ClipType.Normal = [0, 0, 1]
+
+                self.representation = simple.Show(self.clipZ)
+
+            self.representation.Visibility = 1
+
+        if not enable and self.representation:
+            self.representation.Visibility = 0
 
         simple.Render()

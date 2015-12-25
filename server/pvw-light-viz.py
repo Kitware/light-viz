@@ -129,8 +129,8 @@ class LightVizServer(pv_wamp.PVServerProtocol):
 
     @staticmethod
     def configure(args):
-        LightVizServer.authKey         = args.authKey
-        LightVizServer.data            = args.data
+        LightVizServer.authKey = args.authKey
+        LightVizServer.data    = args.data
 
     def initialize(self):
         # Bring used components
@@ -139,17 +139,15 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort())
 
         # self.registerVtkWebProtocol(lv_protocols.LightVizViewportSize())
-        self.registerVtkWebProtocol(lv_protocols.LightVizDatasets(LightVizServer.data))
+        datasetManager = lv_protocols.LightVizDatasets(LightVizServer.data)
+        self.registerVtkWebProtocol(datasetManager)
+        self.registerVtkWebProtocol(lv_protocols.LightVizClip(datasetManager))
 
         # Update authentication key to use
         self.updateSecret(LightVizServer.authKey)
 
         # Disable interactor-based render calls
         simple.GetRenderView().EnableRenderOnInteraction = 0
-
-        # simple.Cone()
-        # simple.Show()
-        # simple.Render()
 
 # =============================================================================
 # Main: Parse args and start server

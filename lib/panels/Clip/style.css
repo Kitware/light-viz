@@ -1,0 +1,7 @@
+.ClipPanel {
+    background: white;
+}
+
+.ClipPanel_line > * {
+    display: inline-block;
+}

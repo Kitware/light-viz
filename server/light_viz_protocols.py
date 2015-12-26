@@ -54,6 +54,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.dataset = None
         self.datasets = []
         self.activeMeta = None
+        self.dataListeners = []
         for filePath in os.listdir(self.basedir):
             indexPath = os.path.join(self.basedir, filePath, 'index.json')
             if os.path.exists(indexPath):
@@ -61,6 +62,10 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
                     metadata = json.loads(fd.read())
                     self.datasets.append(metadata)
                     self.datasetMap[metadata['name']] = { 'path':  os.path.dirname(indexPath), 'meta': metadata }
+
+
+    def addListener(self, dataChangedInstance):
+        self.dataListeners.append(dataChangedInstance)
 
     def getInput(self):
         return self.dataset
@@ -94,6 +99,11 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.datasetRep = simple.Show(self.dataset)
         simple.Render()
         self.anim = simple.GetAnimationScene()
+
+        # Notify listeners
+        for l in self.dataListeners:
+            l.dataChanged()
+
         return self.datasetMap[datasetName]['meta']
 
     @exportRpc("light.viz.dataset.opacity")
@@ -106,6 +116,11 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
     def updateTime(self, timeIdx):
         self.anim.TimeKeeper.Time = self.anim.TimeKeeper.TimestepValues[timeIdx]
         return self.anim.TimeKeeper.Time
+
+    @exportRpc("light.viz.dataset.representation")
+    def updateRepresentation(self, mode):
+        if self.datasetRep:
+            self.datasetRep.Representation = mode
 
     @exportRpc("light.viz.dataset.color")
     def updateColorBy(self, field):
@@ -137,6 +152,16 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         self.clipY = None
         self.clipZ = None
         self.representation = None
+        dataset_manager.addListener(self)
+
+    def dataChanged(self):
+        if self.clipX:
+            self.clipX.Input = self.ds.getInput()
+            self.updatePosition(50, 50, 50)
+            self.updateInsideOut(False, False, False)
+            self.representation.Representation = 'Surface'
+            self.representation.ColorArrayName = ''
+            self.representation.Visibility = 0
 
     @exportRpc("light.viz.clip.position")
     def updatePosition(self, x, y, z):
@@ -157,9 +182,14 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         if self.clipZ:
             self.clipZ.InsideOut = 1 if z else 0
 
+    @exportRpc("light.viz.clip.representation")
+    def updateRepresentation(self, mode):
+        if self.representation:
+            self.representation.Representation = mode
+
     @exportRpc("light.viz.clip.color")
     def updateColorBy(self, field):
-        if representation:
+        if self.representation:
             if field == '__SOLID':
                 self.representation.ColorArrayName = ''
             else:
@@ -191,6 +221,8 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
                 self.clipZ.ClipType.Normal = [0, 0, 1]
 
                 self.representation = simple.Show(self.clipZ)
+            else:
+                self.clipX.Input = self.ds.getInput()
 
             self.representation.Visibility = 1
 

@@ -142,6 +142,7 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         datasetManager = lv_protocols.LightVizDatasets(LightVizServer.data)
         self.registerVtkWebProtocol(datasetManager)
         self.registerVtkWebProtocol(lv_protocols.LightVizClip(datasetManager))
+        self.registerVtkWebProtocol(lv_protocols.LightVizContour(datasetManager))
 
         # Update authentication key to use
         self.updateSecret(LightVizServer.authKey)

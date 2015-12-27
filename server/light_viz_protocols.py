@@ -165,13 +165,19 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.clip.position")
     def updatePosition(self, x, y, z):
-        bounds = self.ds.activeMeta['data']['bounds']
+        # bounds = self.ds.activeMeta['data']['bounds']
+        # if self.clipX:
+        #     self.clipX.ClipType.Origin = [float(x)/100.0*(bounds[1]-bounds[0]) + bounds[0], 0, 0]
+        # if self.clipY:
+        #     self.clipY.ClipType.Origin = [0, float(y)/100.0*(bounds[3]-bounds[2]) + bounds[2], 0]
+        # if self.clipZ:
+        #     self.clipZ.ClipType.Origin = [0, 0, float(z)/100.0*(bounds[5]-bounds[4]) + bounds[4]]
         if self.clipX:
-            self.clipX.ClipType.Origin = [float(x)/100.0*(bounds[1]-bounds[0]) + bounds[0], 0, 0]
+            self.clipX.ClipType.Origin = [float(x), 0.0, 0.0]
         if self.clipY:
-            self.clipY.ClipType.Origin = [0, float(y)/100.0*(bounds[3]-bounds[2]) + bounds[2], 0]
+            self.clipY.ClipType.Origin = [0.0, float(y), 0.0]
         if self.clipZ:
-            self.clipZ.ClipType.Origin = [0, 0, float(z)/100.0*(bounds[5]-bounds[4]) + bounds[4]]
+            self.clipZ.ClipType.Origin = [0.0, 0.0, float(z)]
 
     @exportRpc("light.viz.clip.insideout")
     def updateInsideOut(self, x, y, z):
@@ -223,6 +229,74 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
                 self.representation = simple.Show(self.clipZ)
             else:
                 self.clipX.Input = self.ds.getInput()
+
+            self.representation.Visibility = 1
+
+        if not enable and self.representation:
+            self.representation.Visibility = 0
+
+        simple.Render()
+
+# =============================================================================
+#
+# Contours management
+#
+# =============================================================================
+
+class LightVizContour(pv_protocols.ParaViewWebProtocol):
+
+    def __init__(self, dataset_manager):
+        super(LightVizContour, self).__init__()
+        self.ds = dataset_manager
+        self.contour = None
+        self.representation = None
+        dataset_manager.addListener(self)
+
+    def dataChanged(self):
+        if self.contour:
+            self.contour.Input = self.ds.getInput()
+            self.representation.Visibility = 0
+
+    @exportRpc("light.viz.contour.values")
+    def updateValues(self, values):
+        if self.contour:
+            self.contour.Isosurfaces = values
+
+    @exportRpc("light.viz.contour.by")
+    def updateContourBy(self, field):
+        if self.contour:
+            self.contour.ContourBy = field
+
+    @exportRpc("light.viz.contour.representation")
+    def updateRepresentation(self, mode):
+        if self.representation:
+            self.representation.Representation = mode
+
+    @exportRpc("light.viz.contour.color")
+    def updateColorBy(self, field):
+        if self.representation:
+            if field == '__SOLID':
+                self.representation.ColorArrayName = ''
+            else:
+                # Select data array
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                lutProxy = self.representation.LookupTable
+                # lutProxy = simple.GetColorTransferFunction(field)
+                for array in self.ds.activeMeta['data']['arrays']:
+                    if array['name'] == field:
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+
+            simple.Render()
+
+    @exportRpc("light.viz.contour.enable")
+    def enableContour(self, enable):
+        if enable and self.ds.getInput():
+            if not self.contour:
+                bounds = self.ds.activeMeta['data']['bounds']
+                self.contour = simple.Contour(Input=self.ds.getInput(), ComputeScalars=1, ComputeNormals=1)
+                self.representation = simple.Show(self.contour)
+            else:
+                self.contour.Input = self.ds.getInput()
 
             self.representation.Visibility = 1
 

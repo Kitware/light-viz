@@ -1,0 +1,7 @@
+.ContourPanel {
+    background: white;
+}
+
+.ContourPanel_line > * {
+    display: inline-block;
+}

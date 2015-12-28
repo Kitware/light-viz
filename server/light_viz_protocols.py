@@ -292,7 +292,6 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
     def enableContour(self, enable):
         if enable and self.ds.getInput():
             if not self.contour:
-                bounds = self.ds.activeMeta['data']['bounds']
                 self.contour = simple.Contour(Input=self.ds.getInput(), ComputeScalars=1, ComputeNormals=1)
                 self.representation = simple.Show(self.contour)
             else:

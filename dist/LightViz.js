@@ -24593,6 +24593,22 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.setup = setup;
+	exports.getConnection = getConnection;
+	exports.getClient = getClient;
+	exports.addThumbnail = addThumbnail;
+	exports.resetCamera = resetCamera;
+	exports.listDatasets = listDatasets;
+	exports.updateDatasetOpacity = updateDatasetOpacity;
+	exports.loadDataset = loadDataset;
+	exports.updateTime = updateTime;
+	exports.updateClipPosition = updateClipPosition;
+	exports.updateClipInsideOut = updateClipInsideOut;
+	exports.updateContourValues = updateContourValues;
+	exports.updateContourBy = updateContourBy;
+	exports.updateColor = updateColor;
+	exports.enable = enable;
+	exports.updateRepresentation = updateRepresentation;
 	var connection = null,
 	    client = null,
 	    session = null,
@@ -24676,10 +24692,6 @@
 	    call('light.viz.dataset.time', [timeIdx]).then(onReady, onError);
 	}
 
-	function updateColor(field) {
-	    call('light.viz.dataset.color', [field]).then(onReady, onError);
-	}
-
 	// ----------------------------------------------------------------------------
 	// Clip
 	// ----------------------------------------------------------------------------
@@ -24696,21 +24708,33 @@
 	    call('light.viz.clip.insideout', [x, y, z]).then(onReady, onError);
 	}
 
-	function updateClipColor(field) {
-	    call('light.viz.clip.color', [field]).then(onReady, onError);
-	}
-
-	function enableClip(enable) {
-	    call('light.viz.clip.enable', [enable]).then(onReady, onError);
-	}
-
 	// ----------------------------------------------------------------------------
 	// Contours
 	// ----------------------------------------------------------------------------
 
+	function updateContourValues(values) {
+	    call('light.viz.contour.values', [values]).then(onReady, onError);
+	}
+
+	function updateContourBy(field) {
+	    call('light.viz.contour.by', [field]).then(onReady, onError);
+	}
+
 	// ----------------------------------------------------------------------------
 	// Slices
 	// ----------------------------------------------------------------------------
+
+	// ----------------------------------------------------------------------------
+	// Generics
+	// ----------------------------------------------------------------------------
+
+	function updateColor(type, field) {
+	    call('light.viz.TYPE.color'.replace(/TYPE/, type), [field]).then(onReady, onError);
+	}
+
+	function enable(name, enabled) {
+	    call('light.viz.TYPE.enable'.replace(/TYPE/, name), [enabled]).then(onReady, onError);
+	}
 
 	// ----------------------------------------------------------------------------
 
@@ -24720,14 +24744,13 @@
 
 	exports.default = {
 	    addThumbnail: addThumbnail,
-	    enableClip: enableClip,
+	    enable: enable,
 	    getClient: getClient,
 	    getConnection: getConnection,
 	    listDatasets: listDatasets,
 	    loadDataset: loadDataset,
 	    resetCamera: resetCamera,
 	    setup: setup,
-	    updateClipColor: updateClipColor,
 	    updateClipInsideOut: updateClipInsideOut,
 	    updateClipPosition: updateClipPosition,
 	    updateColor: updateColor,
@@ -24756,10 +24779,6 @@
 
 	var _reactRouter = __webpack_require__(160);
 
-	var _client = __webpack_require__(213);
-
-	var _client2 = _interopRequireDefault(_client);
-
 	var _Clip = __webpack_require__(241);
 
 	var _Clip2 = _interopRequireDefault(_Clip);
@@ -24780,11 +24799,17 @@
 
 	var _Representation2 = _interopRequireDefault(_Representation);
 
+	var _client = __webpack_require__(213);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = _react2.default.createClass({
 
 	    displayName: 'ViewDataset',
+
+	    propTypes: {
+	        params: _react2.default.PropTypes.object
+	    },
 
 	    getInitialState: function getInitialState() {
 	        return {
@@ -24795,26 +24820,17 @@
 	    },
 	    updateOpacity: function updateOpacity(event) {
 	        this.setState({ opacity: event.target.value });
-	        _client2.default.updateDatasetOpacity(Number(event.target.value) / 100.0);
-	    },
-	    updateColorBy: function updateColorBy(name, field) {
-	        _client2.default.updateColor(field);
-	    },
-	    updateRepresentation: function updateRepresentation(name, rep) {
-	        _client2.default.updateRepresentation(name, rep);
+	        (0, _client.updateDatasetOpacity)(Number(event.target.value) / 100.0);
 	    },
 	    updateTime: function updateTime(event) {
 	        var time = Number(event.target.value);
 	        this.setState({ time: time });
-	        _client2.default.updateTime(time);
-	    },
-	    resetCamera: function resetCamera() {
-	        _client2.default.resetCamera();
+	        (0, _client.updateTime)(time);
 	    },
 	    render: function render() {
 	        var _this = this;
 
-	        _client2.default.loadDataset(this.props.params.datasetId, function (dataset) {
+	        (0, _client.loadDataset)(this.props.params.datasetId, function (dataset) {
 	            return _this.setState({ dataset: dataset });
 	        });
 	        /* eslint-disable */
@@ -24827,10 +24843,10 @@
 	                'LightViz'
 	            ),
 	            _react2.default.createElement('input', { type: 'range', min: '0', max: '100', value: this.state.opacity, onChange: this.updateOpacity }),
-	            _react2.default.createElement(_ColorBy2.default, { dataset: this.state.dataset, name: 'dataset', onChange: this.updateColorBy }),
-	            _react2.default.createElement(_Representation2.default, { name: 'dataset', onChange: this.updateRepresentation }),
+	            _react2.default.createElement(_ColorBy2.default, { dataset: this.state.dataset, name: 'dataset', onChange: _client.updateColor }),
+	            _react2.default.createElement(_Representation2.default, { name: 'dataset', onChange: _client.updateRepresentation }),
 	            _react2.default.createElement('input', { type: 'range', min: '0', max: this.state.dataset.data.time.length - 1, value: this.state.time, onChange: this.updateTime }),
-	            _react2.default.createElement('i', { className: 'fa fa-arrows-alt', onClick: this.resetCamera }),
+	            _react2.default.createElement('i', { className: 'fa fa-arrows-alt', onClick: _client.resetCamera }),
 	            _react2.default.createElement(
 	                _TogglePanel2.default,
 	                { anchor: ['bottom', 'right'], position: ['top', 'right'] },
@@ -24839,9 +24855,9 @@
 	            _react2.default.createElement(
 	                _TogglePanel2.default,
 	                { anchor: ['bottom', 'right'], position: ['top', 'right'] },
-	                _react2.default.createElement(_Contour2.default, { dataset: this.state.dataset, bounds: this.state.dataset.data.bounds })
+	                _react2.default.createElement(_Contour2.default, { dataset: this.state.dataset })
 	            ),
-	            _react2.default.createElement(_VtkRenderer2.default, { connection: _client2.default.getConnection(), client: _client2.default.getClient() })
+	            _react2.default.createElement(_VtkRenderer2.default, { connection: (0, _client.getConnection)(), client: (0, _client.getClient)() })
 	        );
 	        /* eslint-enable */
 	    }
@@ -48826,10 +48842,6 @@
 	    value: true
 	});
 
-	var _client = __webpack_require__(213);
-
-	var _client2 = _interopRequireDefault(_client);
-
 	var _equals = __webpack_require__(242);
 
 	var _equals2 = _interopRequireDefault(_equals);
@@ -48853,6 +48865,8 @@
 	var _Representation = __webpack_require__(259);
 
 	var _Representation2 = _interopRequireDefault(_Representation);
+
+	var _client = __webpack_require__(213);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48895,12 +48909,9 @@
 	            });
 	        }
 	    },
-	    updateColorBy: function updateColorBy(name, field) {
-	        _client2.default.updateClipColor(field);
-	    },
 	    toggleEnable: function toggleEnable(enabled) {
 	        this.setState({ enabled: enabled });
-	        _client2.default.enableClip(enabled);
+	        (0, _client.enable)('clip', enabled);
 	    },
 	    toggleInsideOut: function toggleInsideOut(onOff, name) {
 	        var _state = this.state;
@@ -48912,10 +48923,7 @@
 	        this.setState(_defineProperty({}, name, onOff));
 	        insideOut[name] = onOff;
 
-	        _client2.default.updateClipInsideOut(insideOut.xInsideOut, insideOut.yInsideOut, insideOut.zInsideOut);
-	    },
-	    updateRepresentation: function updateRepresentation(name, rep) {
-	        _client2.default.updateRepresentation(name, rep);
+	        (0, _client.updateClipInsideOut)(insideOut.xInsideOut, insideOut.yInsideOut, insideOut.zInsideOut);
 	    },
 	    positionChange: function positionChange(name, value) {
 	        var _state2 = this.state;
@@ -48928,15 +48936,15 @@
 
 	        // Update server
 	        pos[name] = value;
-	        _client2.default.updateClipPosition(pos);
+	        (0, _client.updateClipPosition)(pos);
 	    },
 	    render: function render() {
 	        return _react2.default.createElement(
 	            'div',
 	            { className: 'ClipPanel' },
 	            _react2.default.createElement(_ToggleIconButton2.default, { value: this.state.enabled, onChange: this.toggleEnable }),
-	            _react2.default.createElement(_ColorBy2.default, { dataset: this.props.dataset, name: 'clip', onChange: this.updateColorBy }),
-	            _react2.default.createElement(_Representation2.default, { name: 'clip', onChange: this.updateRepresentation }),
+	            _react2.default.createElement(_ColorBy2.default, { dataset: this.props.dataset, name: 'clip', onChange: _client.updateColor }),
+	            _react2.default.createElement(_Representation2.default, { name: 'clip', onChange: _client.updateRepresentation }),
 	            _react2.default.createElement(
 	                'div',
 	                { className: 'ClipPanel_line' },
@@ -49316,8 +49324,6 @@
 	            max = Number(this.props.max),
 	            delta = max - min,
 	            value = delta * (Number(e.target.value) / Number(this.props.size)) + min;
-
-	        console.log(e.target.value, ' =>', min, max, delta, this.props.size, value);
 
 	        this.setState({ value: value, txtValue: null });
 	        if (this.props.onChange) {
@@ -49827,16 +49833,18 @@
 	    propTypes: {
 	        dataset: _react2.default.PropTypes.object,
 	        name: _react2.default.PropTypes.string,
+	        noSolid: _react2.default.PropTypes.bool,
 	        onChange: _react2.default.PropTypes.func,
 	        value: _react2.default.PropTypes.string
 	    },
 
 	    getDefaultProps: function getDefaultProps() {
 	        return {
-	            name: 'ColorBy',
-	            value: '__SOLID__',
 	            dataset: { data: { arrays: [] } },
-	            onChange: null
+	            name: 'ColorBy',
+	            noSolid: false,
+	            onChange: null,
+	            value: '__SOLID__'
 	        };
 	    },
 	    getInitialState: function getInitialState() {
@@ -49851,14 +49859,18 @@
 	        this.setState({ value: event.target.value });
 	    },
 	    render: function render() {
-	        return _react2.default.createElement(
-	            'select',
-	            { value: this.state.value, onChange: this.updateColorBy },
-	            _react2.default.createElement(
+	        var otherList = [];
+	        if (!this.props.noSolid) {
+	            otherList.push(_react2.default.createElement(
 	                'option',
 	                { key: '__SOLID__', value: '__SOLID__' },
 	                'Solid color'
-	            ),
+	            ));
+	        }
+	        return _react2.default.createElement(
+	            'select',
+	            { value: this.state.value, onChange: this.updateColorBy },
+	            otherList,
 	            this.props.dataset.data.arrays.map(function (array) {
 	                return _react2.default.createElement(
 	                    'option',
@@ -49981,10 +49993,6 @@
 	    value: true
 	});
 
-	var _client = __webpack_require__(213);
-
-	var _client2 = _interopRequireDefault(_client);
-
 	var _equals = __webpack_require__(242);
 
 	var _equals2 = _interopRequireDefault(_equals);
@@ -50009,9 +50017,9 @@
 
 	var _Representation2 = _interopRequireDefault(_Representation);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _client = __webpack_require__(213);
 
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	__webpack_require__(263);
 
@@ -50020,135 +50028,115 @@
 	    displayName: 'ContourPanel',
 
 	    propTypes: {
-	        bounds: _react2.default.PropTypes.array,
 	        dataset: _react2.default.PropTypes.object
 	    },
 
 	    getDefaultProps: function getDefaultProps() {
-	        return { bounds: [0, 1, 0, 1, 0, 1] };
+	        return {
+	            dataset: { data: { arrays: [] } }
+	        };
 	    },
 	    getInitialState: function getInitialState() {
 	        return {
-	            xPosition: (this.props.bounds[0] + this.props.bounds[1]) * 0.5,
-	            yPosition: (this.props.bounds[2] + this.props.bounds[3]) * 0.5,
-	            zPosition: (this.props.bounds[4] + this.props.bounds[5]) * 0.5,
-	            xInsideOut: false,
-	            yInsideOut: false,
-	            zInsideOut: false,
+	            values: [],
+	            field: '',
 	            enabled: false
 	        };
 	    },
 	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	        var previous = this.props.bounds,
-	            next = nextProps.bounds;
+	        var previous = this.props.dataset.data.arrays,
+	            next = nextProps.dataset.data.arrays;
 
 	        if (!(0, _equals2.default)(previous, next)) {
-	            this.setState({
-	                xPosition: (next[0] + next[1]) * 0.5,
-	                yPosition: (next[2] + next[3]) * 0.5,
-	                zPosition: (next[4] + next[5]) * 0.5
-	            });
+	            if (next.length) {
+	                this.setState({
+	                    values: [0.5 * (next[0].range[0] + next[0].range[1])],
+	                    field: next[0].name,
+	                    enabled: false
+	                });
+	            } else {
+	                this.setState({
+	                    values: [],
+	                    field: '',
+	                    enabled: false
+	                });
+	            }
 	        }
 	    },
-	    updateColorBy: function updateColorBy(name, field) {
-	        _client2.default.updateClipColor(field);
+	    updateContourBy: function updateContourBy(name, field) {
+	        this.setState({ field: field });
+
+	        (0, _client.updateColor)(name, field);
+	        (0, _client.updateContourBy)(field);
 	    },
 	    toggleEnable: function toggleEnable(enabled) {
 	        this.setState({ enabled: enabled });
-	        _client2.default.enableClip(enabled);
+	        (0, _client.enable)('contour', enabled);
 	    },
-	    toggleInsideOut: function toggleInsideOut(onOff, name) {
-	        var _state = this.state;
-	        var xInsideOut = _state.xInsideOut;
-	        var yInsideOut = _state.yInsideOut;
-	        var zInsideOut = _state.zInsideOut;
-	        var insideOut = { xInsideOut: xInsideOut, yInsideOut: yInsideOut, zInsideOut: zInsideOut };
+	    addContour: function addContour() {
+	        var values = this.state.values,
+	            lastValue = values[values.length - 1];
 
-	        this.setState(_defineProperty({}, name, onOff));
-	        insideOut[name] = onOff;
+	        values.push(lastValue);
+	        this.setState({ values: values });
 
-	        _client2.default.updateClipInsideOut(insideOut.xInsideOut, insideOut.yInsideOut, insideOut.zInsideOut);
+	        (0, _client.updateContourValues)(values);
 	    },
-	    updateRepresentation: function updateRepresentation(name, rep) {
-	        _client2.default.updateRepresentation(name, rep);
+	    removeContour: function removeContour(e) {
+	        var idx = Number(e.target.getAttribute('name')),
+	            values = this.state.values;
+
+	        values.splice(idx, 1);
+	        this.setState({ values: values });
+
+	        (0, _client.updateContourValues)(values);
 	    },
-	    positionChange: function positionChange(name, value) {
-	        var _state2 = this.state;
-	        var xPosition = _state2.xPosition;
-	        var yPosition = _state2.yPosition;
-	        var zPosition = _state2.zPosition;
-	        var pos = { xPosition: xPosition, yPosition: yPosition, zPosition: zPosition };
+	    valueChange: function valueChange(name, value) {
+	        var idx = Number(name),
+	            values = this.state.values;
 
-	        this.setState(_defineProperty({}, name, value));
+	        values[idx] = value;
+	        this.setState({ values: values });
 
-	        // Update server
-	        pos[name] = value;
-	        _client2.default.updateClipPosition(pos);
+	        (0, _client.updateContourValues)(values);
 	    },
 	    render: function render() {
+	        var _this = this;
+
+	        var fieldRange = [0, 1];
+	        this.props.dataset.data.arrays.forEach(function (array) {
+	            if (array.name === _this.state.field) {
+	                fieldRange[0] = array.range[0];
+	                fieldRange[1] = array.range[1];
+	            }
+	        });
 	        return _react2.default.createElement(
 	            'div',
 	            { className: 'ContourPanel' },
 	            _react2.default.createElement(_ToggleIconButton2.default, { value: this.state.enabled, onChange: this.toggleEnable }),
-	            _react2.default.createElement(_ColorBy2.default, { dataset: this.props.dataset, name: 'clip', onChange: this.updateColorBy }),
-	            _react2.default.createElement(_Representation2.default, { name: 'clip', onChange: this.updateRepresentation }),
-	            _react2.default.createElement(
-	                'div',
-	                { className: 'ContourPanel_line' },
-	                _react2.default.createElement(_ToggleIconButton2.default, {
-	                    value: this.state.xInsideOut,
-	                    icon: 'fa-toggle-on',
-	                    name: 'xInsideOut',
-	                    onChange: this.toggleInsideOut,
-	                    style: { width: '30px' } }),
-	                _react2.default.createElement(
+	            _react2.default.createElement(_ColorBy2.default, { noSolid: true, dataset: this.props.dataset, name: 'contour', onChange: this.updateContourBy }),
+	            _react2.default.createElement(_Representation2.default, { name: 'contour', onChange: _client.updateRepresentation }),
+	            _react2.default.createElement('i', { className: 'fa fa-fw fa-plus', onClick: this.addContour }),
+	            this.state.values.map(function (v, idx) {
+	                return _react2.default.createElement(
 	                    'div',
-	                    { style: { width: 'calc(100% - 35px)' } },
-	                    _react2.default.createElement(_DoubleSliderElement2.default, {
-	                        min: this.props.bounds[0],
-	                        max: this.props.bounds[1],
-	                        value: this.state.xPosition,
-	                        name: 'xPosition', onChange: this.positionChange })
-	                )
-	            ),
-	            _react2.default.createElement(
-	                'div',
-	                { className: 'ContourPanel_line' },
-	                _react2.default.createElement(_ToggleIconButton2.default, {
-	                    value: this.state.yInsideOut,
-	                    icon: 'fa-toggle-on',
-	                    name: 'yInsideOut',
-	                    onChange: this.toggleInsideOut,
-	                    style: { width: '30px' } }),
-	                _react2.default.createElement(
-	                    'div',
-	                    { style: { width: 'calc(100% - 35px)' } },
-	                    _react2.default.createElement(_DoubleSliderElement2.default, {
-	                        min: this.props.bounds[2],
-	                        max: this.props.bounds[3],
-	                        value: this.state.yPosition,
-	                        name: 'yPosition', onChange: this.positionChange })
-	                )
-	            ),
-	            _react2.default.createElement(
-	                'div',
-	                { className: 'ContourPanel_line' },
-	                _react2.default.createElement(_ToggleIconButton2.default, {
-	                    value: this.state.zInsideOut,
-	                    icon: 'fa-toggle-on',
-	                    name: 'zInsideOut',
-	                    onChange: this.toggleInsideOut,
-	                    style: { width: '30px' } }),
-	                _react2.default.createElement(
-	                    'div',
-	                    { style: { width: 'calc(100% - 35px)' } },
-	                    _react2.default.createElement(_DoubleSliderElement2.default, {
-	                        min: this.props.bounds[4],
-	                        max: this.props.bounds[5],
-	                        value: this.state.zPosition,
-	                        name: 'zPosition', onChange: this.positionChange })
-	                )
-	            )
+	                    { key: idx, className: 'ContourPanel_line' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { width: 'calc(100% - 35px)' } },
+	                        _react2.default.createElement(_DoubleSliderElement2.default, {
+	                            min: fieldRange[0],
+	                            max: fieldRange[1],
+	                            value: v,
+	                            name: '' + idx, onChange: _this.valueChange })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { width: '35px', textAlign: 'center' }, name: idx, onClick: _this.removeContour },
+	                        _react2.default.createElement('i', { className: 'fa fa-fw fa-trash-o', name: idx })
+	                    )
+	                );
+	            })
 	        );
 	    }
 	});

@@ -1,5 +1,3 @@
-var webpack = require('webpack');
-
 module.exports = {
   plugins: [],
   entry: './lib/app.js',
@@ -11,7 +9,7 @@ module.exports = {
         preLoaders: [{
             test: /\.js$/,
             loader: "eslint-loader",
-            exclude: /node_modules/
+            exclude: /node_modules/,
         }],
     loaders: [
       { test: require.resolve("./lib/app.js"), loader: "expose?LightViz" },
@@ -22,13 +20,19 @@ module.exports = {
       { test: /\.c$/i, loader: "shader" },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.js$/, include: /node_modules\/tonic-/, loader: "babel?presets[]=react,presets[]=es2015" },
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel?presets[]=react,presets[]=es2015" }
-    ]
+      { test: /\.js$/, exclude: /node_modules/, loader: "babel?presets[]=react,presets[]=es2015" },
+    ],
   },
   eslint: {
-        configFile: '.eslintrc'
+        configFile: '.eslintrc',
   },
   externals: {
-    "three": "THREE"
-  }
+    "three": "THREE",
+  },
+  node: {
+    console: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+  },
 };

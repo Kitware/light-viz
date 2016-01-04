@@ -69,7 +69,7 @@
     /* Best Practices */
     "accessor-pairs": 0,
     "block-scoped-var": 0, // see Babel section
-    "complexity": 0,
+    "complexity": [1, 10],
     "consistent-return": 1,
     "curly": [1, "all"],
     "default-case": 0,
@@ -96,7 +96,7 @@
     "no-multi-spaces": 0,
     "no-multi-str": 1,
     "no-native-reassign": 1,
-    "no-new-func": 1,
+    "no-new-func": 0,
     "no-new-wrappers": 1,
     "no-new": 1,
     "no-octal-escape": 1,

@@ -1,0 +1,78 @@
+/*   CSS for DatasetList   */
+.DatasetList {
+  position:absolute;
+  top:0;
+  bottom:0;
+  right:0;
+  left:0;
+}
+
+.DatasetList_TitleBar {
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2em;
+  line-height:2em;
+  display:flex;
+  justify-content: space-between;
+  padding: 0 5px;
+  background: lightgray;
+}
+
+.DatasetList__TitleLeft {
+  flex: 1;
+  font-weight: bold;
+}
+
+.DatasetList__TitleRight {
+  flex: 1;
+  text-align:right;
+}
+
+.DatasetList_Content {
+  position:absolute;
+  top:2em;
+  left:0;
+  right:0;
+  bottom:0;
+  overflow:scroll;
+}
+
+/*####################################################################*/
+/*   CSS for ThumbnailList   */
+.ThumbnailList {
+  position:relative;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-around;
+}
+
+.ThumbnailList > * {
+  flex:none;
+  width:250px;
+  height:300px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-decoration: none;
+  color: black;
+}
+
+.ThumbnailList__Name {
+  text-transform: capitalize;
+}
+
+.ThumbnailList_Thumbnail {
+  width:200px;
+  height:200px;
+  flex:none;
+}
+
+.ThumbnailList_Legend {
+  flex:none;
+  height:1em;
+  width:200px;
+  text-align:center;
+}

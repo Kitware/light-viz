@@ -29,10 +29,4 @@ module.exports = {
   externals: {
     "three": "THREE",
   },
-  node: {
-    console: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
 };

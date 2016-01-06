@@ -2,6 +2,8 @@
     background: white;
 }
 
-.ContourPanel_line > * {
-    display: inline-block;
+.ContourPanel_line {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
 }

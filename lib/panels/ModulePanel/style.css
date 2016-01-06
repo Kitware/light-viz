@@ -1,0 +1,48 @@
+.ModulePanel {
+  background: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  min-width: 350px;
+}
+
+.ModulePanel_Contents {
+  flex: 1;
+  padding: 5px 10px 0 10px;
+}
+
+.ModulePanel_TopBar {
+  border-bottom: 1px solid black;
+  margin-bottom: 5px;
+  text-align: center;
+  flex: 1;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.ModulePanel_ToolBarButtons {
+  position: absolute;
+  right: 10px;
+  left: 10px;
+  top: 0;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ModulePanel_TopBar > i {
+  position: absolute;
+  left: 10px;
+  z-index: 1;
+}
+
+.ModulePanel__Controls {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.ModulePanel_Contents > * {
+  margin-bottom: 10px;
+}

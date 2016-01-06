@@ -1,57 +1,7 @@
-.Toolbar {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: stretch;
+.is-clickable {
+  cursor: pointer;
 }
 
-.Toolbar > * {
-    flex: 1;
-}
-
-.Toolbar > .fa-spinner {
-    font-size: 2em;
-    top: 0;
-}
-
-.Toolbar > i {
-    top: 0.5em;
-    position: relative;
-    cursor: pointer;
-    flex: none;
-}
-
-.TimePanel {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    line-height: 2em;
-}
-
-
-.TitlePanel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    line-height: 2em;
-}
-
-.ToolPanel {
-    position: absolute;
-    top: 2em;
-    bottom: 2em;
-    left: 0;
-    width: 2em;
-
-    flex-direction: column;
-}
-
-.VtkRenderer {
-    position: absolute;
-    top: 2em;
-    bottom: 2em;
-    left: 2em;
-    right: 0;
+.is-hidden {
+  display: none;
 }

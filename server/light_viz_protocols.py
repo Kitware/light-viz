@@ -97,7 +97,13 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.activeMeta = self.datasetMap[datasetName]['meta']
         self.dataset = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
         self.datasetRep = simple.Show(self.dataset)
-        simple.Render()
+        view = simple.Render()
+
+        # reset the camera
+        simple.ResetCamera(view)
+        view.CenterOfRotation = view.CameraFocalPoint
+        simple.Render(view)
+
         self.anim = simple.GetAnimationScene()
 
         # Notify listeners
@@ -135,6 +141,11 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
                 if array['name'] == field:
                     vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
+        simple.Render()
+
+    @exportRpc("light.viz.dataset.enable")
+    def enableDataset(self, enable):
+        self.datasetRep.Visibility = 1 if enable else 0
         simple.Render()
 
 # =============================================================================

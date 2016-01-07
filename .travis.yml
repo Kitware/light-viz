@@ -5,6 +5,7 @@ notifications:
     recipients:
       - sebastien.jourdain@kitware.com
       - shawn.waldon@kitware.com
+      - patrick-oleary@kitware.com
     on_success: change
     on_failure: always
 cache:

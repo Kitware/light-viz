@@ -30,6 +30,10 @@
   text-align:right;
 }
 
+.DatasetList__TitleRight > i {
+  cursor: pointer;
+}
+
 .DatasetList_Content {
   position:absolute;
   top:2em;

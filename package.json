@@ -16,15 +16,14 @@
   "devDependencies": {
     "tonic-io": "1.1.4",
     "tonic-ui": "1.2.7",
-    "tonic-core": "1.0.1",
 
     "font-awesome": "4.5.0",
     "mout": "0.11.1",
     "normalize.css": "3.0.3",
     "react": "0.14.3",
     "react-dom": "0.14.3",
-    "react-router": "1.0.2",
-    "history": "1.13.1",
+    "react-router": "2.0.0-rc4",
+    "history": "1.17.0",
 
     "autobahn": "0.9.6",
     "ws": "0.8.1",

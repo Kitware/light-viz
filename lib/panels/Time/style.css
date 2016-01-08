@@ -1,0 +1,30 @@
+.TimePanel {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+}
+
+.TimePanel.is-playing .InlineToggleButton > i:nth-child(3) {
+    background-color: #ccc !important;
+}
+
+.TimePanel > *:not(:first-child) {
+    margin-left: 10px; 
+}
+
+.TimePanel__progress {
+    width: 75px;
+    text-align: right;
+}
+
+.TimePanel__real-time {
+    text-align: center;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.TimePanel .InlineToggleButton > i {
+    cursor: pointer;
+}

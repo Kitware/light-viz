@@ -8,12 +8,12 @@
 
 .ModulePanel_Contents {
   flex: 1;
-  padding: 5px 10px 0 10px;
+  padding: 10px;
+  padding-bottom: 0;
 }
 
 .ModulePanel_TopBar {
   border-bottom: 1px solid black;
-  margin-bottom: 5px;
   text-align: center;
   flex: 1;
   padding: 5px 10px;

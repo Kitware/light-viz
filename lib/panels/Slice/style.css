@@ -1,0 +1,9 @@
+.SlicePanel {
+    background: white;
+}
+
+.SlicePanel_line {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+}

@@ -314,3 +314,137 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
+
+# =============================================================================
+#
+# Slice management
+#
+# =============================================================================
+
+class LightVizSlice(pv_protocols.ParaViewWebProtocol):
+
+    def __init__(self, dataset_manager):
+        super(LightVizSlice, self).__init__()
+        self.ds = dataset_manager
+        self.sliceX = None
+        self.sliceY = None
+        self.sliceZ = None
+        self.representationX = None
+        self.representationY = None
+        self.representationZ = None
+        self.center = None
+        self.visible = [0, 0, 0]
+        dataset_manager.addListener(self)
+
+    def dataChanged(self):
+        if self.sliceX:
+            self.sliceX.Input = self.ds.getInput()
+            self.sliceY.Input = self.ds.getInput()
+            self.sliceZ.Input = self.ds.getInput()
+            self.updatePosition(50, 50, 50)
+            self.representationX.Representation = 'Surface'
+            self.representationY.Representation = 'Surface'
+            self.representationZ.Representation = 'Surface'
+            self.representationX.ColorArrayName = ''
+            self.representationY.ColorArrayName = ''
+            self.representationZ.ColorArrayName = ''
+            self.representationX.Visibility = 0
+            self.representationY.Visibility = 0
+            self.representationZ.Visibility = 0
+
+    @exportRpc("light.viz.slice.position")
+    def updatePosition(self, x, y, z):
+        # bounds = self.ds.activeMeta['data']['bounds']
+        # if self.sliceX:
+        #     self.sliceX.SliceType.Origin = [float(x)/100.0*(bounds[1]-bounds[0]) + bounds[0], 0, 0]
+        # if self.sliceY:
+        #     self.sliceY.SliceType.Origin = [0, float(y)/100.0*(bounds[3]-bounds[2]) + bounds[2], 0]
+        # if self.sliceZ:
+        #     self.sliceZ.SliceType.Origin = [0, 0, float(z)/100.0*(bounds[5]-bounds[4]) + bounds[4]]
+        self.center = [x, y, z]
+        if self.sliceX:
+            self.sliceX.SliceType.Origin = self.center
+        if self.sliceY:
+            self.sliceY.SliceType.Origin = self.center
+        if self.sliceZ:
+            self.sliceZ.SliceType.Origin = self.center
+
+    @exportRpc("light.viz.slice.visibility")
+    def updateVisibility(self, x, y, z):
+        self.visible = [ 1 if x else 0, 1 if y else 0, 1 if z else 0]
+        if self.representationX:
+            self.representationX.Visibility = self.visible[0]
+        if self.representationY:
+            self.representationY.Visibility = self.visible[1]
+        if self.representationZ:
+            self.representationZ.Visibility = self.visible[2]
+
+    @exportRpc("light.viz.slice.representation")
+    def updateRepresentation(self, mode):
+        if self.representationX:
+            self.representationX.Representation = mode
+            self.representationY.Representation = mode
+            self.representationZ.Representation = mode
+
+    @exportRpc("light.viz.slice.color")
+    def updateColorBy(self, field):
+        if self.representationX:
+            if field == '__SOLID':
+                self.representationX.ColorArrayName = ''
+                self.representationY.ColorArrayName = ''
+                self.representationZ.ColorArrayName = ''
+            else:
+                # Select data array
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representationX.SMProxy, field, vtkDataObject.POINT)
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representationY.SMProxy, field, vtkDataObject.POINT)
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representationZ.SMProxy, field, vtkDataObject.POINT)
+                lutProxyX = self.representationX.LookupTable
+                lutProxyY = self.representationY.LookupTable
+                lutProxyZ = self.representationZ.LookupTable
+                # lutProxy = simple.GetColorTransferFunction(field)
+                for array in self.ds.activeMeta['data']['arrays']:
+                    if array['name'] == field:
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxyX.SMProxy, array['range'][0], array['range'][1], False)
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxyY.SMProxy, array['range'][0], array['range'][1], False)
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxyZ.SMProxy, array['range'][0], array['range'][1], False)
+
+            simple.Render()
+
+    @exportRpc("light.viz.slice.enable")
+    def enableSlice(self, enable):
+        if enable and self.ds.getInput():
+            if not self.sliceX:
+                bounds = self.ds.activeMeta['data']['bounds']
+                center = self.center
+                if center is None:
+                    print 'Generating center'
+                    center = [(bounds[i*2] + bounds[i*2+1])*.05 for i in range(3)]
+                print 'creating slices'
+                self.sliceX = simple.Slice(Input=self.ds.getInput())
+                self.sliceY = simple.Slice(Input=self.ds.getInput())
+                self.sliceZ = simple.Slice(Input=self.ds.getInput())
+
+                self.sliceX.SliceType.Origin = center
+                self.sliceX.SliceType.Normal = [1, 0, 0]
+                self.sliceY.SliceType.Origin = center
+                self.sliceY.SliceType.Normal = [0, 1, 0]
+                self.sliceZ.SliceType.Origin = center
+                self.sliceZ.SliceType.Normal = [0, 0, 1]
+
+                self.representationX = simple.Show(self.sliceX)
+                self.representationY = simple.Show(self.sliceY)
+                self.representationZ = simple.Show(self.sliceZ)
+            else:
+                self.sliceX.Input = self.ds.getInput()
+                self.sliceY.Input = self.ds.getInput()
+                self.sliceZ.Input = self.ds.getInput()
+            self.representationX.Visibility = self.visible[0]
+            self.representationY.Visibility = self.visible[1]
+            self.representationZ.Visibility = self.visible[2]
+
+        if not enable and self.representationX:
+            self.representationX.Visibility = 0
+            self.representationY.Visibility = 0
+            self.representationZ.Visibility = 0
+
+        simple.Render()

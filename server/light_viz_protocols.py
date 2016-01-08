@@ -540,3 +540,100 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
 
         self.enabled = enable
         simple.Render()
+
+# =============================================================================
+#
+# Multi-Slice management
+#
+# =============================================================================
+
+class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
+
+    def __init__(self, dataset_manager):
+        super(LightVizMultiSlice, self).__init__()
+        self.ds = dataset_manager
+        self.slice = None
+        self.representation = None
+        self.normal = 0
+        self.slicePositions = []
+        dataset_manager.addListener(self)
+
+    def dataChanged(self):
+        if self.slice:
+            self.slice.Input = self.ds.getInput()
+            self.updatePosition(50, 50, 50)
+            self.representation.Representation = 'Surface'
+            self.representation.ColorArrayName = ''
+            self.representation.Visibility = 0
+
+    @exportRpc("light.viz.mslice.getstate")
+    def getState(self):
+        ret = {
+            'enabled': False,
+            'representation': 'Surface',
+            'color': '__SOLID__',
+            'positions': self.slicePositions,
+            'normal': str(self.normal),
+        }
+        if self.representation:
+            ret["representation"] = self.representation.Representation
+            ret["color"] = '__SOLID__' if len(self.representation.ColorArrayName[1]) == 0 \
+                                     else self.representation.ColorArrayName[1]
+            ret["enabled"] = True if self.representation.Visibility else False
+        return ret
+
+
+    @exportRpc("light.viz.mslice.normal")
+    def updateNormal(self, normalAxis):
+        self.normal = int(normalAxis)
+        if self.slice:
+            normal = [0, 0, 0]
+            normal[self.normal] = 1
+            self.slice.SliceType.Normal = normal
+
+    @exportRpc("light.viz.mslice.positions")
+    def updateSlicePositions(self, positions):
+        self.slicePositions = positions;
+        print "Positions: ", positions
+        if self.slice:
+            self.slice.SliceOffsetValues = positions
+
+    @exportRpc("light.viz.mslice.representation")
+    def updateRepresentation(self, mode):
+        if self.representation:
+            self.representation.Representation = mode
+
+    @exportRpc("light.viz.mslice.color")
+    def updateColorBy(self, field):
+        if self.representation:
+            if field == '__SOLID':
+                self.representation.ColorArrayName = ''
+            else:
+                # Select data array
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                lutProxy = self.representation.LookupTable
+                # lutProxy = simple.GetColorTransferFunction(field)
+                for array in self.ds.activeMeta['data']['arrays']:
+                    if array['name'] == field:
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+
+            simple.Render()
+
+    @exportRpc("light.viz.mslice.enable")
+    def enableSlice(self, enable):
+        if enable and self.ds.getInput():
+            if not self.slice:
+                self.slice = simple.Slice(Input=self.ds.getInput())
+                normal = [0, 0, 0]
+                normal[self.normal] = 1
+                self.slice.SliceType.Normal = normal
+                self.slice.SliceOffsetValues = self.slicePositions
+                self.representation = simple.Show(self.slice)
+            else:
+                self.slice.Input = self.ds.getInput()
+            self.representation.Visibility = 1
+
+        if not enable and self.representation:
+            self.representation.Visibility = 0
+
+        simple.Render()

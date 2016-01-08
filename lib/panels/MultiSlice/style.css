@@ -1,0 +1,10 @@
+.MultiSlicePanel {
+    background: white;
+}
+
+.MultiSlicePanel_line {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+}
+

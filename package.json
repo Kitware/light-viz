@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "tonic-io": "1.1.4",
-    "tonic-ui": "1.2.7",
+    "tonic-ui": "1.2.10",
 
     "font-awesome": "4.5.0",
     "mout": "0.11.1",

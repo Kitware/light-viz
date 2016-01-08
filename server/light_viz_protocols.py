@@ -90,6 +90,8 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.dataset.load")
     def loadDataset(self, datasetName):
         if self.dataset:
+            if self.activeMeta is self.datasetMap[datasetName]['meta']:
+                return self.activeMeta
             simple.Delete(self.dataset)
             self.dataset = None
             self.datasetRep = None
@@ -110,7 +112,18 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         for l in self.dataListeners:
             l.dataChanged()
 
-        return self.datasetMap[datasetName]['meta']
+        return self.activeMeta
+
+    @exportRpc("light.viz.dataset.getstate")
+    def getState(self):
+        tmp = {
+                "opacity": self.datasetRep.Opacity,
+                "representation": self.datasetRep.Representation,
+                "color": '__SOLID__' if len(self.datasetRep.ColorArrayName[1]) == 0 \
+                                     else self.datasetRep.ColorArrayName[1],
+                "enabled": self.datasetRep.Visibility == 1,
+            }
+        return tmp
 
     @exportRpc("light.viz.dataset.opacity")
     def updateOpacity(self, opacity):
@@ -130,7 +143,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.dataset.color")
     def updateColorBy(self, field):
-        if field == '__SOLID':
+        if field == '__SOLID__':
             self.datasetRep.ColorArrayName = ''
         else:
             # Select data array
@@ -173,6 +186,32 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             self.representation.Representation = 'Surface'
             self.representation.ColorArrayName = ''
             self.representation.Visibility = 0
+
+    @exportRpc("light.viz.clip.getstate")
+    def getState(self):
+        ret = {
+            "representation": "Surface",
+            "color": "__SOLID__",
+            "enabled": False,
+            "xPosition": 0,
+            "yPosition": 0,
+            "zPosition": 0,
+            "xInsideOut": False,
+            "yInsideOut": False,
+            "zInsideOut": False,
+        }
+        if self.clipX:
+            ret["representation"] = self.representation.Representation
+            ret["color"] = '__SOLID__' if len(self.representation.ColorArrayName[1]) == 0 \
+                                     else self.representation.ColorArrayName[1]
+            ret["enabled"] = self.representation.Visibility == 1,
+            ret["xPosition"] = self.clipX.ClipType.Origin[0]
+            ret["yPosition"] = self.clipY.ClipType.Origin[1]
+            ret["zPosition"] = self.clipZ.ClipType.Origin[2]
+            ret["xInsideOut"] = self.clipX.InsideOut == 1
+            ret["yInsideOut"] = self.clipY.InsideOut == 1
+            ret["zInsideOut"] = self.clipZ.InsideOut == 1
+        return ret
 
     @exportRpc("light.viz.clip.position")
     def updatePosition(self, x, y, z):
@@ -268,6 +307,24 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             self.contour.Input = self.ds.getInput()
             self.representation.Visibility = 0
 
+    @exportRpc("light.viz.contour.getstate")
+    def getState(self):
+        ret = {
+            "representation": "Surface",
+            "color": "__SOLID__",
+            "enabled": False,
+            "field": '',
+            "values": [],
+        }
+        if self.contour:
+            ret["representation"] = self.representation.Representation
+            ret["color"] = '__SOLID__' if len(self.representation.ColorArrayName[1]) == 0 \
+                                     else self.representation.ColorArrayName[1]
+            ret["enabled"] = self.representation.Visibility == 1,
+            ret["field"] = self.contour.ContourBy[1]
+            ret["values"] = [i for i in self.contour.Isosurfaces]
+        return ret
+
     @exportRpc("light.viz.contour.values")
     def updateValues(self, values):
         if self.contour:
@@ -334,6 +391,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
         self.representationZ = None
         self.center = None
         self.visible = [0, 0, 0]
+        self.enabled = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
@@ -352,15 +410,31 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationY.Visibility = 0
             self.representationZ.Visibility = 0
 
+    @exportRpc("light.viz.slice.getstate")
+    def getState(self):
+        ret = {
+            "representation": "Surface",
+            "color": "__SOLID__",
+            "enabled": self.enabled,
+            "xPosition": 0,
+            "yPosition": 0,
+            "zPosition": 0,
+            "xVisible": self.visible[0] == 1,
+            "yVisible": self.visible[1] == 1,
+            "zVisible": self.visible[2] == 1,
+        }
+        if self.representationX:
+            ret["representation"] = self.representationX.Representation
+            ret["color"] = '__SOLID__' if len(self.representationX.ColorArrayName[1]) == 0 \
+                                     else self.representationX.ColorArrayName[1]
+        if self.center:
+            ret['xPosition'] = self.center[0]
+            ret['yPosition'] = self.center[1]
+            ret['zPosition'] = self.center[2]
+        return ret
+
     @exportRpc("light.viz.slice.position")
     def updatePosition(self, x, y, z):
-        # bounds = self.ds.activeMeta['data']['bounds']
-        # if self.sliceX:
-        #     self.sliceX.SliceType.Origin = [float(x)/100.0*(bounds[1]-bounds[0]) + bounds[0], 0, 0]
-        # if self.sliceY:
-        #     self.sliceY.SliceType.Origin = [0, float(y)/100.0*(bounds[3]-bounds[2]) + bounds[2], 0]
-        # if self.sliceZ:
-        #     self.sliceZ.SliceType.Origin = [0, 0, float(z)/100.0*(bounds[5]-bounds[4]) + bounds[4]]
         self.center = [x, y, z]
         if self.sliceX:
             self.sliceX.SliceType.Origin = self.center
@@ -447,4 +521,5 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationY.Visibility = 0
             self.representationZ.Visibility = 0
 
+        self.enabled = enable
         simple.Render()

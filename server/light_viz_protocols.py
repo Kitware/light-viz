@@ -123,6 +123,10 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
                                      else self.datasetRep.ColorArrayName[1],
                 "enabled": self.datasetRep.Visibility == 1,
             }
+
+        if not isinstance(tmp["enabled"], bool):
+            tmp["enabled"] = tmp["enabled"][0]
+
         return tmp
 
     @exportRpc("light.viz.dataset.opacity")
@@ -211,6 +215,10 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             ret["xInsideOut"] = self.clipX.InsideOut == 1
             ret["yInsideOut"] = self.clipY.InsideOut == 1
             ret["zInsideOut"] = self.clipZ.InsideOut == 1
+
+        if not isinstance(ret["enabled"], bool):
+            ret["enabled"] = ret["enabled"][0]
+
         return ret
 
     @exportRpc("light.viz.clip.position")
@@ -323,6 +331,11 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             ret["enabled"] = self.representation.Visibility == 1,
             ret["field"] = self.contour.ContourBy[1]
             ret["values"] = [i for i in self.contour.Isosurfaces]
+
+
+        if not isinstance(ret["enabled"], bool):
+            ret["enabled"] = ret["enabled"][0]
+
         return ret
 
     @exportRpc("light.viz.contour.values")
@@ -431,6 +444,10 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             ret['xPosition'] = self.center[0]
             ret['yPosition'] = self.center[1]
             ret['zPosition'] = self.center[2]
+
+        if not isinstance(ret["enabled"], bool):
+            ret["enabled"] = ret["enabled"][0]
+
         return ret
 
     @exportRpc("light.viz.slice.position")

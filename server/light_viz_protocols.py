@@ -254,7 +254,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.clip.color")
     def updateColorBy(self, field):
         if self.representation:
-            if field == '__SOLID':
+            if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
                 # Select data array
@@ -356,7 +356,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.contour.color")
     def updateColorBy(self, field):
         if self.representation:
-            if field == '__SOLID':
+            if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
                 # Select data array
@@ -480,7 +480,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.slice.color")
     def updateColorBy(self, field):
         if self.representationX:
-            if field == '__SOLID':
+            if field == '__SOLID__':
                 self.representationX.ColorArrayName = ''
                 self.representationY.ColorArrayName = ''
                 self.representationZ.ColorArrayName = ''
@@ -606,7 +606,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.mslice.color")
     def updateColorBy(self, field):
         if self.representation:
-            if field == '__SOLID':
+            if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
                 # Select data array

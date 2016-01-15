@@ -180,6 +180,8 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         self.clipY = None
         self.clipZ = None
         self.representation = None
+        self.reprMode = 'Surface'
+        self.colorBy = '__SOLID__'
         dataset_manager.addListener(self)
 
     def dataChanged(self):
@@ -194,8 +196,8 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.clip.getstate")
     def getState(self):
         ret = {
-            "representation": "Surface",
-            "color": "__SOLID__",
+            "representation": self.reprMode,
+            "color": self.colorBy,
             "enabled": False,
             "xPosition": 0,
             "yPosition": 0,
@@ -205,9 +207,6 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             "zInsideOut": False,
         }
         if self.clipX:
-            ret["representation"] = self.representation.Representation
-            ret["color"] = '__SOLID__' if len(self.representation.ColorArrayName[1]) == 0 \
-                                     else self.representation.ColorArrayName[1]
             ret["enabled"] = self.representation.Visibility == 1,
             ret["xPosition"] = self.clipX.ClipType.Origin[0]
             ret["yPosition"] = self.clipY.ClipType.Origin[1]
@@ -248,11 +247,13 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.clip.representation")
     def updateRepresentation(self, mode):
+        self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
 
     @exportRpc("light.viz.clip.color")
     def updateColorBy(self, field):
+        self.colorBy = field
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
@@ -285,6 +286,8 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
                 self.clipZ.ClipType.Normal = [0, 0, 1]
 
                 self.representation = simple.Show(self.clipZ)
+                self.representation.Representation = self.reprMode
+                self.updateColorBy(self.colorBy)
             else:
                 self.clipX.Input = self.ds.getInput()
 
@@ -308,6 +311,8 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         self.ds = dataset_manager
         self.contour = None
         self.representation = None
+        self.reprMode = 'Surface'
+        self.colorBy = '__SOLID__'
         dataset_manager.addListener(self)
 
     def dataChanged(self):
@@ -350,11 +355,13 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.contour.representation")
     def updateRepresentation(self, mode):
+        self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
 
     @exportRpc("light.viz.contour.color")
     def updateColorBy(self, field):
+        self.colorBy = field
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
@@ -375,6 +382,8 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             if not self.contour:
                 self.contour = simple.Contour(Input=self.ds.getInput(), ComputeScalars=1, ComputeNormals=1)
                 self.representation = simple.Show(self.contour)
+                self.representation.Representation = self.reprMode
+                self.updateColorBy(self.colorBy)
             else:
                 self.contour.Input = self.ds.getInput()
 
@@ -405,6 +414,8 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
         self.center = None
         self.visible = [0, 0, 0]
         self.enabled = False
+        self.reprMode = 'Surface'
+        self.colorBy = '__SOLID__'
         dataset_manager.addListener(self)
 
     def dataChanged(self):
@@ -422,12 +433,15 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationX.Visibility = 0
             self.representationY.Visibility = 0
             self.representationZ.Visibility = 0
+            self.enabled = False
+            self.reprMode = 'Surface'
+            self.colorBy = '__SOLID__'
 
     @exportRpc("light.viz.slice.getstate")
     def getState(self):
         ret = {
-            "representation": "Surface",
-            "color": "__SOLID__",
+            "representation": self.reprMode,
+            "color": self.colorBy,
             "enabled": self.enabled,
             "xPosition": 0,
             "yPosition": 0,
@@ -436,10 +450,6 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             "yVisible": self.visible[1] == 1,
             "zVisible": self.visible[2] == 1,
         }
-        if self.representationX:
-            ret["representation"] = self.representationX.Representation
-            ret["color"] = '__SOLID__' if len(self.representationX.ColorArrayName[1]) == 0 \
-                                     else self.representationX.ColorArrayName[1]
         if self.center:
             ret['xPosition'] = self.center[0]
             ret['yPosition'] = self.center[1]
@@ -472,6 +482,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.slice.representation")
     def updateRepresentation(self, mode):
+        self.reprMode = mode
         if self.representationX:
             self.representationX.Representation = mode
             self.representationY.Representation = mode
@@ -479,6 +490,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.slice.color")
     def updateColorBy(self, field):
+        self.colorBy = field
         if self.representationX:
             if field == '__SOLID__':
                 self.representationX.ColorArrayName = ''
@@ -525,6 +537,9 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                 self.representationX = simple.Show(self.sliceX)
                 self.representationY = simple.Show(self.sliceY)
                 self.representationZ = simple.Show(self.sliceZ)
+
+                self.updateRepresentation(self.reprMode)
+                self.updateColorBy(self.colorBy)
             else:
                 self.sliceX.Input = self.ds.getInput()
                 self.sliceY.Input = self.ds.getInput()
@@ -556,6 +571,8 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
         self.representation = None
         self.normal = 0
         self.slicePositions = []
+        self.reprMode = "Surface"
+        self.colorBy = "__SOLID__"
         dataset_manager.addListener(self)
 
     def dataChanged(self):
@@ -570,15 +587,12 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
     def getState(self):
         ret = {
             'enabled': False,
-            'representation': 'Surface',
-            'color': '__SOLID__',
+            'representation': self.reprMode,
+            'color': self.colorBy,
             'positions': self.slicePositions,
             'normal': str(self.normal),
         }
         if self.representation:
-            ret["representation"] = self.representation.Representation
-            ret["color"] = '__SOLID__' if len(self.representation.ColorArrayName[1]) == 0 \
-                                     else self.representation.ColorArrayName[1]
             ret["enabled"] = True if self.representation.Visibility else False
         return ret
 
@@ -600,11 +614,13 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.mslice.representation")
     def updateRepresentation(self, mode):
+        self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
 
     @exportRpc("light.viz.mslice.color")
     def updateColorBy(self, field):
+        self.colorBy = field
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
@@ -629,6 +645,8 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
                 self.slice.SliceType.Normal = normal
                 self.slice.SliceOffsetValues = self.slicePositions
                 self.representation = simple.Show(self.slice)
+                self.representation.Representation = self.reprMode
+                self.updateColorBy(self.colorBy)
             else:
                 self.slice.Input = self.ds.getInput()
             self.representation.Visibility = 1

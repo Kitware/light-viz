@@ -185,12 +185,12 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         dataset_manager.addListener(self)
 
     def dataChanged(self):
+        self.updateRepresentation('Surface')
+        self.updateColorBy('__SOLID__')
         if self.clipX:
             self.clipX.Input = self.ds.getInput()
             self.updatePosition(50, 50, 50)
             self.updateInsideOut(False, False, False)
-            self.representation.Representation = 'Surface'
-            self.representation.ColorArrayName = ''
             self.representation.Visibility = 0
 
     @exportRpc("light.viz.clip.getstate")
@@ -316,6 +316,8 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         dataset_manager.addListener(self)
 
     def dataChanged(self):
+        self.updateRepresentation('Surface')
+        self.updateColorBy('__SOLID__')
         if self.contour:
             self.contour.Input = self.ds.getInput()
             self.representation.Visibility = 0
@@ -419,6 +421,8 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
         dataset_manager.addListener(self)
 
     def dataChanged(self):
+        self.updateRepresentation('Surface')
+        self.updateColorBy('__SOLID__')
         if self.sliceX:
             self.sliceX.Input = self.ds.getInput()
             self.sliceY.Input = self.ds.getInput()
@@ -434,8 +438,6 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationY.Visibility = 0
             self.representationZ.Visibility = 0
             self.enabled = False
-            self.reprMode = 'Surface'
-            self.colorBy = '__SOLID__'
 
     @exportRpc("light.viz.slice.getstate")
     def getState(self):
@@ -576,6 +578,8 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
         dataset_manager.addListener(self)
 
     def dataChanged(self):
+        self.updateRepresentation('Surface')
+        self.updateColorBy('__SOLID__')
         if self.slice:
             self.slice.Input = self.ds.getInput()
             self.updatePosition(50, 50, 50)

@@ -140,11 +140,12 @@ class LightVizServer(pv_wamp.PVServerProtocol):
 
         # self.registerVtkWebProtocol(lv_protocols.LightVizViewportSize())
         datasetManager = lv_protocols.LightVizDatasets(LightVizServer.data)
+        clipManager = lv_protocols.LightVizClip(datasetManager)
         self.registerVtkWebProtocol(datasetManager)
-        self.registerVtkWebProtocol(lv_protocols.LightVizClip(datasetManager))
-        self.registerVtkWebProtocol(lv_protocols.LightVizContour(datasetManager))
-        self.registerVtkWebProtocol(lv_protocols.LightVizSlice(datasetManager))
-        self.registerVtkWebProtocol(lv_protocols.LightVizMultiSlice(datasetManager))
+        self.registerVtkWebProtocol(clipManager)
+        self.registerVtkWebProtocol(lv_protocols.LightVizContour(datasetManager, clipManager))
+        self.registerVtkWebProtocol(lv_protocols.LightVizSlice(datasetManager, clipManager))
+        self.registerVtkWebProtocol(lv_protocols.LightVizMultiSlice(datasetManager, clipManager))
 
         # Update authentication key to use
         self.updateSecret(LightVizServer.authKey)

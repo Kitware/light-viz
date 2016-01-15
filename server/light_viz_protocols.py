@@ -191,6 +191,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             self.clipX.Input = self.ds.getInput()
             self.updatePosition(50, 50, 50)
             self.updateInsideOut(False, False, False)
+        if self.representation:
             self.representation.Visibility = 0
 
     @exportRpc("light.viz.clip.getstate")
@@ -206,8 +207,9 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             "yInsideOut": False,
             "zInsideOut": False,
         }
-        if self.clipX:
+        if self.representation:
             ret["enabled"] = self.representation.Visibility == 1,
+        if self.clipX:
             ret["xPosition"] = self.clipX.ClipType.Origin[0]
             ret["yPosition"] = self.clipY.ClipType.Origin[1]
             ret["zPosition"] = self.clipZ.ClipType.Origin[2]
@@ -284,12 +286,13 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
                 self.clipY.ClipType.Normal = [0, 1, 0]
                 self.clipZ.ClipType.Origin = center
                 self.clipZ.ClipType.Normal = [0, 0, 1]
+            else:
+                self.clipX.Input = self.ds.getInput()
 
+            if not self.representation:
                 self.representation = simple.Show(self.clipZ)
                 self.representation.Representation = self.reprMode
                 self.updateColorBy(self.colorBy)
-            else:
-                self.clipX.Input = self.ds.getInput()
 
             self.representation.Visibility = 1
 
@@ -297,6 +300,25 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
+
+    def getOutput(self):
+        if not self.clipX:
+            bounds = self.ds.activeMeta['data']['bounds']
+            center = [(bounds[i*2] + bounds[i*2+1])*.05 for i in range(3)]
+            self.clipX = simple.Clip(Input=self.ds.getInput())
+            self.clipY = simple.Clip(Input=self.clipX)
+            self.clipZ = simple.Clip(Input=self.clipY)
+
+            self.clipX.ClipType.Origin = center
+            self.clipX.ClipType.Normal = [1, 0, 0]
+            self.clipY.ClipType.Origin = center
+            self.clipY.ClipType.Normal = [0, 1, 0]
+            self.clipZ.ClipType.Origin = center
+            self.clipZ.ClipType.Normal = [0, 0, 1]
+
+        return self.clipZ
+
+
 
 # =============================================================================
 #
@@ -306,13 +328,15 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
 
 class LightVizContour(pv_protocols.ParaViewWebProtocol):
 
-    def __init__(self, dataset_manager):
+    def __init__(self, dataset_manager, clip):
         super(LightVizContour, self).__init__()
         self.ds = dataset_manager
+        self.clip = clip
         self.contour = None
         self.representation = None
         self.reprMode = 'Surface'
         self.colorBy = '__SOLID__'
+        self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
@@ -322,6 +346,15 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             self.contour.Input = self.ds.getInput()
             self.representation.Visibility = 0
 
+    @exportRpc("light.viz.contour.useclipped")
+    def setUseClipped(self, useClipped):
+        if self.contour:
+            if not self.useClippedInput and useClipped:
+                self.contour.Input = self.clip.getOutput()
+            elif self.useClippedInput and not useClipped:
+                self.contour.Input = self.ds.getInput()
+        self.useClippedInput = useClipped
+
     @exportRpc("light.viz.contour.getstate")
     def getState(self):
         ret = {
@@ -329,6 +362,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             "color": "__SOLID__",
             "enabled": False,
             "field": '',
+            "use_clipped": self.useClippedInput,
             "values": [],
         }
         if self.contour:
@@ -381,13 +415,14 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.contour.enable")
     def enableContour(self, enable):
         if enable and self.ds.getInput():
+            inpt = self.ds.getInput() if not self.useClippedInput else self.clip.getOutput()
             if not self.contour:
-                self.contour = simple.Contour(Input=self.ds.getInput(), ComputeScalars=1, ComputeNormals=1)
+                self.contour = simple.Contour(Input=inpt, ComputeScalars=1, ComputeNormals=1)
                 self.representation = simple.Show(self.contour)
                 self.representation.Representation = self.reprMode
                 self.updateColorBy(self.colorBy)
             else:
-                self.contour.Input = self.ds.getInput()
+                self.contour.Input = inpt
 
             self.representation.Visibility = 1
 
@@ -404,9 +439,10 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
 
 class LightVizSlice(pv_protocols.ParaViewWebProtocol):
 
-    def __init__(self, dataset_manager):
+    def __init__(self, dataset_manager, clip):
         super(LightVizSlice, self).__init__()
         self.ds = dataset_manager
+        self.clip = clip
         self.sliceX = None
         self.sliceY = None
         self.sliceZ = None
@@ -418,6 +454,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
         self.enabled = False
         self.reprMode = 'Surface'
         self.colorBy = '__SOLID__'
+        self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
@@ -439,6 +476,18 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationZ.Visibility = 0
             self.enabled = False
 
+    @exportRpc("light.viz.slice.useclipped")
+    def setUseClipped(self, useClipped):
+        if self.sliceX:
+            if not self.useClippedInput and useClipped:
+                for slice in [self.sliceX, self.sliceY, self.sliceZ]:
+                    slice.Input = self.clip.getOutput()
+            elif self.useClippedInput and not useClipped:
+                for slice in [self.sliceX, self.sliceY, self.sliceZ]:
+                    slice.Input = self.ds.getInput()
+        self.useClippedInput = useClipped
+
+
     @exportRpc("light.viz.slice.getstate")
     def getState(self):
         ret = {
@@ -451,6 +500,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             "xVisible": self.visible[0] == 1,
             "yVisible": self.visible[1] == 1,
             "zVisible": self.visible[2] == 1,
+            "use_clipped": self.useClippedInput,
         }
         if self.center:
             ret['xPosition'] = self.center[0]
@@ -518,6 +568,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.slice.enable")
     def enableSlice(self, enable):
         if enable and self.ds.getInput():
+            inpt = self.ds.getInput() if not self.useClippedInput else self.clip.getOutput()
             if not self.sliceX:
                 bounds = self.ds.activeMeta['data']['bounds']
                 center = self.center
@@ -525,9 +576,9 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                     print 'Generating center'
                     center = [(bounds[i*2] + bounds[i*2+1])*.05 for i in range(3)]
                 print 'creating slices'
-                self.sliceX = simple.Slice(Input=self.ds.getInput())
-                self.sliceY = simple.Slice(Input=self.ds.getInput())
-                self.sliceZ = simple.Slice(Input=self.ds.getInput())
+                self.sliceX = simple.Slice(Input=inpt)
+                self.sliceY = simple.Slice(Input=inpt)
+                self.sliceZ = simple.Slice(Input=inpt)
 
                 self.sliceX.SliceType.Origin = center
                 self.sliceX.SliceType.Normal = [1, 0, 0]
@@ -543,9 +594,9 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                 self.updateRepresentation(self.reprMode)
                 self.updateColorBy(self.colorBy)
             else:
-                self.sliceX.Input = self.ds.getInput()
-                self.sliceY.Input = self.ds.getInput()
-                self.sliceZ.Input = self.ds.getInput()
+                self.sliceX.Input = inpt
+                self.sliceY.Input = inpt
+                self.sliceZ.Input = inpt
             self.representationX.Visibility = self.visible[0]
             self.representationY.Visibility = self.visible[1]
             self.representationZ.Visibility = self.visible[2]
@@ -566,15 +617,17 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
 
 class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
 
-    def __init__(self, dataset_manager):
+    def __init__(self, dataset_manager, clip):
         super(LightVizMultiSlice, self).__init__()
         self.ds = dataset_manager
+        self.clip = clip
         self.slice = None
         self.representation = None
         self.normal = 0
         self.slicePositions = []
         self.reprMode = "Surface"
         self.colorBy = "__SOLID__"
+        self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
@@ -587,6 +640,15 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             self.representation.ColorArrayName = ''
             self.representation.Visibility = 0
 
+    @exportRpc("light.viz.contour.useclipped")
+    def setUseClipped(self, useClipped):
+        if self.slice:
+            if not self.useClippedInput and useClipped:
+                self.slice.Input = self.clip.getOutput()
+            elif self.useClippedInput and not useClipped:
+                self.slice.Input = self.ds.getInput()
+        self.useClippedInput = useClipped
+
     @exportRpc("light.viz.mslice.getstate")
     def getState(self):
         ret = {
@@ -595,6 +657,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             'color': self.colorBy,
             'positions': self.slicePositions,
             'normal': str(self.normal),
+            "use_clipped": self.useClippedInput,
         }
         if self.representation:
             ret["enabled"] = True if self.representation.Visibility else False
@@ -642,8 +705,9 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.mslice.enable")
     def enableSlice(self, enable):
         if enable and self.ds.getInput():
+            inpt = self.ds.getInput() if not self.useClippedInput else self.clip.getOutput()
             if not self.slice:
-                self.slice = simple.Slice(Input=self.ds.getInput())
+                self.slice = simple.Slice(Input=inpt)
                 normal = [0, 0, 0]
                 normal[self.normal] = 1
                 self.slice.SliceType.Normal = normal
@@ -652,7 +716,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
                 self.representation.Representation = self.reprMode
                 self.updateColorBy(self.colorBy)
             else:
-                self.slice.Input = self.ds.getInput()
+                self.slice.Input = inpt
             self.representation.Visibility = 1
 
         if not enable and self.representation:

@@ -20,20 +20,26 @@
   position: relative;
 }
 
-.ModulePanel_ToolBarButtons {
+.ModulePanel_ToolBarRight {
   position: absolute;
   right: 10px;
-  left: 10px;
   top: 0;
   height: 100%;
+  width: calc(50% - 10px);
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
+  z-index: 1;
 }
 
-.ModulePanel_TopBar > i {
+.ModulePanel_ToolBarLeft {
   position: absolute;
   left: 10px;
+  top: 0;
+  height: 100%;
+  width: calc(50% - 10px);
+  display: inline-flex;
+  align-items: center;
   z-index: 1;
 }
 
@@ -45,4 +51,8 @@
 
 .ModulePanel_Contents > * {
   margin-bottom: 10px;
+}
+
+.ModulePanel__InputSelector {
+  margin-left: 5px;
 }

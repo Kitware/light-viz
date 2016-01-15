@@ -72,9 +72,17 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
     def getInput(self):
         return self.dataset
 
-    # RpcName: mouseInteraction => viewport.mouse.interaction
     @exportRpc("light.viz.dataset.list")
     def listDatasets(self):
+        self.datasets = []
+        self.datasetMap = {}
+        for filePath in os.listdir(self.basedir):
+            indexPath = os.path.join(self.basedir, filePath, 'index.json')
+            if os.path.exists(indexPath):
+                with open(indexPath, 'r') as fd:
+                    metadata = json.loads(fd.read())
+                    self.datasets.append(metadata)
+                    self.datasetMap[metadata['name']] = { 'path':  os.path.dirname(indexPath), 'meta': metadata }
         return self.datasets
 
     @exportRpc("light.viz.dataset.thumbnail")

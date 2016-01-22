@@ -95,16 +95,17 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             simple.Delete(self.dataset)
             self.dataset = None
             self.datasetRep = None
+            self.view = None
 
         self.activeMeta = self.datasetMap[datasetName]['meta']
         self.dataset = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
         self.datasetRep = simple.Show(self.dataset)
-        view = simple.Render()
+        self.view = simple.Render()
 
         # reset the camera
-        simple.ResetCamera(view)
-        view.CenterOfRotation = view.CameraFocalPoint
-        simple.Render(view)
+        simple.ResetCamera(self.view)
+        self.view.CenterOfRotation = self.view.CameraFocalPoint
+        simple.Render(self.view)
 
         self.anim = simple.GetAnimationScene()
 
@@ -113,6 +114,13 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             l.dataChanged()
 
         return self.activeMeta
+
+    @exportRpc("light.viz.dataset.colormap.set")
+    def setGlobalColormap(self, presetName):
+        for array in self.activeMeta['data']['arrays']:
+            rtDataLUT = simple.GetColorTransferFunction(array['name']);
+            rtDataLUT.ApplyPreset(presetName, True)
+        simple.Render()
 
     @exportRpc("light.viz.dataset.getstate")
     def getState(self):

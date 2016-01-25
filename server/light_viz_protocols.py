@@ -581,9 +581,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                 bounds = self.ds.activeMeta['data']['bounds']
                 center = self.center
                 if center is None:
-                    print 'Generating center'
                     center = [(bounds[i*2] + bounds[i*2+1])*.05 for i in range(3)]
-                print 'creating slices'
                 self.sliceX = simple.Slice(Input=inpt)
                 self.sliceY = simple.Slice(Input=inpt)
                 self.sliceZ = simple.Slice(Input=inpt)
@@ -683,7 +681,6 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.mslice.positions")
     def updateSlicePositions(self, positions):
         self.slicePositions = positions;
-        print "Positions: ", positions
         if self.slice:
             self.slice.SliceOffsetValues = positions
 

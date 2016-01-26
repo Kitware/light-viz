@@ -1,0 +1,14 @@
+.FGBG_Contents {
+  background: white;
+  display: inline-flex;
+  justify-content: space-around;
+  padding: 5px 5px 5px 0;
+  border-radius: 5px;
+}
+
+.FGBG_Option {
+  border-radius: 5px;
+  height: 2em;
+  width: 2em;
+  margin-left: 5px;
+}

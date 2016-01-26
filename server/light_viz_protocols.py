@@ -54,6 +54,8 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.dataset = None
         self.datasets = []
         self.activeMeta = None
+        self.foreground = [ 1, 1, 1]
+        self.background = [ 0, 0, 0]
         self.dataListeners = []
         for filePath in os.listdir(self.basedir):
             indexPath = os.path.join(self.basedir, filePath, 'index.json')
@@ -101,6 +103,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.dataset = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
         self.datasetRep = simple.Show(self.dataset)
         self.view = simple.Render()
+        self.view.Background = self.background
 
         # reset the camera
         simple.ResetCamera(self.view)
@@ -121,6 +124,20 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             rtDataLUT = simple.GetColorTransferFunction(array['name']);
             rtDataLUT.ApplyPreset(presetName, True)
         simple.Render()
+
+    @exportRpc("light.viz.foreground.color")
+    def setForegroundColor(self, foreground):
+        self.foreground = [ float(x) for x in foreground.split(' ')]
+        for obs in self.dataListeners:
+            obs.setForegroundColor(self.foreground)
+        if self.datasetRep:
+            self.datasetRep.DiffuseColor = self.foreground
+
+    @exportRpc("light.viz.background.color")
+    def setBackgroundColor(self, background):
+        self.background = [ float(x) for x in background.split(' ')]
+        if self.view:
+            self.view.Background = self.background
 
     @exportRpc("light.viz.dataset.getstate")
     def getState(self):
@@ -201,6 +218,10 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             self.updateInsideOut(False, False, False)
         if self.representation:
             self.representation.Visibility = 0
+
+    def setForegroundColor(self, foreground):
+        if self.representation:
+            self.representation.DiffuseColor = foreground
 
     @exportRpc("light.viz.clip.getstate")
     def getState(self):
@@ -300,6 +321,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             if not self.representation:
                 self.representation = simple.Show(self.clipZ)
                 self.representation.Representation = self.reprMode
+                self.representation.DiffuseColor = self.ds.foreground
                 self.updateColorBy(self.colorBy)
 
             self.representation.Visibility = 1
@@ -353,6 +375,10 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         if self.contour:
             self.contour.Input = self.ds.getInput()
             self.representation.Visibility = 0
+
+    def setForegroundColor(self, foreground):
+        if self.representation:
+            self.representation.DiffuseColor = foreground
 
     @exportRpc("light.viz.contour.useclipped")
     def setUseClipped(self, useClipped):
@@ -428,6 +454,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
                 self.contour = simple.Contour(Input=inpt, ComputeScalars=1, ComputeNormals=1)
                 self.representation = simple.Show(self.contour)
                 self.representation.Representation = self.reprMode
+                self.representation.DiffuseColor = self.ds.foreground
                 self.updateColorBy(self.colorBy)
             else:
                 self.contour.Input = inpt
@@ -483,6 +510,12 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationY.Visibility = 0
             self.representationZ.Visibility = 0
             self.enabled = False
+
+    def setForegroundColor(self, foreground):
+        if self.representationX:
+            self.representationX.DiffuseColor = foreground
+            self.representationY.DiffuseColor = foreground
+            self.representationZ.DiffuseColor = foreground
 
     @exportRpc("light.viz.slice.useclipped")
     def setUseClipped(self, useClipped):
@@ -597,6 +630,10 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                 self.representationY = simple.Show(self.sliceY)
                 self.representationZ = simple.Show(self.sliceZ)
 
+                self.representationX.DiffuseColor = self.ds.foreground
+                self.representationY.DiffuseColor = self.ds.foreground
+                self.representationZ.DiffuseColor = self.ds.foreground
+
                 self.updateRepresentation(self.reprMode)
                 self.updateColorBy(self.colorBy)
             else:
@@ -645,6 +682,10 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             self.representation.Representation = 'Surface'
             self.representation.ColorArrayName = ''
             self.representation.Visibility = 0
+
+    def setForegroundColor(self, foreground):
+        if self.representation:
+            self.representation.DiffuseColor = foreground
 
     @exportRpc("light.viz.contour.useclipped")
     def setUseClipped(self, useClipped):
@@ -719,6 +760,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
                 self.slice.SliceOffsetValues = self.slicePositions
                 self.representation = simple.Show(self.slice)
                 self.representation.Representation = self.reprMode
+                self.representation.DiffuseColor = self.ds.foreground
                 self.updateColorBy(self.colorBy)
             else:
                 self.slice.Input = inpt

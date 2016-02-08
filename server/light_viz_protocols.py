@@ -97,6 +97,22 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
         return thumbnails
 
+    @exportRpc("light.viz.dataset.thumbnail.save")
+    def saveThumbnail(self):
+        if self.view:
+            size = [x for x in self.view.ViewSize.GetData()]
+            self.view.ViewSize = [400, 400]
+            basePath = self.datasetMap[self.activeMeta['name']]['path']
+            numThumbnails = len(self.activeMeta['thumbnails'])
+            filename = "thumbnail%d.jpg" % (numThumbnails + 1,)
+            filepath = os.path.join(basePath, filename)
+            simple.SaveScreenshot(filepath,self.view)
+            self.activeMeta['thumbnails'].append(filename)
+            indexPath = os.path.join(self.basedir, basePath, 'index.json')
+            with open(indexPath, 'w') as fd:
+                fd.write(json.dumps(self.activeMeta, indent=4, separators=(',', ': ')))
+            self.view.ViewSize = size
+
     @exportRpc("light.viz.dataset.load")
     def loadDataset(self, datasetName):
         if self.dataset:

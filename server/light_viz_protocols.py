@@ -711,7 +711,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
         if self.representation:
             self.representation.DiffuseColor = foreground
 
-    @exportRpc("light.viz.contour.useclipped")
+    @exportRpc("light.viz.mslice.useclipped")
     def setUseClipped(self, useClipped):
         if self.slice:
             if not self.useClippedInput and useClipped:

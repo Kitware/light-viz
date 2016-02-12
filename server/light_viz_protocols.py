@@ -509,7 +509,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
         self.representationY = None
         self.representationZ = None
         self.center = None
-        self.visible = [0, 0, 0]
+        self.visible = [1, 1, 1]
         self.enabled = False
         self.reprMode = 'Surface'
         self.colorBy = '__SOLID__'

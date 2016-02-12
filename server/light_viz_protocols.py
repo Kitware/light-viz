@@ -591,11 +591,11 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
     def updateVisibility(self, x, y, z):
         self.visible = [ 1 if x else 0, 1 if y else 0, 1 if z else 0]
         if self.representationX:
-            self.representationX.Visibility = self.visible[0]
+            self.representationX.Visibility = self.visible[0] and self.enabled
         if self.representationY:
-            self.representationY.Visibility = self.visible[1]
+            self.representationY.Visibility = self.visible[1] and self.enabled
         if self.representationZ:
-            self.representationZ.Visibility = self.visible[2]
+            self.representationZ.Visibility = self.visible[2] and self.enabled
 
     @exportRpc("light.viz.slice.representation")
     def updateRepresentation(self, mode):

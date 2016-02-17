@@ -395,7 +395,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
 
     def dataChanged(self):
         self.updateRepresentation('Surface')
-        self.updateColorBy('__SOLID__')
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         if self.contour:
             self.contour.Input = self.ds.getInput()
             self.representation.Visibility = 0
@@ -509,7 +509,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
         self.representationY = None
         self.representationZ = None
         self.center = None
-        self.visible = [0, 0, 0]
+        self.visible = [1, 1, 1]
         self.enabled = False
         self.reprMode = 'Surface'
         self.colorBy = '__SOLID__'
@@ -591,11 +591,11 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
     def updateVisibility(self, x, y, z):
         self.visible = [ 1 if x else 0, 1 if y else 0, 1 if z else 0]
         if self.representationX:
-            self.representationX.Visibility = self.visible[0]
+            self.representationX.Visibility = self.visible[0] and self.enabled
         if self.representationY:
-            self.representationY.Visibility = self.visible[1]
+            self.representationY.Visibility = self.visible[1] and self.enabled
         if self.representationZ:
-            self.representationZ.Visibility = self.visible[2]
+            self.representationZ.Visibility = self.visible[2] and self.enabled
 
     @exportRpc("light.viz.slice.representation")
     def updateRepresentation(self, mode):
@@ -693,13 +693,13 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
         self.normal = 0
         self.slicePositions = []
         self.reprMode = "Surface"
-        self.colorBy = "__SOLID__"
+        self.colorBy = '__SOLID__'
         self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
         self.updateRepresentation('Surface')
-        self.updateColorBy('__SOLID__')
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         if self.slice:
             self.slice.Input = self.ds.getInput()
             self.updatePosition(50, 50, 50)
@@ -711,7 +711,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
         if self.representation:
             self.representation.DiffuseColor = foreground
 
-    @exportRpc("light.viz.contour.useclipped")
+    @exportRpc("light.viz.mslice.useclipped")
     def setUseClipped(self, useClipped):
         if self.slice:
             if not self.useClippedInput and useClipped:

@@ -395,7 +395,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
 
     def dataChanged(self):
         self.updateRepresentation('Surface')
-        self.updateColorBy('__SOLID__')
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         if self.contour:
             self.contour.Input = self.ds.getInput()
             self.representation.Visibility = 0
@@ -693,13 +693,13 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
         self.normal = 0
         self.slicePositions = []
         self.reprMode = "Surface"
-        self.colorBy = "__SOLID__"
+        self.colorBy = '__SOLID__'
         self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
         self.updateRepresentation('Surface')
-        self.updateColorBy('__SOLID__')
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         if self.slice:
             self.slice.Input = self.ds.getInput()
             self.updatePosition(50, 50, 50)

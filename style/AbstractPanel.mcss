@@ -1,0 +1,102 @@
+.abstractPanel {
+  background: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  min-width: 350px;
+}
+
+.contents {
+  flex: 1;
+  padding: 10px;
+  padding-bottom: 0;
+}
+
+.contents > * {
+  margin-bottom: 10px;
+}
+
+.contentsDisabled {
+  composes: contents;
+  opacity: 0.25;
+}
+
+.topBar {
+  border-bottom: 1px solid black;
+  text-align: center;
+  flex: 1;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.toolBarRight {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 100%;
+  width: calc(50% - 10px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 1;
+}
+
+.toolBarLeft {
+  position: absolute;
+  left: 10px;
+  top: 0;
+  height: 100%;
+  width: calc(50% - 10px);
+  display: inline-flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.controls {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.inputSelector {
+  margin-left: 5px;
+}
+
+.applyButton {
+  composes: fa       from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw    from 'font-awesome/css/font-awesome.css';
+  composes: fa-check from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
+.applyButtonDisabled {
+  composes: applyButton;
+  opacity: 0.25;
+}
+
+.refreshButton {
+  composes: fa         from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw      from 'font-awesome/css/font-awesome.css';
+  composes: fa-refresh from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
+.refreshButtonDisabled {
+  composes: refreshButton;
+  opacity: 0.25;
+}
+
+.enabledSwitchOn {
+  composes: fa           from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw        from 'font-awesome/css/font-awesome.css';
+  composes: fa-toggle-on from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
+.enabledSwitchOff {
+  composes: fa            from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw         from 'font-awesome/css/font-awesome.css';
+  composes: fa-toggle-off from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+  opacity: 0.5;
+}

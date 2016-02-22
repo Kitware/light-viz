@@ -1,8 +1,4 @@
-.ClipPanel {
-    background: white;
-}
-
-.ClipPanel_line {
+.line {
   display: inline-flex;
   width: 100%;
   align-items: center;

@@ -1,0 +1,11 @@
+:global(.is-clickable) {
+  cursor: pointer;
+}
+
+:global(.is-hidden) {
+  display: none;
+}
+
+:global(.is-disable) {
+    opacity: 0.25;
+}

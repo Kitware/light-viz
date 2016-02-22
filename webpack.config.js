@@ -21,6 +21,7 @@ module.exports = {
   resolve: {
         alias: {
             PVWStyle: path.resolve('./node_modules/paraviewweb/style'),
+            LightVizStyle: path.resolve('./style'),
         },
     },
   eslint: {

@@ -7,14 +7,14 @@
 .axisLine {
 }
 
-.trash {
+.deleteButton {
     composes: fa         from 'font-awesome/css/font-awesome.css';
     composes: fa-fw      from 'font-awesome/css/font-awesome.css';
     composes: fa-trash-o from 'font-awesome/css/font-awesome.css';
     cursor: pointer;
 }
 
-.plus {
+.addButton {
     cursor: pointer;
     composes: fa      from 'font-awesome/css/font-awesome.css';
     composes: fa-fw   from 'font-awesome/css/font-awesome.css';

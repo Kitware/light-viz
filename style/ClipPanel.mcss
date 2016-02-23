@@ -3,3 +3,16 @@
   width: 100%;
   align-items: center;
 }
+
+.insideOutToggleIconLeft {
+  composes: fa                 from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw              from 'font-awesome/css/font-awesome.css';
+  composes: fa-toggle-on       from 'font-awesome/css/font-awesome.css';
+  composes: fa-flip-horizontal from 'font-awesome/css/font-awesome.css';
+}
+
+.insideOutToggleIconRight {
+  composes: fa                 from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw              from 'font-awesome/css/font-awesome.css';
+  composes: fa-toggle-on       from 'font-awesome/css/font-awesome.css';
+}

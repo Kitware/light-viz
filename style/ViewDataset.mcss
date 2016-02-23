@@ -34,7 +34,7 @@
   display: flex;
 }
 
-.colorControls > * {
+.colorControl {
   padding-left: 5px;
 }
 
@@ -60,17 +60,13 @@
   z-index: 1;
 }
 
-.leftSidebar > * {
-  flex: none;
-}
-
 .modules {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.modules > * {
+.module {
   flex: none;
   margin-top: 5px;
 }
@@ -85,6 +81,12 @@
   align-items: center;
 }
 
+.timeIcon {
+  composes: fa         from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw      from 'font-awesome/css/font-awesome.css';
+  composes: fa-clock-o from 'font-awesome/css/font-awesome.css';
+}
+
 .vtkRenderer {
   position: absolute;
   bottom: 0;
@@ -97,6 +99,7 @@
   composes: fa            from 'font-awesome/css/font-awesome.css';
   composes: fa-fw         from 'font-awesome/css/font-awesome.css';
   composes: fa-arrows-alt from 'font-awesome/css/font-awesome.css';
+  composes: colorControl;
   cursor: pointer;
 }
 
@@ -104,5 +107,6 @@
   composes: fa        from 'font-awesome/css/font-awesome.css';
   composes: fa-fw     from 'font-awesome/css/font-awesome.css';
   composes: fa-camera from 'font-awesome/css/font-awesome.css';
+  composes: colorControl;
   cursor: pointer;
 }

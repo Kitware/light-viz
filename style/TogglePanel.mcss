@@ -3,6 +3,11 @@
     display: inline-block;
 }
 
+.togglePanelHidden {
+    composes: togglePanel;
+    display: none;
+}
+
 .content {
     position: absolute;
     z-index: 2;

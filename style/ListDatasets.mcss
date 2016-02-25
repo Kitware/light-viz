@@ -1,5 +1,5 @@
 /*   CSS for DatasetList   */
-.DatasetList {
+.container {
   position:absolute;
   top:0;
   bottom:0;
@@ -7,7 +7,7 @@
   left:0;
 }
 
-.DatasetList_TitleBar {
+.titleBar {
   position:absolute;
   top:0;
   left:0;
@@ -20,21 +20,24 @@
   background: lightgray;
 }
 
-.DatasetList__TitleLeft {
+.titleLeft {
   flex: 1;
   font-weight: bold;
 }
 
-.DatasetList__TitleRight {
+.titleRight {
   flex: 1;
   text-align:right;
 }
 
-.DatasetList__TitleRight > i {
+.refreshButton {
   cursor: pointer;
+  composes: fa         from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw      from 'font-awesome/css/font-awesome.css';
+  composes: fa-refresh from 'font-awesome/css/font-awesome.css';
 }
 
-.DatasetList_Content {
+.content {
   position:absolute;
   top:2em;
   left:0;
@@ -45,14 +48,14 @@
 
 /*####################################################################*/
 /*   CSS for ThumbnailList   */
-.ThumbnailList {
+.thumbnailList {
   position:relative;
   display:flex;
   flex-wrap:wrap;
   justify-content:space-around;
 }
 
-.ThumbnailList > * {
+.thumbnailList > * {
   flex:none;
   width:250px;
   height:300px;
@@ -64,17 +67,17 @@
   color: black;
 }
 
-.ThumbnailList__Name {
+.thumbnailName {
   text-transform: capitalize;
 }
 
-.ThumbnailList_Thumbnail {
+.thumbnail {
   width:200px;
   height:200px;
   flex:none;
 }
 
-.ThumbnailList_Legend {
+.thumbnailLegend {
   flex:none;
   height:1em;
   width:200px;

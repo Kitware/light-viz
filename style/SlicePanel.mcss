@@ -1,0 +1,17 @@
+.line {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+}
+
+.toggleOnIcon {
+  composes: fa           from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw        from 'font-awesome/css/font-awesome.css';
+  composes: fa-toggle-on from 'font-awesome/css/font-awesome.css';
+}
+
+.toggleOffIcon {
+  composes: fa            from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw         from 'font-awesome/css/font-awesome.css';
+  composes: fa-toggle-off from 'font-awesome/css/font-awesome.css';
+}

@@ -1,4 +1,4 @@
-.FGBG_Contents {
+.contents {
   background: white;
   display: inline-flex;
   justify-content: space-around;
@@ -6,7 +6,7 @@
   border-radius: 5px;
 }
 
-.FGBG_Option {
+.option {
   border-radius: 5px;
   height: 2em;
   width: 2em;

@@ -1,0 +1,11 @@
+.contents {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+}
+
+.opacityIcon {
+  composes: fa from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw from 'font-awesome/css/font-awesome.css';
+  composes: fa-sun-o from 'font-awesome/css/font-awesome.css';
+}

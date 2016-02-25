@@ -1,0 +1,72 @@
+.togglePanel {
+    position: relative;
+    display: inline-block;
+}
+
+.togglePanelHidden {
+    composes: togglePanel;
+    display: none;
+}
+
+.content {
+    position: absolute;
+    z-index: 2;
+}
+
+.contentHidden {
+    composes: content;
+    display: none;
+}
+
+.link {
+  color: black;
+  background: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.linkInactive {
+  composes: link;
+  opacity: 0.5;
+}
+
+.button {
+  position: absolute;
+}
+
+/* Top */
+.content:global(.top), .button:global(.top) {
+    top: 0;
+}
+
+/* Left */
+.content:global(.left), .button:global(.left) {
+    left: 0;
+}
+
+/* Right */
+.content:global(.right), .button:global(.right) {
+    right: 0;
+}
+
+/* Bottom */
+.content:global(.bottom), .button:global(.bottom) {
+    bottom: 0;
+}
+
+.content:global(.top-shift) {
+  top: 5px;
+}
+
+.content:global(.left-shift) {
+  left: 5px;
+}
+
+.content:global(.right-shift) {
+  right: 5px;
+}
+
+.content:global(.bottom-shift) {
+  bottom: 5px;
+}

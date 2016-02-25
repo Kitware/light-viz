@@ -1,0 +1,71 @@
+.timePanel {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+}
+
+.timePanelPlaying {
+    composes: timePanel;
+}
+
+.timePanelPlaying .playButton {
+    background-color: #ccc !important;
+}
+
+.timePanel > *:not(:first-child) {
+    margin-left: 10px; 
+}
+
+.progress {
+    width: 75px;
+    text-align: right;
+}
+
+.realTime {
+    text-align: center;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.timeControlButton {
+    cursor: pointer;
+}
+
+.goToBeginningButton {
+    composes: timeControlButton;
+    composes: fa               from 'font-awesome/css/font-awesome.css';
+    composes: fa-fw            from 'font-awesome/css/font-awesome.css';
+    composes: fa-fast-backward from 'font-awesome/css/font-awesome.css';
+}
+.stepBackButton {
+    composes: timeControlButton;
+    composes: fa               from 'font-awesome/css/font-awesome.css';
+    composes: fa-fw            from 'font-awesome/css/font-awesome.css';
+    composes: fa-step-backward from 'font-awesome/css/font-awesome.css';
+}
+.playButton {
+    composes: timeControlButton;
+    composes: fa      from 'font-awesome/css/font-awesome.css';
+    composes: fa-fw   from 'font-awesome/css/font-awesome.css';
+    composes: fa-play from 'font-awesome/css/font-awesome.css';
+}
+.stopButton {
+    composes: timeControlButton;
+    composes: fa      from 'font-awesome/css/font-awesome.css';
+    composes: fa-fw   from 'font-awesome/css/font-awesome.css';
+    composes: fa-stop from 'font-awesome/css/font-awesome.css';
+}
+.stepForwardButton {
+    composes: timeControlButton;
+    composes: fa              from 'font-awesome/css/font-awesome.css';
+    composes: fa-fw           from 'font-awesome/css/font-awesome.css';
+    composes: fa-step-forward from 'font-awesome/css/font-awesome.css';
+}
+.goToEndButton {
+    composes: timeControlButton;
+    composes: fa               from 'font-awesome/css/font-awesome.css';
+    composes: fa-fw            from 'font-awesome/css/font-awesome.css';
+    composes: fa-fast-forward from 'font-awesome/css/font-awesome.css';
+}

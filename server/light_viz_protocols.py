@@ -186,7 +186,8 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.dataset.time")
     def updateTime(self, timeIdx):
-        self.anim.TimeKeeper.Time = self.anim.TimeKeeper.TimestepValues[timeIdx]
+        if len(self.anim.TimeKeeper.TimestepValues) > 0:
+            self.anim.TimeKeeper.Time = self.anim.TimeKeeper.TimestepValues[timeIdx]
         return self.anim.TimeKeeper.Time
 
     @exportRpc("light.viz.dataset.representation")

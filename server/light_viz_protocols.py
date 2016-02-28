@@ -52,6 +52,8 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.basedir = data_directory
         self.datasetMap = {}
         self.dataset = None
+        self.reader = None
+        self.extractBlocks = None
         self.datasets = []
         self.activeMeta = None
         self.foreground = [ 1, 1, 1]
@@ -118,13 +120,27 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         if self.dataset:
             if self.activeMeta is self.datasetMap[datasetName]['meta']:
                 return self.activeMeta
-            simple.Delete(self.dataset)
+            simple.Delete(self.reader)
+            if (simple.extractBlocks):
+                simple.Delete(self.extractBlocks)
             self.dataset = None
             self.datasetRep = None
             self.view = None
 
         self.activeMeta = self.datasetMap[datasetName]['meta']
-        self.dataset = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
+        self.reader = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
+        # Have to do this to force the reader to execute and get the data information
+        readerRep = simple.Show(self.reader)
+        readerRep.Visibility = 0
+        if self.reader.GetDataInformation().DataInformation.GetCompositeDataInformation().GetDataIsComposite() == 1:
+            self.extractBlocks = simple.ExtractBlock(Input = self.reader)
+            self.dataset = self.extractBlocks
+            blocks = self.getBlockStructure()
+            while len(blocks[-1]['children']) > 0:
+                blocks = blocks[-1]['children']
+            self.extractBlocks.BlockIndices = [ x + 1 for x in range(blocks[-1]['flatindex'])]
+        else:
+            self.dataset = self.reader
         self.datasetRep = simple.Show(self.dataset)
         self.view = simple.Render()
         self.view.Background = self.background
@@ -141,6 +157,37 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             l.dataChanged()
 
         return self.activeMeta
+
+    @exportRpc("light.viz.dataset.setblock.visibility")
+    def setBlockVisibility(self, visible):
+        print visible
+        # 0 block is always presumed to be needed since everything is under it
+        if self.extractBlocks is None:
+            return
+        self.extractBlocks.BlockIndices = visible
+
+    @exportRpc("light.viz.dataset.getblockstructure")
+    def getBlockStructure(self):
+        dataInfo = self.reader.GetDataInformation().DataInformation.GetCompositeDataInformation()
+        if dataInfo.GetDataIsComposite() == 0:
+            return []
+        index = 0;
+        def processInfo(info, index):
+            output = []
+            if info.GetNumberOfChildren() == 0:
+                return output, index
+            for i in xrange(info.GetNumberOfChildren()):
+                name = info.GetName(i)
+                childOutput = []
+                index += 1
+                myIndex = index
+                if info.GetDataInformation(i) is not None:
+                    childInfo = info.GetDataInformation(i).GetCompositeDataInformation()
+                    childOutput, index = processInfo(childInfo, index)
+                output.append({'name': name, 'children': childOutput, 'flatindex': myIndex})
+            return output, index
+        a, index = processInfo(dataInfo, index)
+        return a
 
     @exportRpc("light.viz.dataset.colormap.set")
     def setGlobalColormap(self, presetName):

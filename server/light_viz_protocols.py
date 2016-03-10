@@ -250,10 +250,12 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             # Select data array
             vtkSMPVRepresentationProxy.SetScalarColoring(self.datasetRep.SMProxy, field, vtkDataObject.POINT)
             lutProxy = self.datasetRep.LookupTable
+            pwfProxy = self.datasetRep.ScalarOpacityFunction
             # lutProxy = simple.GetColorTransferFunction(field)
             for array in self.activeMeta['data']['arrays']:
                 if array['name'] == field:
                     vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+                    vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
         simple.Render()
 
@@ -364,10 +366,12 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
                 # Select data array
                 vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
                 lutProxy = self.representation.LookupTable
+                pwfProxy = self.representation.ScalarOpacityFunction
                 # lutProxy = simple.GetColorTransferFunction(field)
                 for array in self.ds.activeMeta['data']['arrays']:
                     if array['name'] == field:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
 

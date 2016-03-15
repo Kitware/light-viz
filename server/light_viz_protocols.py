@@ -121,7 +121,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             if self.activeMeta is self.datasetMap[datasetName]['meta']:
                 return self.activeMeta
             simple.Delete(self.reader)
-            if (simple.extractBlocks):
+            if self.extractBlocks:
                 simple.Delete(self.extractBlocks)
             self.dataset = None
             self.datasetRep = None

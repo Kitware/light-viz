@@ -142,6 +142,9 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         else:
             self.dataset = self.reader
         self.datasetRep = simple.Show(self.dataset)
+        self.datasetRep.Representation = 'Surface'
+        self.datasetRep.Visibility = 1
+        print 'XXX %s' % self.datasetRep.Representation
         self.view = simple.Render()
         self.view.Background = self.background
 

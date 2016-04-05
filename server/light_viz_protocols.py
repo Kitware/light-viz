@@ -144,7 +144,6 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.datasetRep = simple.Show(self.dataset)
         self.datasetRep.Representation = 'Surface'
         self.datasetRep.Visibility = 1
-        print 'XXX %s' % self.datasetRep.Representation
         self.view = simple.Render()
         self.view.Background = self.background
 
@@ -198,6 +197,20 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             rtDataLUT = simple.GetColorTransferFunction(array['name']);
             rtDataLUT.ApplyPreset(presetName, True)
         simple.Render()
+
+    @exportRpc("light.viz.opacitymap.set")
+    def setOpacityMap(self, controlPoints):
+        points = []
+        for p in controlPoints:
+            points.append(p["x"])
+            points.append(p["y"])
+            points.append(0.5)
+            points.append(0.0)
+        for array in self.activeMeta['data']['arrays']:
+            rtDataLUT = simple.GetOpacityTransferFunction(array['name']);
+            rtDataLUT.Points = points
+            vtkSMTransferFunctionProxy.RescaleTransferFunction(rtDataLUT.SMProxy, array['range'][0], array['range'][1], False)
+            print rtDataLUT.Points
 
     @exportRpc("light.viz.foreground.color")
     def setForegroundColor(self, foreground):

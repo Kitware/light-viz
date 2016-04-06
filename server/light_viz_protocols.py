@@ -52,6 +52,8 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.basedir = data_directory
         self.datasetMap = {}
         self.dataset = None
+        self.reader = None
+        self.extractBlocks = None
         self.datasets = []
         self.activeMeta = None
         self.foreground = [ 1, 1, 1]
@@ -118,14 +120,30 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         if self.dataset:
             if self.activeMeta is self.datasetMap[datasetName]['meta']:
                 return self.activeMeta
-            simple.Delete(self.dataset)
+            simple.Delete(self.reader)
+            if self.extractBlocks:
+                simple.Delete(self.extractBlocks)
             self.dataset = None
             self.datasetRep = None
             self.view = None
 
         self.activeMeta = self.datasetMap[datasetName]['meta']
-        self.dataset = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
+        self.reader = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
+        # Have to do this to force the reader to execute and get the data information
+        readerRep = simple.Show(self.reader)
+        readerRep.Visibility = 0
+        if self.reader.GetDataInformation().DataInformation.GetCompositeDataInformation().GetDataIsComposite() == 1:
+            self.extractBlocks = simple.ExtractBlock(Input = self.reader)
+            self.dataset = self.extractBlocks
+            blocks = self.getBlockStructure()
+            while len(blocks[-1]['children']) > 0:
+                blocks = blocks[-1]['children']
+            self.extractBlocks.BlockIndices = [ x + 1 for x in range(blocks[-1]['flatindex'])]
+        else:
+            self.dataset = self.reader
         self.datasetRep = simple.Show(self.dataset)
+        self.datasetRep.Representation = 'Surface'
+        self.datasetRep.Visibility = 1
         self.view = simple.Render()
         self.view.Background = self.background
 
@@ -142,12 +160,57 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
         return self.activeMeta
 
+    @exportRpc("light.viz.dataset.setblock.visibility")
+    def setBlockVisibility(self, visible):
+        print visible
+        # 0 block is always presumed to be needed since everything is under it
+        if self.extractBlocks is None:
+            return
+        self.extractBlocks.BlockIndices = visible
+
+    @exportRpc("light.viz.dataset.getblockstructure")
+    def getBlockStructure(self):
+        dataInfo = self.reader.GetDataInformation().DataInformation.GetCompositeDataInformation()
+        if dataInfo.GetDataIsComposite() == 0:
+            return []
+        index = 0;
+        def processInfo(info, index):
+            output = []
+            if info.GetNumberOfChildren() == 0:
+                return output, index
+            for i in xrange(info.GetNumberOfChildren()):
+                name = info.GetName(i)
+                childOutput = []
+                index += 1
+                myIndex = index
+                if info.GetDataInformation(i) is not None:
+                    childInfo = info.GetDataInformation(i).GetCompositeDataInformation()
+                    childOutput, index = processInfo(childInfo, index)
+                output.append({'name': name, 'children': childOutput, 'flatindex': myIndex})
+            return output, index
+        a, index = processInfo(dataInfo, index)
+        return a
+
     @exportRpc("light.viz.dataset.colormap.set")
     def setGlobalColormap(self, presetName):
         for array in self.activeMeta['data']['arrays']:
             rtDataLUT = simple.GetColorTransferFunction(array['name']);
             rtDataLUT.ApplyPreset(presetName, True)
         simple.Render()
+
+    @exportRpc("light.viz.opacitymap.set")
+    def setOpacityMap(self, controlPoints):
+        points = []
+        for p in controlPoints:
+            points.append(p["x"])
+            points.append(p["y"])
+            points.append(0.5)
+            points.append(0.0)
+        for array in self.activeMeta['data']['arrays']:
+            rtDataLUT = simple.GetOpacityTransferFunction(array['name']);
+            rtDataLUT.Points = points
+            vtkSMTransferFunctionProxy.RescaleTransferFunction(rtDataLUT.SMProxy, array['range'][0], array['range'][1], False)
+            print rtDataLUT.Points
 
     @exportRpc("light.viz.foreground.color")
     def setForegroundColor(self, foreground):
@@ -186,7 +249,8 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.dataset.time")
     def updateTime(self, timeIdx):
-        self.anim.TimeKeeper.Time = self.anim.TimeKeeper.TimestepValues[timeIdx]
+        if len(self.anim.TimeKeeper.TimestepValues) > 0:
+            self.anim.TimeKeeper.Time = self.anim.TimeKeeper.TimestepValues[timeIdx]
         return self.anim.TimeKeeper.Time
 
     @exportRpc("light.viz.dataset.representation")
@@ -202,10 +266,12 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             # Select data array
             vtkSMPVRepresentationProxy.SetScalarColoring(self.datasetRep.SMProxy, field, vtkDataObject.POINT)
             lutProxy = self.datasetRep.LookupTable
+            pwfProxy = self.datasetRep.ScalarOpacityFunction
             # lutProxy = simple.GetColorTransferFunction(field)
             for array in self.activeMeta['data']['arrays']:
                 if array['name'] == field:
                     vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+                    vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
         simple.Render()
 
@@ -316,10 +382,12 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
                 # Select data array
                 vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
                 lutProxy = self.representation.LookupTable
+                pwfProxy = self.representation.ScalarOpacityFunction
                 # lutProxy = simple.GetColorTransferFunction(field)
                 for array in self.ds.activeMeta['data']['arrays']:
                     if array['name'] == field:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
 

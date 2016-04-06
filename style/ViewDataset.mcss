@@ -110,3 +110,7 @@
   composes: colorControl;
   cursor: pointer;
 }
+
+.opacityToolbarStyle {
+  padding-left: 5px;
+}

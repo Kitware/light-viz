@@ -9,3 +9,58 @@
   composes: fa-fw from 'font-awesome/css/font-awesome.css';
   composes: fa-sun-o from 'font-awesome/css/font-awesome.css';
 }
+
+.childBlocksDiv {
+  margin-left: 10px;
+}
+
+.childBlocksDivCollapsed {
+  composes: childBlocksDiv;
+}
+
+.blockSpan {
+  display: inline-flex;
+}
+
+.childBlocksDivCollapsed > .childBlocksDiv {
+  display: none;
+}
+
+.childBlocksDivCollapsed > .childBlocksDivCollapsed {
+  display: none;
+}
+
+.blockIsShownIcon {
+  composes: fa from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw from 'font-awesome/css/font-awesome.css';
+  composes: fa-check-square-o from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
+.blockIsHiddenIcon {
+  composes: fa from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw from 'font-awesome/css/font-awesome.css';
+  composes: fa-square-o from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
+.blockIsCollapsedIcon {
+  composes: fa from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw from 'font-awesome/css/font-awesome.css';
+  composes: fa-plus-square-o from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
+.blockIsExpandedIcon {
+  composes: fa from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw from 'font-awesome/css/font-awesome.css';
+  composes: fa-minus-square-o from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
+.blockHasNoChildrenIcon {
+  composes: fa from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw from 'font-awesome/css/font-awesome.css';
+  composes: fa-square-o from 'font-awesome/css/font-awesome.css';
+  visibility: hidden;
+}

@@ -1,0 +1,16 @@
+
+.opacityToolbarIcon {
+  composes: fa            from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw         from 'font-awesome/css/font-awesome.css';
+  composes: fa-line-chart from 'font-awesome/css/font-awesome.css';
+}
+
+.popupDiv {
+  background: white;
+  padding: 2px;
+  line-height: 1em;
+  border-radius: 5px;
+}
+
+.canvas {
+}

@@ -873,6 +873,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
         super(LightVizStreamline, self).__init__()
         self.ds = dataset_manager
         self.streamline = None
+        self.tube = None
         self.position = [ 0.0, 0.0, 0.0 ]
         self.representation = None
         self.reprMode = 'Surface'
@@ -988,11 +989,15 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
                 self.streamline.SeedType.Radius = self.radius
                 self.streamline.SeedType.NumberOfPoints = self.numPoints
 
+                self.tube = simple.Tube(Input=self.streamline)
+                self.tube.Capping = 1
+                self.tube.Radius = min(length) / 100.0
+
             else:
                 self.streamline.Input = self.ds.getInput()
 
             if not self.representation:
-                self.representation = simple.Show(self.streamline)
+                self.representation = simple.Show(self.tube)
                 self.representation.Representation = self.reprMode
                 self.representation.DiffuseColor = self.ds.foreground
                 self.updateColorBy(self.colorBy)

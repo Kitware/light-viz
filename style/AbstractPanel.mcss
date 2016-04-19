@@ -87,16 +87,15 @@
 }
 
 .enabledSwitchOn {
-  composes: fa           from 'font-awesome/css/font-awesome.css';
-  composes: fa-fw        from 'font-awesome/css/font-awesome.css';
-  composes: fa-toggle-on from 'font-awesome/css/font-awesome.css';
+  composes: fa     from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw  from 'font-awesome/css/font-awesome.css';
+  composes: fa-eye from 'font-awesome/css/font-awesome.css';
   cursor: pointer;
 }
 
 .enabledSwitchOff {
   composes: fa            from 'font-awesome/css/font-awesome.css';
   composes: fa-fw         from 'font-awesome/css/font-awesome.css';
-  composes: fa-toggle-off from 'font-awesome/css/font-awesome.css';
+  composes: fa-eye-slash  from 'font-awesome/css/font-awesome.css';
   cursor: pointer;
-  opacity: 0.5;
 }

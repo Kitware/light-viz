@@ -99,3 +99,7 @@
   composes: fa-eye-slash  from 'font-awesome/css/font-awesome.css';
   cursor: pointer;
 }
+
+.dataSelectorImage {
+  height: 80%;
+}

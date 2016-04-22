@@ -11,6 +11,7 @@ module.exports = {
   'react/jsx-space-before-closing': 1,
   'react/no-is-mounted': 1,
   'react/prefer-es6-class': 0,
+  'react/prefer-stateless-function': 0,
   'one-var': 1,
   }
 };

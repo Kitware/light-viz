@@ -162,7 +162,6 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.dataset.setblock.visibility")
     def setBlockVisibility(self, visible):
-        print visible
         # 0 block is always presumed to be needed since everything is under it
         if self.extractBlocks is None:
             return
@@ -210,7 +209,6 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             rtDataLUT = simple.GetOpacityTransferFunction(array['name']);
             rtDataLUT.Points = points
             vtkSMTransferFunctionProxy.RescaleTransferFunction(rtDataLUT.SMProxy, array['range'][0], array['range'][1], False)
-            print rtDataLUT.Points
 
     @exportRpc("light.viz.foreground.color")
     def setForegroundColor(self, foreground):
@@ -862,3 +860,152 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
+
+# =============================================================================
+#
+# Streamline management
+#
+# =============================================================================
+
+class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
+
+    def __init__(self, dataset_manager):
+        super(LightVizStreamline, self).__init__()
+        self.ds = dataset_manager
+        self.streamline = None
+        self.tube = None
+        self.position = [ 0.0, 0.0, 0.0 ]
+        self.representation = None
+        self.reprMode = 'Surface'
+        self.colorBy = '__SOLID__'
+        self.vector = None
+        self.numPoints = 50
+        self.radius = 1.0
+        dataset_manager.addListener(self)
+
+    def dataChanged(self):
+        bounds = self.ds.activeMeta['data']['bounds']
+        length = [bounds[i*2+1] - bounds[i*2] for i in range(3)]
+        self.updateRepresentation('Surface')
+        self.updateColorBy('__SOLID__')
+        self.vector = None
+        self.radius = min(length) / 8.0
+        for array in self.ds.activeMeta['data']['arrays']:
+            if array['dimension'] == 3:
+                self.vector = array['name']
+                break
+        if self.streamline:
+            self.streamline.Input = self.ds.getInput()
+            self.updatePosition(50, 50, 50)
+            self.updatePosition((bounds[1] - bounds[0])/2.0,
+                                (bounds[3] - bounds[2])/2.0,
+                                (bounds[5] - bounds[4])/2.0)
+        if self.representation:
+            self.representation.Visibility = 0
+
+    def setForegroundColor(self, foreground):
+        if self.representation:
+            self.representation.DiffuseColor = foreground
+
+    @exportRpc("light.viz.streamline.getstate")
+    def getState(self):
+        ret = {
+            "representation": self.reprMode,
+            "color": self.colorBy,
+            "enabled": False,
+            "xPosition": self.position[0],
+            "yPosition": self.position[1],
+            "zPosition": self.position[2],
+            "vector": self.vector,
+            "numPoints": self.numPoints,
+            "radius": self.radius,
+        }
+        if self.representation:
+            ret["enabled"] = self.representation.Visibility == 1,
+
+        if not isinstance(ret["enabled"], bool):
+            ret["enabled"] = ret["enabled"][0]
+
+        return ret
+
+    @exportRpc("light.viz.streamline.position")
+    def updatePosition(self, x, y, z):
+        self.position = [x, y, z]
+        if self.streamline:
+            self.streamline.SeedType.Center = self.position
+
+    @exportRpc("light.viz.streamline.vector")
+    def updateVector(self, vectorName):
+        self.vector = vectorName
+        if self.streamline:
+            self.streamline.Vectors = ['POINTS', self.vector]
+
+    @exportRpc("light.viz.streamline.numpoints")
+    def updateNumPoints(self, num):
+        self.numPoints = int(num)
+        if self.streamline:
+            self.streamline.SeedType.NumberOfPoints = self.numPoints
+
+    @exportRpc("light.viz.streamline.radius")
+    def updateRadius(self, rad):
+        self.radius = rad
+        if self.streamline:
+            self.streamline.SeedType.Radius = self.radius
+
+    @exportRpc("light.viz.streamline.representation")
+    def updateRepresentation(self, mode):
+        self.reprMode = mode
+        if self.representation:
+            self.representation.Representation = mode
+
+    @exportRpc("light.viz.streamline.color")
+    def updateColorBy(self, field):
+        self.colorBy = field
+        if self.representation:
+            if field == '__SOLID__':
+                self.representation.ColorArrayName = ''
+            else:
+                # Select data array
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                lutProxy = self.representation.LookupTable
+                # lutProxy = simple.GetColorTransferFunction(field)
+                for array in self.ds.activeMeta['data']['arrays']:
+                    if array['name'] == field:
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+
+            simple.Render()
+
+    @exportRpc("light.viz.streamline.enable")
+    def enableStreamline(self, enable):
+        if enable and self.ds.getInput():
+            if not self.streamline:
+                bounds = self.ds.activeMeta['data']['bounds']
+                length = [bounds[i*2+1] - bounds[i*2] for i in range(3)]
+                self.streamline = simple.StreamTracer(Input=self.ds.getInput(), SeedType='Point Source')
+                self.streamline.Vectors = ['POINTS', self.vector]
+                self.streamline.MaximumStreamlineLength = 2 * max(length)
+
+                self.streamline.SeedType.Center = self.position
+                self.streamline.SeedType.Radius = self.radius
+                self.streamline.SeedType.NumberOfPoints = self.numPoints
+
+                self.tube = simple.Tube(Input=self.streamline)
+                self.tube.Capping = 1
+                self.tube.Radius = min(length) / 100.0
+
+            else:
+                self.streamline.Input = self.ds.getInput()
+
+            if not self.representation:
+                self.representation = simple.Show(self.tube)
+                self.representation.Representation = self.reprMode
+                self.representation.DiffuseColor = self.ds.foreground
+                self.updateColorBy(self.colorBy)
+
+            self.representation.Visibility = 1
+
+        if not enable and self.representation:
+            self.representation.Visibility = 0
+
+        simple.Render()
+

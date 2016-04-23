@@ -1009,3 +1009,90 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
 
         simple.Render()
 
+# =============================================================================
+#
+# Volume management
+#
+# =============================================================================
+
+class LightVizVolume(pv_protocols.ParaViewWebProtocol):
+
+    def __init__(self, dataset_manager, clip):
+        super(LightVizVolume, self).__init__()
+        self.ds = dataset_manager
+        self.clip = clip
+        self.passThrough = None
+        self.representation = None
+        self.colorBy = '__SOLID__'
+        self.useClippedInput = False
+        dataset_manager.addListener(self)
+
+    def dataChanged(self):
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
+        if self.passThrough:
+            self.passThrough.Input = self.ds.getInput()
+            self.representation.ColorArrayName = ''
+            self.representation.Visibility = 0
+
+    def setForegroundColor(self, foreground):
+        pass
+
+    @exportRpc("light.viz.volume.useclipped")
+    def setUseClipped(self, useClipped):
+        if self.passThrough:
+            if not self.useClippedInput and useClipped:
+                self.passThrough.Input = self.clip.getOutput()
+            elif self.useClippedInput and not useClipped:
+                self.passThrough.Input = self.ds.getInput()
+        self.useClippedInput = useClipped
+
+    @exportRpc("light.viz.volume.getstate")
+    def getState(self):
+        ret = {
+            'enabled': False,
+            'color': self.colorBy,
+            "use_clipped": self.useClippedInput,
+        }
+        if self.representation:
+            ret["enabled"] = True if self.representation.Visibility else False
+        return ret
+
+    @exportRpc("light.viz.representation.representation")
+    def updateRepresentation(self, mode):
+        pass # It is a volume rendering, so that is the only valid representation
+
+    @exportRpc("light.viz.volume.color")
+    def updateColorBy(self, field):
+        self.colorBy = field
+        if self.representation:
+            if field == '__SOLID__':
+                self.representation.ColorArrayName = ''
+            else:
+                # Select data array
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                lutProxy = self.representation.LookupTable
+                # lutProxy = simple.GetColorTransferFunction(field)
+                for array in self.ds.activeMeta['data']['arrays']:
+                    if array['name'] == field:
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+
+            simple.Render()
+
+    @exportRpc("light.viz.volume.enable")
+    def enableVolume(self, enable):
+        if enable and self.ds.getInput():
+            inpt = self.ds.getInput() if not self.useClippedInput else self.clip.getOutput()
+            if not self.passThrough:
+                self.passThrough = simple.Calculator(Input=inpt)
+                self.representation = simple.Show(self.passThrough)
+                self.representation.Representation = 'Volume'
+                self.updateColorBy(self.colorBy)
+            else:
+                self.passThrough.Input = inpt
+            self.representation.Visibility = 1
+
+        if not enable and self.representation:
+            self.representation.Visibility = 0
+
+        simple.Render()
+

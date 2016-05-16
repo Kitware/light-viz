@@ -28,6 +28,5 @@ module.exports = {
         configFile: '.eslintrc.js',
   },
   externals: {
-    "three": "THREE",
   },
 };

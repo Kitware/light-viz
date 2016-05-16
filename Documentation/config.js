@@ -1,6 +1,6 @@
 module.exports = {
   cname: 'kitware.github.io',
-  baseUrl: '/lightviz',
+  baseUrl: '/light-viz',
   work: './build-tmp',
   config: {
     title: 'LightViz.js',
@@ -8,8 +8,8 @@ module.exports = {
     subtitle: '"Enable scientific visualization to the Web."',
     author: 'Kitware Inc.',
     timezone: 'UTC',
-    url: 'https://kitware.github.io/lightviz',
-    root: '/lightviz/',
-    github: 'kitware/lightviz',
+    url: 'https://kitware.github.io/light-viz',
+    root: '/light-viz/',
+    github: 'kitware/light-viz',
   }
 };

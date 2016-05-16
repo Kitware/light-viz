@@ -12,7 +12,7 @@ commander     | ![npm version](https://badge.fury.io/js/commander.svg)| 2.9.0
 open          | ![npm version](https://badge.fury.io/js/open.svg)     | 0.0.5
 shelljs       | ![npm version](https://badge.fury.io/js/shelljs.svg)  | 0.7.0
 
-### Dev Dependencies
+### Dev Dependencies [![devDependency Status](https://david-dm.org/kitware/light-viz/dev-status.svg)](https://david-dm.org/kitware/light-viz#info=devDependencies)
 
 Package name | NPM Version                                               | Version
 -------------| --------------------------------------------------------- | ----------

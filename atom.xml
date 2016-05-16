@@ -2,11 +2,11 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>LightViz.js</title>
   <subtitle>Enable scientific visualization to the Web.</subtitle>
-  <link href="/lightviz/atom.xml" rel="self"/>
+  <link href="/light-viz/atom.xml" rel="self"/>
   
-  <link href="https://kitware.github.io/lightviz/"/>
+  <link href="https://kitware.github.io/light-viz/"/>
   <updated>2016-05-16T22:00:05.987Z</updated>
-  <id>https://kitware.github.io/lightviz/</id>
+  <id>https://kitware.github.io/light-viz/</id>
   
   <author>
     <name>Kitware Inc.</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>Hexo</title>
-    <link href="https://kitware.github.io/lightviz/2016/04/29/kw-doc/"/>
-    <id>https://kitware.github.io/lightviz/2016/04/29/kw-doc/</id>
+    <link href="https://kitware.github.io/light-viz/2016/04/29/kw-doc/"/>
+    <id>https://kitware.github.io/light-viz/2016/04/29/kw-doc/</id>
     <published>2016-04-29T00:00:00.000Z</published>
     <updated>2016-05-16T22:00:05.987Z</updated>
     

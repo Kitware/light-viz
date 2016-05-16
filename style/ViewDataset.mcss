@@ -114,3 +114,9 @@
 .opacityToolbarStyle {
   padding-left: 5px;
 }
+
+.paletteIcon {
+  composes: fa             from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw          from 'font-awesome/css/font-awesome.css';
+  composes: fa-paint-brush from 'font-awesome/css/font-awesome.css';
+}

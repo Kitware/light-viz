@@ -1,0 +1,41 @@
+.sectionHidden {
+  display: none;
+}
+
+.shown {
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden {
+  height: 2em;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.shownIcon {
+  composes: fa            from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw         from 'font-awesome/css/font-awesome.css';
+  composes: fa-caret-down from 'font-awesome/css/font-awesome.css';
+  composes: fa-lg         from 'font-awesome/css/font-awesome.css';
+  line-height: 1.5em;
+  cursor: pointer;
+}
+
+.hiddenIcon {
+  composes: fa             from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw          from 'font-awesome/css/font-awesome.css';
+  composes: fa-caret-right from 'font-awesome/css/font-awesome.css';
+  composes: fa-lg         from 'font-awesome/css/font-awesome.css';
+  line-height: 1.5em;
+  cursor: pointer;
+}
+
+.panelHeader {
+  display: inline-flex;
+}
+
+.section {
+  display: inline-flex;
+}

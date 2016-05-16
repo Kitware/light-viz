@@ -63,10 +63,6 @@
 }
 
 .applyButton {
-  composes: fa       from 'font-awesome/css/font-awesome.css';
-  composes: fa-fw    from 'font-awesome/css/font-awesome.css';
-  composes: fa-check from 'font-awesome/css/font-awesome.css';
-  cursor: pointer;
 }
 
 .applyButtonDisabled {
@@ -75,10 +71,6 @@
 }
 
 .refreshButton {
-  composes: fa         from 'font-awesome/css/font-awesome.css';
-  composes: fa-fw      from 'font-awesome/css/font-awesome.css';
-  composes: fa-refresh from 'font-awesome/css/font-awesome.css';
-  cursor: pointer;
 }
 
 .refreshButtonDisabled {
@@ -87,16 +79,19 @@
 }
 
 .enabledSwitchOn {
-  composes: fa           from 'font-awesome/css/font-awesome.css';
-  composes: fa-fw        from 'font-awesome/css/font-awesome.css';
-  composes: fa-toggle-on from 'font-awesome/css/font-awesome.css';
+  composes: fa     from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw  from 'font-awesome/css/font-awesome.css';
+  composes: fa-eye from 'font-awesome/css/font-awesome.css';
   cursor: pointer;
 }
 
 .enabledSwitchOff {
   composes: fa            from 'font-awesome/css/font-awesome.css';
   composes: fa-fw         from 'font-awesome/css/font-awesome.css';
-  composes: fa-toggle-off from 'font-awesome/css/font-awesome.css';
+  composes: fa-eye-slash  from 'font-awesome/css/font-awesome.css';
   cursor: pointer;
-  opacity: 0.5;
+}
+
+.dataSelectorImage {
+  height: 80%;
 }

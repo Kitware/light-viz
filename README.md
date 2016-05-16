@@ -33,14 +33,10 @@ $ LightViz
 
 ## Development
 
-To start developing light-viz, first set up tonic by executing the following commands:
+To start developing light-viz, first clone the repository:
 
 ```sh
-$ git clone https://github.com/Kitware/tonic.git
-$ cd tonic
-$ npm run global
-$ npm install
-$ cd tonic-applications/light-viz
+$ git clone https://github.com/Kitware/light-viz.git
 ```
 
 To set up the dependencies for light-viz run the following.  Note that this must be re-run every time

@@ -1,0 +1,26 @@
+.colorControls {
+}
+
+.colorControlsHeader {
+  line-height: 2em;
+  border-bottom: black solid 1px;
+}
+
+.title {
+}
+
+.controls {
+}
+
+.line {
+  width: 100% - 10px;
+  height: 2em;
+  padding: 0 0 5px 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  cursor: pointer;
+}

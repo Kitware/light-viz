@@ -56,6 +56,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.extractBlocks = None
         self.datasets = []
         self.activeMeta = None
+        self.colormaps = {}
         self.foreground = [ 1, 1, 1]
         self.background = [ 0, 0, 0]
         self.dataListeners = []
@@ -158,6 +159,12 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         for l in self.dataListeners:
             l.dataChanged()
 
+        # When loading new dataset, rescale colormaps to full range by default
+        for array in self.activeMeta['data']['arrays']:
+            arrRange = array['range']
+            arrName = array['name']
+            self.setColormapRange(arrName, arrRange)
+
         return self.activeMeta
 
     @exportRpc("light.viz.dataset.setblock.visibility")
@@ -190,25 +197,74 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         a, index = processInfo(dataInfo, index)
         return a
 
-    @exportRpc("light.viz.dataset.colormap.set")
-    def setGlobalColormap(self, presetName):
-        for array in self.activeMeta['data']['arrays']:
-            rtDataLUT = simple.GetColorTransferFunction(array['name']);
-            rtDataLUT.ApplyPreset(presetName, True)
+    def checkArrayInMap(self, array):
+        if array not in self.colormaps:
+            self.colormaps[array] = { 'preset': 'Cool to Warm', 'range': [0, 1] }
+
+    @exportRpc("light.viz.colormap.setpreset")
+    def setColormapPreset(self, array, presetName):
+        if (array is None):
+            return
+        self.checkArrayInMap(array)
+        self.colormaps[array]['preset'] = presetName
+        rtDataLUT = simple.GetColorTransferFunction(array);
+        rtDataLUT.ApplyPreset(presetName, True)
         simple.Render()
 
+    @exportRpc("light.viz.colormap.setrange")
+    def setColormapRange(self, array, newRange):
+        if (array is None):
+            return
+        self.checkArrayInMap(array)
+        self.colormaps[array]['range'] = newRange
+        rtDataLUT = simple.GetColorTransferFunction(array)
+        rtDataLUT.RescaleTransferFunction(newRange[0], newRange[1])
+        opacityLUT = simple.GetOpacityTransferFunction(array)
+        opacityLUT.RescaleTransferFunction(newRange[0], newRange[1])
+
+    @exportRpc("light.viz.colormap.rescale.todatarange")
+    def setColormapRangeToDataRange(self, array):
+        if (array is None):
+            return
+        self.checkArrayInMap(array)
+        rtDataLUT = simple.GetColorTransferFunction(array)
+        self.datasetRep.RescaleTransferFunctionToDataRange(False)
+        self.colormaps[array]['range'] = [rtDataLUT.RGBPoints[0], rtDataLUT.RGBPoints[-4]]
+        rtDataOpacityTF = simple.GetOpacityTransferFunction(array)
+        rtDataOpacityTF.RescaleTransferFunction(self.colormaps[array]['range'])
+        return self.colormaps[array]['range']
+
+    @exportRpc("light.viz.colormap.get")
+    def getColorMap(self, array):
+        if (array is None):
+            return { 'preset': 'Cool to Warm', 'range': [0, 1] }
+        self.checkArrayInMap(array)
+        return self.colormaps[array]
+
     @exportRpc("light.viz.opacitymap.set")
-    def setOpacityMap(self, controlPoints):
+    def setOpacityMap(self, array, controlPoints):
+        if (array is None):
+            return
         points = []
         for p in controlPoints:
             points.append(p["x"])
             points.append(p["y"])
             points.append(0.5)
             points.append(0.0)
-        for array in self.activeMeta['data']['arrays']:
-            rtDataLUT = simple.GetOpacityTransferFunction(array['name']);
-            rtDataLUT.Points = points
-            vtkSMTransferFunctionProxy.RescaleTransferFunction(rtDataLUT.SMProxy, array['range'][0], array['range'][1], False)
+        rtDataLUT = simple.GetOpacityTransferFunction(array);
+        rtDataLUT.Points = points
+
+    @exportRpc("light.viz.opacitymap.get")
+    def getOpacityMap(self, array):
+        if (array is None):
+            return
+        points = []
+        rtDataLUT = simple.GetOpacityTransferFunction(array);
+        for i in xrange(len(rtDataLUT.Points) / 4):
+            points.append(rtDataLUT.Points[i * 4])
+            points.append(rtDataLUT.Points[i * 4 + 1])
+        print points
+        return points
 
     @exportRpc("light.viz.foreground.color")
     def setForegroundColor(self, foreground):
@@ -1002,6 +1058,93 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
                 self.representation.DiffuseColor = self.ds.foreground
                 self.updateColorBy(self.colorBy)
 
+            self.representation.Visibility = 1
+
+        if not enable and self.representation:
+            self.representation.Visibility = 0
+
+        simple.Render()
+
+# =============================================================================
+#
+# Volume management
+#
+# =============================================================================
+
+class LightVizVolume(pv_protocols.ParaViewWebProtocol):
+
+    def __init__(self, dataset_manager, clip):
+        super(LightVizVolume, self).__init__()
+        self.ds = dataset_manager
+        self.clip = clip
+        self.passThrough = None
+        self.representation = None
+        self.colorBy = '__SOLID__'
+        self.useClippedInput = False
+        dataset_manager.addListener(self)
+
+    def dataChanged(self):
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
+        if self.passThrough:
+            self.passThrough.Input = self.ds.getInput()
+            self.representation.ColorArrayName = ''
+            self.representation.Visibility = 0
+
+    def setForegroundColor(self, foreground):
+        pass
+
+    @exportRpc("light.viz.volume.useclipped")
+    def setUseClipped(self, useClipped):
+        if self.passThrough:
+            if not self.useClippedInput and useClipped:
+                self.passThrough.Input = self.clip.getOutput()
+            elif self.useClippedInput and not useClipped:
+                self.passThrough.Input = self.ds.getInput()
+        self.useClippedInput = useClipped
+
+    @exportRpc("light.viz.volume.getstate")
+    def getState(self):
+        ret = {
+            'enabled': False,
+            'color': self.colorBy,
+            "use_clipped": self.useClippedInput,
+        }
+        if self.representation:
+            ret["enabled"] = True if self.representation.Visibility else False
+        return ret
+
+    @exportRpc("light.viz.representation.representation")
+    def updateRepresentation(self, mode):
+        pass # It is a volume rendering, so that is the only valid representation
+
+    @exportRpc("light.viz.volume.color")
+    def updateColorBy(self, field):
+        self.colorBy = field
+        if self.representation:
+            if field == '__SOLID__':
+                self.representation.ColorArrayName = ''
+            else:
+                # Select data array
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                lutProxy = self.representation.LookupTable
+                # lutProxy = simple.GetColorTransferFunction(field)
+                for array in self.ds.activeMeta['data']['arrays']:
+                    if array['name'] == field:
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+
+            simple.Render()
+
+    @exportRpc("light.viz.volume.enable")
+    def enableVolume(self, enable):
+        if enable and self.ds.getInput():
+            inpt = self.ds.getInput() if not self.useClippedInput else self.clip.getOutput()
+            if not self.passThrough:
+                self.passThrough = simple.Calculator(Input=inpt)
+                self.representation = simple.Show(self.passThrough)
+                self.representation.Representation = 'Volume'
+                self.updateColorBy(self.colorBy)
+            else:
+                self.passThrough.Input = inpt
             self.representation.Visibility = 1
 
         if not enable and self.representation:

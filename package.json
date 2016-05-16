@@ -37,6 +37,10 @@
   "scripts": {
     "postinstall": "fix-kw-web-suite || true",
 
+    "doc"           : "kw-doc -c ./Documentation/config.js",
+    "doc:www"       : "kw-doc -c ./Documentation/config.js -s",
+    "doc:publish"   : "kw-doc -c ./Documentation/config.js -p",
+
     "build": "fix-autobahn && webpack --progress --colors",
     "build:debug": "fix-autobahn && webpack --display-modules",
     "build:release": "export NODE_ENV=production && fix-autobahn && webpack -p --progress --colors",

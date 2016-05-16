@@ -1,0 +1,8 @@
+docs:
+  getting_started:
+    overview: /lightviz/docs/index.html
+    setup: /lightviz/docs/setup.html
+  miscellaneous:
+    tools: /lightviz/docs/tools.html
+    troubleshooting: /lightviz/docs/troubleshooting.html
+    contributing: /lightviz/docs/contributing.html

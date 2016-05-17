@@ -11,7 +11,11 @@
 }
 
 .childBlocksDiv {
-  margin-left: 10px;
+  margin-left: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-direction: column;
 }
 
 .childBlocksDivCollapsed {
@@ -19,7 +23,23 @@
 }
 
 .blockSpan {
-  display: inline-flex;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  line-height: 1.5em;
+}
+
+.blockSpan > label {
+  flex: 1;
+  cursor: pointer;
+}
+
+.selectAction {
+  flex: none;
+  padding: 0 5px;
+  cursor: pointer;
+  text-align: right;
 }
 
 .childBlocksDivCollapsed > .childBlocksDiv {
@@ -47,14 +67,14 @@
 .blockIsCollapsedIcon {
   composes: fa from 'font-awesome/css/font-awesome.css';
   composes: fa-fw from 'font-awesome/css/font-awesome.css';
-  composes: fa-plus-square-o from 'font-awesome/css/font-awesome.css';
+  composes: fa-caret-right from 'font-awesome/css/font-awesome.css';
   cursor: pointer;
 }
 
 .blockIsExpandedIcon {
   composes: fa from 'font-awesome/css/font-awesome.css';
   composes: fa-fw from 'font-awesome/css/font-awesome.css';
-  composes: fa-minus-square-o from 'font-awesome/css/font-awesome.css';
+  composes: fa-caret-down from 'font-awesome/css/font-awesome.css';
   cursor: pointer;
 }
 

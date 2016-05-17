@@ -93,6 +93,8 @@ from autobahn.wamp import register as exportRpc
 from paraview import simple
 from vtk.web import server
 
+import json
+
 try:
     import argparse
 except ImportError:
@@ -122,15 +124,36 @@ class LightVizServer(pv_wamp.PVServerProtocol):
     proxies = None
     allReaders = True
     saveDataDir = os.getcwd()
+    config = {
+        "profiles": {
+            "default": {
+                "modules_included": [],
+                "modules_excluded": [],
+                "viewType": 1,
+            },
+            "secondary": {
+                "modules_included": [],
+                "modules_excluded": [],
+                "viewType": 2,
+            },
+        },
+    }
+
 
     @staticmethod
     def add_arguments(parser):
         parser.add_argument("--data", default=os.getcwd(), help="path to data directory to list", dest="data")
+        parser.add_argument("--config", help="path to lightviz.config file", dest="configFile")
+        parser.add_argument("--profile", default="default", help="name of lightviz profile to use", dest="profile")
 
     @staticmethod
     def configure(args):
         LightVizServer.authKey = args.authKey
         LightVizServer.data    = args.data
+        if args.configFile and os.path.exists(args.configFile):
+            with open(args.configFile) as fp:
+                LightVizServer.config = json.load(fp)
+        LightVizServer.profile = args.profile
 
     def initialize(self):
         # Bring used components
@@ -139,6 +162,7 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort())
 
         # self.registerVtkWebProtocol(lv_protocols.LightVizViewportSize())
+        self.registerVtkWebProtocol(lv_protocols.LightVizConfig(LightVizServer.config, LightVizServer.profile))
         datasetManager = lv_protocols.LightVizDatasets(LightVizServer.data)
         clipManager = lv_protocols.LightVizClip(datasetManager)
         self.registerVtkWebProtocol(datasetManager)

@@ -41,6 +41,21 @@ from vtkCommonDataModelPython import *
 
 # =============================================================================
 #
+# Configuration management
+#
+# =============================================================================
+
+class LightVizConfig(pv_protocols.ParaViewWebProtocol):
+    def __init__(self, config, defaultProfile):
+        self.config = config
+        self.defaultProfile = defaultProfile
+
+    @exportRpc("light.viz.configuration.get")
+    def getDefaultProfile(self):
+        return [self.config, self.defaultProfile]
+
+# =============================================================================
+#
 # Dataset management
 #
 # =============================================================================

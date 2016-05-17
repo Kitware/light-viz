@@ -15,7 +15,10 @@ program
 
   .option('--paraview [path]', 'Provide the ParaView root path to use\n')
 
-  .option('--data-analysis', 'Inspect data directory and compute metadata')
+  .option('--data-analysis', 'Inspect data directory and compute metadata\n')
+
+  .option('--config [path]', 'Provide a Lightviz config file to use')
+  .option('--profile [profile]', 'Specify which profile from the config file to use')
 
   .parse(process.argv);
 
@@ -48,8 +51,19 @@ if(pvPythonExecs.length < 1) {
         path.normalize(path.join(__dirname, '../server/pvw-light-viz.py')),
         '--content', path.normalize(path.join(__dirname, '../dist')),
         '--port', program.port,
-        '--data', program.data,
     ];
+    if (program.data) {
+      cmdLine.push('--data');
+      cmdLine.push(program.data);
+    }
+    if (program.config) {
+      cmdLine.push('--config');
+      cmdLine.push(program.config);
+    }
+    if (program.profile) {
+      cmdLine.push('--profile');
+      cmdLine.push(program.profile);
+    }
 
     console.log('\n===============================================================================');
     console.log('| Execute:');

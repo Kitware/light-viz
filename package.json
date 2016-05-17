@@ -44,9 +44,6 @@
     "build:debug": "fix-autobahn && webpack --display-modules",
     "build:release": "export NODE_ENV=production && fix-autobahn && webpack -p --progress --colors",
 
-    "start": "webpack-dev-server --content-base ./dist/ --hot --progress --colors ",
-    "open": "open http://localhost:8080/webpack-dev-server/#/",
-
     "commit": "git cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },

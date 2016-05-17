@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="256px" height="256px" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7.2 (28276) - http://www.bohemiancoding.com/sketch -->
+    <title>Stream lines</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="50.953851%" id="radialGradient-1">
+            <stop stop-color="#DDF6BC" offset="0%"></stop>
+            <stop stop-color="#D0F2A9" offset="25.9605587%"></stop>
+            <stop stop-color="#B8E986" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Stream-lines" stroke="#979797">
+            <ellipse id="Oval-38" stroke-width="8" fill="url(#radialGradient-1)" cx="95.5" cy="128.5" rx="32.5" ry="32.5"></ellipse>
+            <path d="M34,111 C34,111 51,74.0634182 98,73 C145,71.9365818 157,110.999998 157,110.999998 L218,110.999998" id="Path-390" stroke-width="10"></path>
+            <path d="M36,186.021324 C36,186.021324 53,149.084743 100,148.021325 C147,146.957906 159,186.021323 159,186.021323 L220,186.021323" id="Path-390" stroke-width="10" transform="translate(128.000000, 167.010662) scale(1, -1) translate(-128.000000, -167.010662) "></path>
+            <path d="M21,210.022452 C21,210.022452 43.9999982,175.085868 102,174.02245 C160.000002,172.959032 172,210.022452 172,210.022452 L215,210.022454" id="Path-390" stroke-width="10" transform="translate(118.000000, 192.011225) scale(1, -1) translate(-118.000000, -192.011225) "></path>
+            <path d="M21,85.0224551 C21,85.0224551 43.9999982,50.0858717 102,49.0224536 C160.000002,47.9590355 172,85.0224555 172,85.0224555 L215,85.0224571" id="Path-390" stroke-width="10"></path>
+        </g>
+    </g>
+</svg>

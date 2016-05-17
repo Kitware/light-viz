@@ -6,19 +6,6 @@
   right: 0;
 }
 
-.titleBar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2em;
-  padding: 0 5px;
-  line-height:2em;
-  display:flex;
-  background: lightgray;
-  justify-content: space-between;
-}
-
 .colorControls {
   flex: none;
   display: flex;
@@ -43,6 +30,8 @@
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  padding-top: 7px;
+  border-top: 1px solid #aaa;
 }
 
 .controlPanelHidden {
@@ -52,8 +41,8 @@
   flex-direction: column;
   padding: 2px;
   position: absolute;
-  right: 2em;
-  top: 3em;
+  right: 5px;
+  top: 5px;
   z-index: 1;
   opacity: 0.5;
 }
@@ -61,7 +50,7 @@
 .controlPanel {
   composes: controlPanelHidden;
   width: 400px;
-  max-height: 90%;
+  max-height: calc(100% - 15px);
   opacity: 1.0;
 }
 
@@ -71,8 +60,12 @@
 }
 
 .showControlsIconDiv {
-  line-height: 2em;
+  min-height: 30px;
   text-align: right;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .module {
@@ -120,6 +113,15 @@
   cursor: pointer;
 }
 
+
+.listDataSetsButton {
+  composes: fa            from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw         from 'font-awesome/css/font-awesome.css';
+  composes: fa-power-off  from 'font-awesome/css/font-awesome.css';
+  composes: colorControl;
+  cursor: pointer;
+}
+
 .hideControlsIcon{
   composes: fa                     from 'font-awesome/css/font-awesome.css';
   composes: fa-fw                  from 'font-awesome/css/font-awesome.css';
@@ -133,5 +135,34 @@
   composes: fa-fw                from 'font-awesome/css/font-awesome.css';
   composes: fa-lg                from 'font-awesome/css/font-awesome.css';
   composes: fa-caret-square-o-up from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+.lineItem {
+  flex: none;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.logo {
+  position: relative;
+  width: 30px;
+  height: 20px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.colorItem {
+  position: relative;
+  margin-left: 5px;
+  position: relative;
+  height: 22px;
+  width: 22px;
+  border-radius: 5px;
   cursor: pointer;
 }

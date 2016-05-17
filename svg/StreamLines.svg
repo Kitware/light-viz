@@ -11,7 +11,7 @@
         </radialGradient>
     </defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Stream-lines" stroke="#979797">
+        <g id="Stream-lines" stroke="#4A4A4A">
             <ellipse id="Oval-38" stroke-width="8" fill="url(#radialGradient-1)" cx="95.5" cy="128.5" rx="32.5" ry="32.5"></ellipse>
             <path d="M34,111 C34,111 51,74.0634182 98,73 C145,71.9365818 157,110.999998 157,110.999998 L218,110.999998" id="Path-390" stroke-width="10"></path>
             <path d="M36,186.021324 C36,186.021324 53,149.084743 100,148.021325 C147,146.957906 159,186.021323 159,186.021323 L220,186.021323" id="Path-390" stroke-width="10" transform="translate(128.000000, 167.010662) scale(1, -1) translate(-128.000000, -167.010662) "></path>

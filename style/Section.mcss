@@ -19,7 +19,7 @@
   composes: fa-fw         from 'font-awesome/css/font-awesome.css';
   composes: fa-caret-down from 'font-awesome/css/font-awesome.css';
   composes: fa-lg         from 'font-awesome/css/font-awesome.css';
-  line-height: 1.5em;
+  line-height: 20px;
   cursor: pointer;
 }
 
@@ -28,7 +28,7 @@
   composes: fa-fw          from 'font-awesome/css/font-awesome.css';
   composes: fa-caret-right from 'font-awesome/css/font-awesome.css';
   composes: fa-lg         from 'font-awesome/css/font-awesome.css';
-  line-height: 1.5em;
+  line-height: 20px;
   cursor: pointer;
 }
 

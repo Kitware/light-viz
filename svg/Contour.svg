@@ -14,7 +14,7 @@
         </radialGradient>
     </defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Contour" stroke="#979797">
+        <g id="Contour" stroke="#4A4A4A">
             <ellipse id="Oval-33" stroke-width="7" fill="url(#radialGradient-1)" transform="translate(118.545255, 136.224217) rotate(-39.000000) translate(-118.545255, -136.224217) " cx="118.545255" cy="136.224217" rx="55.9483264" ry="110.741278"></ellipse>
             <path d="M195.323781,212.319676 C227.926631,170.831727 230.094921,112.779782 197.25762,72.2290931 C163.04539,29.9805079 102.350464,20.9501551 53.9317281,48.0914109 C79.8084357,35.4615326 128.106602,59.1287271 163.100725,102.34287 C195.773376,142.690234 208.360799,188.307601 195.323772,212.319688 Z" id="Combined-Shape" stroke-width="7" fill="url(#radialGradient-2)"></path>
             <ellipse id="Oval-33" stroke-width="6" fill="#89BBF7" transform="translate(118.464188, 136.124108) rotate(-39.000000) translate(-118.464188, -136.124108) " cx="118.464188" cy="136.124108" rx="34.4530451" ry="68.194609"></ellipse>

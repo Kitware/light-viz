@@ -30,6 +30,11 @@ $ LightViz
 
     --data-analysis           Inspect data directory and compute metadata
 ```
+## Documentation
+
+See the [documentation](https://kitware.github.io/light-viz) for a
+getting started guide, advanced documentation, and API descriptions.
+
 
 ## Development
 
@@ -69,11 +74,6 @@ $ npm run build:release
 ```
 This creates a minified version of the light-viz JavaScript code in dist/LightViz.js
 which should be added to your commit.
-
-## Documentation
-
-See the [documentation](https://kitware.github.io/light-viz) for a
-getting started guide, advanced documentation, and API descriptions.
 
 #### Licensing
 

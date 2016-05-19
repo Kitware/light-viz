@@ -4,13 +4,13 @@
 
 .shown {
   display: flex;
+  flex: 1;
   flex-direction: column;
 }
 
 .hidden {
+  composes: shown;
   height: 2em;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
 }
 
@@ -37,5 +37,7 @@
 }
 
 .section {
-  display: inline-flex;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
 }

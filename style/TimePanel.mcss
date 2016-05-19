@@ -1,36 +1,59 @@
 .timePanel {
-    display: inline-flex;
-    width: 100%;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .timePanelPlaying {
-    composes: timePanel;
+  composes: timePanel;
 }
 
 .timePanelPlaying .playButton {
-    background-color: #ccc !important;
+  background-color: #ccc !important;
 }
 
 .timePanel > *:not(:first-child) {
-    margin-left: 10px; 
+  margin-left: 10px;
+}
+
+.timeSlider {
+  min-width: 100px;
 }
 
 .progress {
-    width: 75px;
-    text-align: right;
+  width: 75px;
+  text-align: right;
 }
 
 .realTime {
-    text-align: center;
-    width: 200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  margin-left: 10px;
+  text-align: center;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .timeControlButton {
     cursor: pointer;
+}
+
+.linePiece {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.linePiece:not(:first-child) {
+  margin-top: 10px;
+}
+
+.linePiece > * {
+  flex: 1;
 }
 
 .goToBeginningButton {

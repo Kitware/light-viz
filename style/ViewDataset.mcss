@@ -73,7 +73,7 @@
 
 .timeModule {
   background: white;
-  height: 32px;
+  height: 75px;
   position: relative;
   padding: 0 10px;
   border-radius: 5px;

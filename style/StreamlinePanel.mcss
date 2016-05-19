@@ -1,4 +1,18 @@
 .line {
-  display: inline-flex;
-  width: 100%
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.line > label {
+  flex: none;
+  width: 55px;
+  text-align: right;
+  font-weight: bold;
+  padding-right: 10px;
+}
+
+.colorByItem {
+  flex: 1;
 }

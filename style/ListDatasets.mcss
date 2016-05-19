@@ -5,29 +5,23 @@
   bottom:0;
   right:0;
   left:0;
+  background: black;
 }
 
-.titleBar {
+.toolbar {
   position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:2em;
-  line-height:2em;
-  display:flex;
+  top: 12px;
+  left: 15px;
+  height:30px;
+  line-height:30px;
+  display: flex;
   justify-content: space-between;
   padding: 0 5px;
-  background: lightgray;
-}
-
-.titleLeft {
-  flex: 1;
-  font-weight: bold;
-}
-
-.titleRight {
-  flex: 1;
-  text-align:right;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 5px;
+  align-items: center;
+  z-index: 10;
+  border: solid 1px black;
 }
 
 .refreshButton {
@@ -39,7 +33,7 @@
 
 .content {
   position:absolute;
-  top:2em;
+  top:0;
   left:0;
   right:0;
   bottom:0;
@@ -58,13 +52,17 @@
 .thumbnailList > * {
   flex:none;
   width:250px;
-  height:300px;
+  height:250px;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
   text-decoration: none;
   color: black;
+  margin: 50px 0 0 0;
+  background: white;
+  border-radius: 5px;
+  padding-top: 15px
 }
 
 .thumbnailName {
@@ -79,7 +77,8 @@
 
 .thumbnailLegend {
   flex:none;
-  height:1em;
+  height:2em;
+  line-height:2em;
   width:200px;
   text-align:center;
 }

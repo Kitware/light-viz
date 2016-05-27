@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://kitware.github.io/light-viz/docs/setup.html</loc>
+    <loc>https://kitware.github.io/light-viz/index.html</loc>
     
-    <lastmod>2016-05-18T15:37:07.754Z</lastmod>
+    <lastmod>2016-05-27T14:33:02.150Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://kitware.github.io/light-viz/index.html</loc>
+    <loc>https://kitware.github.io/light-viz/docs/contributing.html</loc>
     
-    <lastmod>2016-05-16T22:22:13.152Z</lastmod>
+    <lastmod>2016-05-27T14:33:02.150Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://kitware.github.io/light-viz/docs/index.html</loc>
+    
+    <lastmod>2016-05-27T14:33:02.150Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://kitware.github.io/light-viz/docs/setup.html</loc>
+    
+    <lastmod>2016-05-27T14:33:02.150Z</lastmod>
     
   </url>
   
@@ -24,20 +38,6 @@
   
   <url>
     <loc>https://kitware.github.io/light-viz/docs/troubleshooting.html</loc>
-    
-    <lastmod>2016-05-16T22:22:13.152Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://kitware.github.io/light-viz/docs/contributing.html</loc>
-    
-    <lastmod>2016-05-16T22:22:13.152Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://kitware.github.io/light-viz/docs/index.html</loc>
     
     <lastmod>2016-05-16T22:22:13.152Z</lastmod>
     

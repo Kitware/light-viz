@@ -3,6 +3,4 @@ docs:
     overview: /light-viz/docs/index.html
     setup: /light-viz/docs/setup.html
   miscellaneous:
-    tools: /light-viz/docs/tools.html
-    troubleshooting: /light-viz/docs/troubleshooting.html
     contributing: /light-viz/docs/contributing.html

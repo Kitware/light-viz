@@ -158,6 +158,7 @@ class LightVizServer(pv_wamp.PVServerProtocol):
     def initialize(self):
         # Bring used components
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebFileListing(LightVizServer.data, "Home", LightVizServer.excludeRegex, LightVizServer.groupRegex))
+        self.registerVtkWebProtocol(pv_protocols.ParaViewWebColorManager())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebMouseHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort())
 

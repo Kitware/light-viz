@@ -9,7 +9,6 @@ module.exports = {
   'react/jsx-closing-bracket-location': 1,
   'react/jsx-indent-props': 1,
   'react/jsx-space-before-closing': 1,
-  'react/jsx-curly-spacing': 0,
   'react/no-is-mounted': 1,
   'react/prefer-es6-class': 0,
   'react/prefer-stateless-function': 0,

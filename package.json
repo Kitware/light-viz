@@ -14,15 +14,15 @@
     "shelljs": "0.6.0"
   },
   "devDependencies": {
-    "paraviewweb": "1.5.11",
+    "paraviewweb": "1.5.14",
 
-    "font-awesome": "4.6.1",
+    "font-awesome": "4.6.3",
     "mout": "1.0.0",
-    "normalize.css": "3.0.3",
+    "normalize.css": "4.1.1",
     "react": "15.0.2",
     "react-dom": "15.0.2",
-    "react-router": "2.4.0",
-    "history": "2.1.1",
+    "react-router": "2.4.1",
+    "history": "2.1.2",
 
     "ws": "0.8.1",
 
@@ -31,7 +31,7 @@
     "monologue.js": "0.3.5",
 
     "kw-web-suite": "2.0.1",
-    "kw-doc": "1.0.7"
+    "kw-doc": "1.0.10"
   },
   "scripts": {
     "postinstall": "fix-kw-web-suite || true",

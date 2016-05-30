@@ -16,19 +16,19 @@ shelljs       | ![npm version](https://badge.fury.io/js/shelljs.svg)  | 0.7.0
 
 Package name | NPM Version                                               | Version
 -------------| --------------------------------------------------------- | ----------
-paraviewweb  | ![npm version](https://badge.fury.io/js/paraviewweb.svg)  | 1.3.11
-font-awesome | ![npm version](https://badge.fury.io/js/font-awesome.svg) | 4.6.1
+paraviewweb  | ![npm version](https://badge.fury.io/js/paraviewweb.svg)  | 1.5.14
+font-awesome | ![npm version](https://badge.fury.io/js/font-awesome.svg) | 4.6.3
 mout         | ![npm version](https://badge.fury.io/js/mout.svg)         | 1.0.0
-normalize.css| ![npm version](https://badge.fury.io/js/normalize.css.svg)| 3.0.3
+normalize.css| ![npm version](https://badge.fury.io/js/normalize.css.svg)| 4.1.1
 react        | ![npm version](https://badge.fury.io/js/react.svg)        | 15.0.2
 react-dom    | ![npm version](https://badge.fury.io/js/react-dom.svg)    | 15.0.2
-react-router | ![npm version](https://badge.fury.io/js/react-router.svg) | 2.4.0
-history      | ![npm version](https://badge.fury.io/js/history.svg)      | 2.1.1
+react-router | ![npm version](https://badge.fury.io/js/react-router.svg) | 2.4.1
+history      | ![npm version](https://badge.fury.io/js/history.svg)      | 2.1.2
 ws*          | ![npm version](https://badge.fury.io/js/ws.svg)           | 0.8.1
 gl-matrix    | ![npm version](https://badge.fury.io/js/gl-matrix.svg)    | 2.3.2
 hammerjs     | ![npm version](https://badge.fury.io/js/hammerjs.svg)     | 2.0.6
 monologue.js | ![npm version](https://badge.fury.io/js/monologue.js.svg) | 0.3.5
 kw-web-suite | ![npm version](https://badge.fury.io/js/kw-web-suite.svg) | 2.0.1
-kw-doc       | ![npm version](https://badge.fury.io/js/kw-doc.svg)       | 1.0.7
+kw-doc       | ![npm version](https://badge.fury.io/js/kw-doc.svg)       | 1.0.10
 
 *: ws 0.8.1 has known security issues, but only when used on the server side.  We are using client-side websockets via autobahn.  Client-side websockets were removed in ws 1.0.0, so we have to pin to this older version.

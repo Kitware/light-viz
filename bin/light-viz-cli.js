@@ -50,7 +50,6 @@ if(pvPythonExecs.length < 1) {
     console.log('Could not find pvpython in your ParaView HOME directory ($PARAVIEW_HOME)');
     program.outputHelp();
 } else {
-  console.log(program);
     if (program.addDataset) {
         if (!program.data) {
             console.log('Adding data requires specifying the data directory to use with -d or --data');

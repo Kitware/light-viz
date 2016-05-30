@@ -32,7 +32,7 @@ $ LightViz
 
 # Setup
 
-The ParaView LightViz executable needs ParaView 5.0.0 or greater build with paraviewweb enabled installed on your computer.  The ParaView binaries have paraviewweb enabled, so you can use these rather than building ParaView yourself.  If the location of the pvpython executable is not in you PATH environment variable, you will need to add the `--paraview ROOT` flag on all invocations of ParaView LightViz or set the `PARAVIEW_HOME` environment variable to the root of your ParaView installation.  The root is two levels up from the pvpython executable so pvpython should be located at ROOT/bin/pvpython.
+The ParaView LightViz executable needs ParaView 5.1.0 (currently the master branch) or greater build with paraviewweb enabled installed on your computer.  The ParaView binaries have paraviewweb enabled, so you can use these rather than building ParaView yourself.  If the location of the pvpython executable is not in you PATH environment variable, you will need to add the `--paraview ROOT` flag on all invocations of ParaView LightViz or set the `PARAVIEW_HOME` environment variable to the root of your ParaView installation.  The root is two levels up from the pvpython executable so pvpython should be located at ROOT/bin/pvpython.
 
 # Importing Data
 

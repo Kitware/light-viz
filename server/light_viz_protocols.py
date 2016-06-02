@@ -373,7 +373,10 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         self.updateColorBy('__SOLID__')
         if self.clipX:
             self.clipX.Input = self.ds.getInput()
-            self.updatePosition(50, 50, 50)
+            bounds = self.ds.activeMeta['data']['bounds']
+            self.updatePosition((bounds[1] + bounds[0])/2.0,
+                                (bounds[3] + bounds[2])/2.0,
+                                (bounds[5] + bounds[4])/2.0)
             self.updateInsideOut(False, False, False)
         if self.representation:
             self.representation.Visibility = 0
@@ -412,13 +415,6 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.clip.position")
     def updatePosition(self, x, y, z):
-        # bounds = self.ds.activeMeta['data']['bounds']
-        # if self.clipX:
-        #     self.clipX.ClipType.Origin = [float(x)/100.0*(bounds[1]-bounds[0]) + bounds[0], 0, 0]
-        # if self.clipY:
-        #     self.clipY.ClipType.Origin = [0, float(y)/100.0*(bounds[3]-bounds[2]) + bounds[2], 0]
-        # if self.clipZ:
-        #     self.clipZ.ClipType.Origin = [0, 0, float(z)/100.0*(bounds[5]-bounds[4]) + bounds[4]]
         if self.clipX:
             self.clipX.ClipType.Origin = [float(x), 0.0, 0.0]
         if self.clipY:
@@ -465,7 +461,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         if enable and self.ds.getInput():
             if not self.clipX:
                 bounds = self.ds.activeMeta['data']['bounds']
-                center = [(bounds[i*2] + bounds[i*2+1])*.05 for i in range(3)]
+                center = [(bounds[i*2] + bounds[i*2+1])*0.5 for i in range(3)]
                 self.clipX = simple.Clip(Input=self.ds.getInput())
                 self.clipY = simple.Clip(Input=self.clipX)
                 self.clipZ = simple.Clip(Input=self.clipY)
@@ -495,7 +491,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
     def getOutput(self):
         if not self.clipX:
             bounds = self.ds.activeMeta['data']['bounds']
-            center = [(bounds[i*2] + bounds[i*2+1])*.05 for i in range(3)]
+            center = [(bounds[i*2] + bounds[i*2+1])*0.5 for i in range(3)]
             self.clipX = simple.Clip(Input=self.ds.getInput())
             self.clipY = simple.Clip(Input=self.clipX)
             self.clipZ = simple.Clip(Input=self.clipY)
@@ -535,6 +531,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         if self.contour:
             self.contour.Input = self.ds.getInput()
+            self.contour.Isosurfaces = [ sum(self.ds.activeMeta["data"]["arrays"][0]["range"]) * 0.5, ];
             self.representation.Visibility = 0
 
     def setForegroundColor(self, foreground):
@@ -657,16 +654,15 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
         self.updateRepresentation('Surface')
         self.updateColorBy('__SOLID__')
         if self.sliceX:
+            bounds = self.ds.activeMeta['data']['bounds']
+            center = [(bounds[i*2] + bounds[i*2+1])*0.5 for i in range(3)]
             self.sliceX.Input = self.ds.getInput()
             self.sliceY.Input = self.ds.getInput()
             self.sliceZ.Input = self.ds.getInput()
-            self.updatePosition(50, 50, 50)
+            self.updatePosition(center[0], center[1], center[2])
             self.representationX.Representation = 'Surface'
             self.representationY.Representation = 'Surface'
             self.representationZ.Representation = 'Surface'
-            self.representationX.ColorArrayName = ''
-            self.representationY.ColorArrayName = ''
-            self.representationZ.ColorArrayName = ''
             self.representationX.Visibility = 0
             self.representationY.Visibility = 0
             self.representationZ.Visibility = 0
@@ -775,7 +771,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                 bounds = self.ds.activeMeta['data']['bounds']
                 center = self.center
                 if center is None:
-                    center = [(bounds[i*2] + bounds[i*2+1])*.05 for i in range(3)]
+                    center = [(bounds[i*2] + bounds[i*2+1])*0.5 for i in range(3)]
                 self.sliceX = simple.Slice(Input=inpt)
                 self.sliceY = simple.Slice(Input=inpt)
                 self.sliceZ = simple.Slice(Input=inpt)
@@ -837,11 +833,12 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
     def dataChanged(self):
         self.updateRepresentation('Surface')
         self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
+        bounds = self.ds.activeMeta['data']['bounds']
+        center = [(bounds[i*2] + bounds[i*2+1])*0.5 for i in range(3)]
+        self.updateNormal(0)
+        self.updateSlicePositions([center[0]])
         if self.slice:
             self.slice.Input = self.ds.getInput()
-            self.updatePosition(50, 50, 50)
-            self.representation.Representation = 'Surface'
-            self.representation.ColorArrayName = ''
             self.representation.Visibility = 0
 
     def setForegroundColor(self, foreground):
@@ -960,17 +957,16 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
         self.updateRepresentation('Surface')
         self.updateColorBy('__SOLID__')
         self.vector = None
-        self.radius = min(length) / 8.0
+        self.updateRadius(min(length) / 8.0)
+        self.updatePosition((bounds[1] + bounds[0])/2.0,
+                            (bounds[3] + bounds[2])/2.0,
+                            (bounds[5] + bounds[4])/2.0)
         for array in self.ds.activeMeta['data']['arrays']:
             if array['dimension'] == 3:
                 self.vector = array['name']
                 break
         if self.streamline:
             self.streamline.Input = self.ds.getInput()
-            self.updatePosition(50, 50, 50)
-            self.updatePosition((bounds[1] - bounds[0])/2.0,
-                                (bounds[3] - bounds[2])/2.0,
-                                (bounds[5] - bounds[4])/2.0)
         if self.representation:
             self.representation.Visibility = 0
 
@@ -1019,7 +1015,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.streamline.radius")
     def updateRadius(self, rad):
-        self.radius = rad
+        self.radius = float(rad)
         if self.streamline:
             self.streamline.SeedType.Radius = self.radius
 
@@ -1101,9 +1097,9 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
     def dataChanged(self):
         self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         if self.passThrough:
-            self.passThrough.Input = self.ds.getInput()
-            self.representation.ColorArrayName = ''
+            self.passThrough = None
             self.representation.Visibility = 0
+            self.representation = None
 
     def setForegroundColor(self, foreground):
         pass
@@ -1111,11 +1107,13 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.volume.useclipped")
     def setUseClipped(self, useClipped):
         if self.passThrough:
-            if not self.useClippedInput and useClipped:
-                self.passThrough.Input = self.clip.getOutput()
-            elif self.useClippedInput and not useClipped:
-                self.passThrough.Input = self.ds.getInput()
-        self.useClippedInput = useClipped
+            if self.useClippedInput != useClipped:
+                self.useClippedInput = useClipped
+                self.passThrough = None
+                oldVisibility = self.representation.Visibility
+                self.representation.Visibility = 0
+                self.representation = None
+                self.enableVolume(oldVisibility)
 
     @exportRpc("light.viz.volume.getstate")
     def getState(self):
@@ -1128,7 +1126,7 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
             ret["enabled"] = True if self.representation.Visibility else False
         return ret
 
-    @exportRpc("light.viz.representation.representation")
+    @exportRpc("light.viz.volume.representation")
     def updateRepresentation(self, mode):
         pass # It is a volume rendering, so that is the only valid representation
 
@@ -1155,11 +1153,12 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
             inpt = self.ds.getInput() if not self.useClippedInput else self.clip.getOutput()
             if not self.passThrough:
                 self.passThrough = simple.Calculator(Input=inpt)
+            else:
+                self.passThrough.Input = inpt
+            if not self.representation:
                 self.representation = simple.Show(self.passThrough)
                 self.representation.Representation = 'Volume'
                 self.updateColorBy(self.colorBy)
-            else:
-                self.passThrough.Input = inpt
             self.representation.Visibility = 1
 
         if not enable and self.representation:

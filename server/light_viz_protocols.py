@@ -364,6 +364,8 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         self.clipY = None
         self.clipZ = None
         self.representation = None
+        self.box = None
+        self.boxRepr = None
         self.reprMode = 'Surface'
         self.colorBy = '__SOLID__'
         dataset_manager.addListener(self)
@@ -384,6 +386,39 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
     def setForegroundColor(self, foreground):
         if self.representation:
             self.representation.DiffuseColor = foreground
+
+    @exportRpc("light.viz.clip.box.position")
+    def updatePositionForBox(self, x, y, z):
+        newClipCenter = [x, y, z]
+        boundsPoint = [self.ds.activeMeta['data']['bounds'][2 * i] for i in range(3)]
+        if not self.clipX.InsideOut:
+            boundsPoint[0] = self.ds.activeMeta['data']['bounds'][1]
+        if not self.clipY.InsideOut:
+            boundsPoint[1] = self.ds.activeMeta['data']['bounds'][3]
+        if not self.clipZ.InsideOut:
+            boundsPoint[2] = self.ds.activeMeta['data']['bounds'][5]
+        if self.box:
+            self.box.Center = [(newClipCenter[i] + boundsPoint[i]) * 0.5 for i in range(3)]
+            self.box.XLength = abs(boundsPoint[0] - newClipCenter[0])
+            self.box.YLength = abs(boundsPoint[1] - newClipCenter[1])
+            self.box.ZLength = abs(boundsPoint[2] - newClipCenter[2])
+
+    @exportRpc("light.viz.clip.box.show")
+    def showBox(self, enable):
+        if enable and self.ds.getInput():
+            bounds = self.ds.activeMeta['data']['bounds']
+            if not self.box:
+                self.box = simple.Box()
+                self.updatePositionForBox((bounds[1] + bounds[0])/2.0,
+                                          (bounds[3] + bounds[2])/2.0,
+                                          (bounds[5] + bounds[4])/2.0)
+                self.boxRepr = simple.Show(Input=self.box)
+                self.boxRepr.Representation = 'Outline'
+                self.boxRepr.DiffuseColor = [1, 0, 0]
+            self.boxRepr.Visibility = 1
+        elif (not enable) and self.boxRepr:
+            self.boxRepr.Visibility = 0
+
 
     @exportRpc("light.viz.clip.getstate")
     def getState(self):

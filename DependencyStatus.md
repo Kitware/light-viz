@@ -16,7 +16,7 @@ shelljs       | ![npm version](https://badge.fury.io/js/shelljs.svg)  | 0.7.0
 
 Package name | NPM Version                                               | Version
 -------------| --------------------------------------------------------- | ----------
-paraviewweb  | ![npm version](https://badge.fury.io/js/paraviewweb.svg)  | 1.8.2
+paraviewweb  | ![npm version](https://badge.fury.io/js/paraviewweb.svg)  | 1.10.2
 font-awesome | ![npm version](https://badge.fury.io/js/font-awesome.svg) | 4.6.3
 mout         | ![npm version](https://badge.fury.io/js/mout.svg)         | 1.0.0
 normalize.css| ![npm version](https://badge.fury.io/js/normalize.css.svg)| 4.1.1

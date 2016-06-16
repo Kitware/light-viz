@@ -264,8 +264,9 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         if (array is None):
             return
         points = []
+        r = self.colormaps[array]['range']
         for p in controlPoints:
-            points.append(p["x"])
+            points.append(p["x"] * (r[1] - r[0]) + r[0])
             points.append(p["y"])
             points.append(0.5)
             points.append(0.0)
@@ -278,8 +279,9 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             return
         points = []
         rtDataLUT = simple.GetOpacityTransferFunction(array);
+        r = self.colormaps[array]['range']
         for i in xrange(len(rtDataLUT.Points) / 4):
-            points.append(rtDataLUT.Points[i * 4])
+            points.append((rtDataLUT.Points[i * 4] - r[0]) / (r[1] - r[0]))
             points.append(rtDataLUT.Points[i * 4 + 1])
         print points
         return points

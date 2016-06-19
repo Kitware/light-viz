@@ -78,10 +78,10 @@
 }
 
 .applyButton {
+  background: lightblue;
 }
 
 .applyButtonDisabled {
-  composes: applyButton;
   opacity: 0.25;
 }
 

@@ -64,6 +64,13 @@
   cursor: pointer;
 }
 
+.blockIsPartiallyHiddenIcon {
+  composes: fa from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw from 'font-awesome/css/font-awesome.css';
+  composes: fa-minus-square-o from 'font-awesome/css/font-awesome.css';
+  cursor: pointer;
+}
+
 .blockIsCollapsedIcon {
   composes: fa from 'font-awesome/css/font-awesome.css';
   composes: fa-fw from 'font-awesome/css/font-awesome.css';

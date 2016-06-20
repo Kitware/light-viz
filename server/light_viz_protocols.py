@@ -569,7 +569,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         if self.contour:
             self.contour.Input = self.ds.getInput()
-            self.contour.Isosurfaces = [ sum(self.ds.activeMeta["data"]["arrays"][0]["range"]) * 0.5, ];
+            self.contour.Isosurfaces = [ sum(self.ds.activeMeta["data"]["arrays"][0]["range"]) * 0.5, ]
             self.representation.Visibility = 0
 
     def setForegroundColor(self, foreground):
@@ -1144,9 +1144,9 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
 
     @exportRpc("light.viz.volume.useclipped")
     def setUseClipped(self, useClipped):
-        if self.passThrough:
-            if self.useClippedInput != useClipped:
-                self.useClippedInput = useClipped
+        if self.useClippedInput != useClipped:
+            self.useClippedInput = useClipped
+            if self.passThrough:
                 self.passThrough = None
                 oldVisibility = self.representation.Visibility
                 self.representation.Visibility = 0
@@ -1204,3 +1204,98 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
 
         simple.Render()
 
+# =============================================================================
+#
+# Threshold management
+#
+# =============================================================================
+
+class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
+
+    def __init__(self, dataset_manager, clip):
+        super(LightVizThreshold, self).__init__()
+        self.ds = dataset_manager
+        self.clip = clip
+        self.thresh = None
+        self.representation = None
+        self.colorBy = '__SOLID__'
+        self.useClippedInput = False
+        self.rangeMin = 0
+        self.rangeMax = 1
+        dataset_manager.addListener(self)
+
+    def dataChanged(self):
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
+        self.rangeMin = self.ds.activeMeta['data']['arrays'][0]['range'][0]
+        self.rangeMax = self.ds.activeMeta['data']['arrays'][0]['range'][1]
+        if self.thresh:
+            self.thresh.ThresholdRange = [self.rangeMin, self.rangeMax]
+        if self.representation:
+            self.representation.Visibility = 0
+
+    def setForegroundColor(self, foreground):
+        if self.representation:
+            self.representation.DiffuseColor = foreground
+
+    @exportRpc("light.viz.threshold.useclipped")
+    def setUseClipped(self, useClipped):
+        if self.useClippedInput != useClipped:
+            self.useClippedInput = useClipped
+
+    @exportRpc("light.viz.threshold.getstate")
+    def getState(self):
+        ret = {
+            'enabled': False,
+            'color': self.colorBy,
+            'rangeMin': self.rangeMin,
+            'rangeMax': self.rangeMax,
+            'use_clipped': self.useClippedInput,
+        }
+        if self.representation:
+            ret["enabled"] = True if self.representation.Visibility else False
+        return ret
+
+    @exportRpc("light.viz.threshold.representation")
+    def updateRepresentation(self, mode):
+        self.reprMode = mode
+        if self.representation:
+            self.representation.Representation = mode
+
+    @exportRpc("light.viz.threshold.range")
+    def updateRange(self, rangeMin, rangeMax):
+        self.rangeMin = rangeMin
+        self.rangeMax = rangeMax
+        if self.thresh:
+            self.thresh.ThresholdRange = [self.rangeMin, self.rangeMax]
+
+    @exportRpc("light.viz.threshold.color")
+    def updateColorBy(self, field):
+        self.colorBy = field
+        if self.representation:
+            if field == '__SOLID__':
+                self.representation.ColorArrayName = ''
+            else:
+                # Select data array
+                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                lutProxy = self.representation.LookupTable
+                # lutProxy = simple.GetColorTransferFunction(field)
+                for array in self.ds.activeMeta['data']['arrays']:
+                    if array['name'] == field:
+                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+
+            simple.Render()
+
+    @exportRpc("light.viz.threshold.enable")
+    def enableThreshold(self, enable):
+        if enable and self.ds.getInput():
+            inpt = self.ds.getInput() if not self.useClippedInput else self.clip.getOutput()
+            if not self.thresh:
+                self.thresh = simple.Threshold(Input=inpt)
+                self.thresh.ThresholdRange = [ self.rangeMin, self.rangeMax ]
+                self.representation = simple.Show(self.thresh)
+            self.representation.Visibility = 1
+        
+        if not enable and self.representation:
+            self.representation.Visibility = 0
+
+        simple.Render()

@@ -75,6 +75,9 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.foreground = [ 1, 1, 1]
         self.background = [ 0, 0, 0]
         self.dataListeners = []
+        self.view = simple.GetRenderView()
+        self.view.UseOffscreenRenderingForScreenshots = 1
+        self.view.UseOffscreenRendering = 1
         for filePath in os.listdir(self.basedir):
             indexPath = os.path.join(self.basedir, filePath, 'index.json')
             if os.path.exists(indexPath):

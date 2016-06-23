@@ -107,7 +107,6 @@
   composes: fa            from 'font-awesome/css/font-awesome.css';
   composes: fa-fw         from 'font-awesome/css/font-awesome.css';
   composes: fa-power-off  from 'font-awesome/css/font-awesome.css';
-  composes: colorControl;
   cursor: pointer;
 }
 
@@ -147,4 +146,13 @@
   composes: fa             from 'font-awesome/css/font-awesome.css';
   composes: fa-fw          from 'font-awesome/css/font-awesome.css';
   composes: fa-paint-brush from 'font-awesome/css/font-awesome.css';
+}
+
+.listDataSetsButtonDiv {
+  composes: lightVizPanel;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+  opacity: 0.5;
 }

@@ -16,13 +16,13 @@ shelljs       | ![npm version](https://badge.fury.io/js/shelljs.svg)  | 0.7.0
 
 Package name | NPM Version                                               | Version
 -------------| --------------------------------------------------------- | ----------
-paraviewweb  | ![npm version](https://badge.fury.io/js/paraviewweb.svg)  | 1.6.3
+paraviewweb  | ![npm version](https://badge.fury.io/js/paraviewweb.svg)  | 1.7.0
 font-awesome | ![npm version](https://badge.fury.io/js/font-awesome.svg) | 4.6.3
 mout         | ![npm version](https://badge.fury.io/js/mout.svg)         | 1.0.0
 normalize.css| ![npm version](https://badge.fury.io/js/normalize.css.svg)| 4.1.1
 react        | ![npm version](https://badge.fury.io/js/react.svg)        | 15.1.0
 react-dom    | ![npm version](https://badge.fury.io/js/react-dom.svg)    | 15.1.0
-react-router | ![npm version](https://badge.fury.io/js/react-router.svg) | 2.4.1
+react-router | ![npm version](https://badge.fury.io/js/react-router.svg) | 2.5.1
 history      | ![npm version](https://badge.fury.io/js/history.svg)      | 2.1.2
 ws*          | ![npm version](https://badge.fury.io/js/ws.svg)           | 0.8.1
 gl-matrix    | ![npm version](https://badge.fury.io/js/gl-matrix.svg)    | 2.3.2

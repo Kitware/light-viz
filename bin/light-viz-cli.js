@@ -13,7 +13,8 @@ program
   .option('-d, --data [directory]', 'Data directory to serve')
   .option('-s, --server-only', 'Do not open the web browser\n')
 
-  .option('--paraview [path]', 'Provide the ParaView root path to use\n')
+  .option('--paraview [path]', 'Provide the ParaView root path to use')
+  .option('--offscreen', 'Use flag to specify that ParaView should be used in Offscreen mode\n')
 
   .option('--data-analysis', 'Inspect data directory and compute metadata\n')
 
@@ -97,6 +98,9 @@ if(pvPythonExecs.length < 1) {
         if (program.profile) {
           cmdLine.push('--profile');
           cmdLine.push(program.profile);
+        }
+        if (program.offscreen) {
+          cmdLine.push('--offscreen');
         }
 
         console.log('\n===============================================================================');

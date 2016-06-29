@@ -62,7 +62,7 @@ class LightVizConfig(pv_protocols.ParaViewWebProtocol):
 
 class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
-    def __init__(self, data_directory):
+    def __init__(self, data_directory, offscreen = 1):
         super(LightVizDatasets, self).__init__()
         self.basedir = data_directory
         self.datasetMap = {}
@@ -76,8 +76,8 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.background = [ 0, 0, 0]
         self.dataListeners = []
         self.view = simple.GetRenderView()
-        self.view.UseOffscreenRenderingForScreenshots = 1
-        self.view.UseOffscreenRendering = 1
+        self.view.UseOffscreenRenderingForScreenshots = offscreen
+        self.view.UseOffscreenRendering = offscreen
         for filePath in os.listdir(self.basedir):
             indexPath = os.path.join(self.basedir, filePath, 'index.json')
             if os.path.exists(indexPath):
@@ -1294,7 +1294,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
                 self.thresh.ThresholdRange = [ self.rangeMin, self.rangeMax ]
                 self.representation = simple.Show(self.thresh)
             self.representation.Visibility = 1
-        
+
         if not enable and self.representation:
             self.representation.Visibility = 0
 

@@ -115,6 +115,7 @@ class LightVizServer(pv_wamp.PVServerProtocol):
     rsHost = None
     rsPort = 11111
     rcPort = -1
+    offscreen = False
     fileToLoad = None
     groupRegex = "[0-9]+\\."
     excludeRegex = "^\\.|~$|^\\$"
@@ -145,11 +146,13 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         parser.add_argument("--data", default=os.getcwd(), help="path to data directory to list", dest="data")
         parser.add_argument("--config", help="path to lightviz.config file", dest="configFile")
         parser.add_argument("--profile", default="default", help="name of lightviz profile to use", dest="profile")
+        parser.add_argument("--offscreen", action="store_true", help="Use offscreen rendering", dest="offscreen")
 
     @staticmethod
     def configure(args):
-        LightVizServer.authKey = args.authKey
-        LightVizServer.data    = args.data
+        LightVizServer.authKey   = args.authKey
+        LightVizServer.data      = args.data
+        LightVizServer.offscreen = args.offscreen
         if args.configFile and os.path.exists(args.configFile):
             with open(args.configFile) as fp:
                 LightVizServer.config = json.load(fp)
@@ -164,7 +167,7 @@ class LightVizServer(pv_wamp.PVServerProtocol):
 
         # self.registerVtkWebProtocol(lv_protocols.LightVizViewportSize())
         self.registerVtkWebProtocol(lv_protocols.LightVizConfig(LightVizServer.config, LightVizServer.profile))
-        datasetManager = lv_protocols.LightVizDatasets(LightVizServer.data)
+        datasetManager = lv_protocols.LightVizDatasets(LightVizServer.data, 1 if LightVizServer.offscreen else 0)
         clipManager = lv_protocols.LightVizClip(datasetManager)
         self.registerVtkWebProtocol(datasetManager)
         self.registerVtkWebProtocol(clipManager)

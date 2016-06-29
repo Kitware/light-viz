@@ -27,15 +27,23 @@ $ LightViz
 
   Options:
 
-    -h, --help                output usage information
-    -V, --version             output the version number
-    -p, --port [8080]         Start web server with given port
-    -d, --data [directory]    Data directory to serve
-    -s, --server-only         Do not open the web browser
+    -h, --help                   output usage information
+    -V, --version                output the version number
+    -p, --port [8080]            Start web server with given port
+    -d, --data [directory]       Data directory to serve
+    -s, --server-only            Do not open the web browser
 
-    --paraview [path]         Provide the ParaView root path to use
+    --paraview [path]            Provide the ParaView root path to use
 
-    --data-analysis           Inspect data directory and compute metadata
+    --data-analysis              Inspect data directory and compute metadata
+
+    --config [path]              Provide a Lightviz config file to use
+    --profile [profile]          Specify which profile from the config file to use
+
+    --add-dataset [path]         Specify a dataset to add to the given data directory.  Requires the description and data flags
+    --description [description]  Specify the description for the dataset being added
+    --autoApply                  Optional for use with --add-dataset.  Specifies that apply/reset buttons are not needed with the dataset
+
 ```
 ## Documentation
 

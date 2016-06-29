@@ -21,7 +21,7 @@ After installing the package you will get one executable **LightViz** with
 the following set of options.
 
 ```
-$ LightViz
+$ LightViz 
 
   Usage: LightViz [options]
 
@@ -32,18 +32,18 @@ $ LightViz
     -p, --port [8080]            Start web server with given port
     -d, --data [directory]       Data directory to serve
     -s, --server-only            Do not open the web browser
-
+    
     --paraview [path]            Provide the ParaView root path to use
-
+    --offscreen                  Use flag to specify that ParaView should be used in Offscreen mode
+    
     --data-analysis              Inspect data directory and compute metadata
-
+    
     --config [path]              Provide a Lightviz config file to use
     --profile [profile]          Specify which profile from the config file to use
-
+    
     --add-dataset [path]         Specify a dataset to add to the given data directory.  Requires the description and data flags
     --description [description]  Specify the description for the dataset being added
     --autoApply                  Optional for use with --add-dataset.  Specifies that apply/reset buttons are not needed with the dataset
-
 ```
 ## Documentation
 

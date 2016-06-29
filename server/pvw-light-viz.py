@@ -172,6 +172,7 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         self.registerVtkWebProtocol(lv_protocols.LightVizSlice(datasetManager, clipManager))
         self.registerVtkWebProtocol(lv_protocols.LightVizMultiSlice(datasetManager, clipManager))
         self.registerVtkWebProtocol(lv_protocols.LightVizStreamline(datasetManager))
+        self.registerVtkWebProtocol(lv_protocols.LightVizThreshold(datasetManager, clipManager))
         self.registerVtkWebProtocol(lv_protocols.LightVizVolume(datasetManager, clipManager))
 
         # Update authentication key to use

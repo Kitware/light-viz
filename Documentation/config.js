@@ -3,7 +3,7 @@ module.exports = {
   baseUrl: '/light-viz',
   work: './build-tmp',
   config: {
-    title: 'LightViz.js',
+    title: 'LightViz',
     description: '"Visualization Toolkit for the Web."',
     subtitle: '"Enable scientific visualization to the Web."',
     author: 'Kitware Inc.',

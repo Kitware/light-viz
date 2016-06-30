@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg width="256px" height="256px" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.2 (28276) - http://www.bohemiancoding.com/sketch -->
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
     <title>DataSet</title>
     <desc>Created with Sketch.</desc>
     <defs>
@@ -9,24 +9,12 @@
             <stop stop-color="#BFEDFF" offset="25.9605587%"></stop>
             <stop stop-color="#868FE9" offset="100%"></stop>
         </radialGradient>
-        <polygon id="path-2" points="30 58 123 32 214 68 114 98"></polygon>
-        <mask id="mask-3" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="184" height="66" fill="white">
-            <use xlink:href="#path-2"></use>
-        </mask>
-        <polygon id="path-4" points="30 58 114 98 114 223 30 165"></polygon>
-        <mask id="mask-5" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="84" height="165" fill="white">
-            <use xlink:href="#path-4"></use>
-        </mask>
-        <polygon id="path-6" points="113 98 214 68 214 176 114 223"></polygon>
-        <mask id="mask-7" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="101" height="155" fill="white">
-            <use xlink:href="#path-6"></use>
-        </mask>
     </defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="DataSet" stroke="#4A4A4A" stroke-width="6" fill="url(#radialGradient-1)">
-            <use id="Path-360" mask="url(#mask-3)" xlink:href="#path-2"></use>
-            <use id="Path-399" mask="url(#mask-5)" xlink:href="#path-4"></use>
-            <use id="Path-399" mask="url(#mask-7)" xlink:href="#path-6"></use>
+        <g id="DataSet" stroke-width="3" stroke="#4A4A4A" fill="url(#radialGradient-1)">
+            <polygon id="Path-360" points="30 58 123 32 214 68 114 98"></polygon>
+            <polygon id="Path-399" points="30 58 114 98 114 223 30 165"></polygon>
+            <polygon id="Path-399" points="113 98 214 68 214 176 114 223"></polygon>
         </g>
     </g>
 </svg>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>LightViz.js</title>
+  <title>LightViz</title>
   <subtitle>Enable scientific visualization to the Web.</subtitle>
   <link href="/light-viz/atom.xml" rel="self"/>
   

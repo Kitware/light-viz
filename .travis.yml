@@ -13,7 +13,7 @@ cache:
     - node_modules
     - Documentation/build-tmp
 node_js:
-  - "5.0.x"
+  - "5.1"
 script:
   - npm run build:release
   - git config --global user.name "Travis CI"

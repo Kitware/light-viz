@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   min-width: 350px;
+  flex: 1;
 }
 
 .contents {
@@ -18,7 +19,7 @@
 
 .contentsDisabled {
   composes: contents;
-  opacity: 0.25;
+  opacity: 0.45;
 }
 
 .topBar {
@@ -77,19 +78,31 @@
   cursor: pointer;
 }
 
+.baseButton {
+  border: solid 1px #aaa;
+  border-radius: 3px;
+  margin-left: 10px;
+  padding: 1px 10px;
+  outline: none;
+}
+
 .applyButton {
-  background: lightblue;
+  composes: baseButton;
+  background: lightgreen;
 }
 
 .applyButtonDisabled {
+  composes: baseButton;
   opacity: 0.25;
 }
 
 .refreshButton {
+  composes: baseButton;
+  background: #f08080;
 }
 
 .refreshButtonDisabled {
-  composes: refreshButton;
+  composes: baseButton;
   opacity: 0.25;
 }
 

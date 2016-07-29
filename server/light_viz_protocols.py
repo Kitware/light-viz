@@ -283,7 +283,6 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         for i in xrange(len(rtDataLUT.Points) / 4):
             points.append((rtDataLUT.Points[i * 4] - r[0]) / (r[1] - r[0]))
             points.append(rtDataLUT.Points[i * 4 + 1])
-        print points
         return points
 
     @exportRpc("light.viz.foreground.color")

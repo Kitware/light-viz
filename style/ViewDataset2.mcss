@@ -171,3 +171,21 @@
 .timeContainer {
 }
 
+.toggleAutoApplyDiv {
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  padding: 0 3px;
+}
+
+.autoApplyOnIcon {
+  composes: fa                from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw             from 'font-awesome/css/font-awesome.css';
+  composes: fa-check-square-o from 'font-awesome/css/font-awesome.css';
+}
+
+.autoApplyOffIcon {
+  composes: fa          from 'font-awesome/css/font-awesome.css';
+  composes: fa-fw       from 'font-awesome/css/font-awesome.css';
+  composes: fa-square-o from 'font-awesome/css/font-awesome.css';
+}

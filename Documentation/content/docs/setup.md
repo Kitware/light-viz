@@ -64,3 +64,5 @@ Run `LightViz --paraview ROOT -d DATA_DIR` and ParaView LightViz will open a web
 ParaView LightViz supports profiles that modify which modules are available and which look & feel to use for the UI.  If you have a configuration file that specifies profiles add the `--config CONFIG_FILE` option when starting ParaView LightViz.  To specify which profile to use, add the `--profile PROFILE_NAME`.
 
 By default ParaView LightViz uses a profile that enables everything and uses the default look and feel.  There is one other profile in the default configuration that uses an alternate look and feel for the UI.  Its name is 'secondary' so to use it add `--profile secondary` to the command line when starting ParaView LightViz.
+
+The LightViz executable will start up the web server on your computer on port 8080 by default.  To view the LightViz UI, point a web browser on your computer at http://localhost:8080.  You can specify an alternate port via a command line argument.

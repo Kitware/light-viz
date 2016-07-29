@@ -1228,13 +1228,15 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
         dataset_manager.addListener(self)
 
     def dataChanged(self):
-        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         self.rangeMin = self.ds.activeMeta['data']['arrays'][0]['range'][0]
         self.rangeMax = self.ds.activeMeta['data']['arrays'][0]['range'][1]
         if self.thresh:
-            self.thresh.ThresholdRange = [self.rangeMin, self.rangeMax]
+            simple.Delete(self.thresh)
+            self.thresh = None
         if self.representation:
-            self.representation.Visibility = 0
+            simple.Delete(self.representation)
+            self.representation = None
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
 
     def setForegroundColor(self, foreground):
         if self.representation:

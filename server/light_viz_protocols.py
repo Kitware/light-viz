@@ -1136,8 +1136,9 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
     def dataChanged(self):
         self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
         if self.passThrough:
+            simple.Delete(self.passThrough)
             self.passThrough = None
-            self.representation.Visibility = 0
+            simple.Delete(self.representation)
             self.representation = None
 
     def setForegroundColor(self, foreground):
@@ -1148,10 +1149,11 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
         if self.useClippedInput != useClipped:
             self.useClippedInput = useClipped
             if self.passThrough:
-                self.passThrough = None
                 oldVisibility = self.representation.Visibility
-                self.representation.Visibility = 0
+                simple.Delete(self.representation);
                 self.representation = None
+                simple.Delete(self.passThrough);
+                self.passThrough = None
                 self.enableVolume(oldVisibility)
 
     @exportRpc("light.viz.volume.getstate")

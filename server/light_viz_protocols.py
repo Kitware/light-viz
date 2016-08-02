@@ -1225,18 +1225,20 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
         self.useClippedInput = False
         self.rangeMin = 0
         self.rangeMax = 1
+        self.thresholdBy = None
         dataset_manager.addListener(self)
 
     def dataChanged(self):
         self.rangeMin = self.ds.activeMeta['data']['arrays'][0]['range'][0]
         self.rangeMax = self.ds.activeMeta['data']['arrays'][0]['range'][1]
+        self.thresholdBy = self.ds.activeMeta['data']['arrays'][0]['name']
         if self.thresh:
             simple.Delete(self.thresh)
             self.thresh = None
         if self.representation:
             simple.Delete(self.representation)
             self.representation = None
-        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
+        self.updateColorBy('__SOLID__')
 
     def setForegroundColor(self, foreground):
         if self.representation:
@@ -1254,6 +1256,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
             'color': self.colorBy,
             'rangeMin': self.rangeMin,
             'rangeMax': self.rangeMax,
+            'thresholdBy': self.thresholdBy,
             'use_clipped': self.useClippedInput,
         }
         if self.representation:
@@ -1290,6 +1293,13 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
 
             simple.Render()
 
+    @exportRpc("light.viz.threshold.by")
+    def updateThresholdBy(self, field):
+        self.thresholdBy = field
+        if self.thresh:
+            self.thresh.Scalars = ['POINTS', field]
+            simple.SaveState('/tmp/myteststate.pvsm')
+
     @exportRpc("light.viz.threshold.enable")
     def enableThreshold(self, enable):
         if enable and self.ds.getInput():
@@ -1297,6 +1307,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
             if not self.thresh:
                 self.thresh = simple.Threshold(Input=inpt)
                 self.thresh.ThresholdRange = [ self.rangeMin, self.rangeMax ]
+                self.thresh.Scalars = ['POINTS', self.thresholdBy]
                 self.representation = simple.Show(self.thresh)
             self.representation.Visibility = 1
 

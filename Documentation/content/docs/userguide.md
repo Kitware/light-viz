@@ -203,4 +203,4 @@ The threshold module removes data except where one of the data array's values is
 <img src='lightviz_ui2/threshold.png' title='Threshold module controls in secondary UI' alt='Threshold module controls in secondary UI' />
 </center>
 
-Like the contour module, the threshold module adds extra meaning to the data array to color by dropdown.  Here it is also the data array to threshold by.  The two sliders below this set the minimum and maximum values to threshold.  Only parts of the dataset with values in between these bounds will be displayed in the output of the threshold module.
+Under the common controls is a dropdown to select the data array to threshold by.  Below this are two sliders to set the minimum and maximum values to threshold.  Only parts of the dataset with values in between these bounds will be displayed in the output of the threshold module.

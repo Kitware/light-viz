@@ -1,0 +1,12 @@
+.thresholdByDiv {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.thresholdLabel {
+  flex: 1;
+}
+
+.contents {
+}

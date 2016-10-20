@@ -99,6 +99,11 @@ def importDataset(dataDir, datafile, description, autoApply=True):
         },
     }
     reader = simple.OpenDataFile(datafile)
+    rep = simple.Show(reader)
+    rep.Visibility = 1
+    view = simple.Render()
+    view.ViewSize = [400, 400]
+
     ds = reader.GetClientSideObject().GetOutputDataObject(0)
     pointArrayMap = {}
     cellArrayMap = {}
@@ -116,13 +121,8 @@ def importDataset(dataDir, datafile, description, autoApply=True):
             bounds = unionBounds(bounds, newBounds)
 
     result['data']['arrays'] = pointArrayMap.values() + cellArrayMap.values()
-
     result['data']['bounds'] = bounds
 
-    rep = simple.Show(reader)
-    rep.Visibility = 1
-    view = simple.Render()
-    view.ViewSize = [400, 400]
     tnpath = os.path.join(filedir, 'thumbnail0.png')
     simple.SaveScreenshot(tnpath, view)
     result['thumbnails'].append('thumbnail0.png')

@@ -15,15 +15,15 @@ from paraview.web import protocols as pv_protocols
 #    vtkSMPVRepresentationProxy
 #    vtkSMTransferFunctionProxy
 #    vtkSMTransferFunctionManager
-from vtkPVServerManagerRenderingPython import *
+from vtk.vtkPVServerManagerRenderingPython import *
 
 # Needed for:
 #    vtkSMProxyManager
-from vtkPVServerManagerCorePython import *
+from vtk.vtkPVServerManagerCorePython import *
 
 # Needed for:
 #    vtkDataObject
-from vtkCommonDataModelPython import *
+from vtk.vtkCommonDataModelPython import *
 
 # =============================================================================
 #

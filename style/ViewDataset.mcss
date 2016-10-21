@@ -182,3 +182,10 @@
   composes: fa-fw       from 'font-awesome/css/font-awesome.css';
   composes: fa-square-o from 'font-awesome/css/font-awesome.css';
 }
+
+.loadingDataset {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: -50% -50%;
+}

@@ -171,6 +171,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.view.CenterOfRotation = self.view.CameraFocalPoint
         simple.Render(self.view)
 
+        self.getApplication().InvokeEvent('PushRender')
         self.anim = simple.GetAnimationScene()
 
         # Notify listeners
@@ -183,6 +184,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             arrName = array['name']
             self.setColormapRange(arrName, arrRange)
 
+        simple.Render(self.view)
         self.getApplication().InvokeEvent('PushRender')
 
         return self.activeMeta
@@ -749,7 +751,6 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationX.DiffuseColor = foreground
             self.representationY.DiffuseColor = foreground
             self.representationZ.DiffuseColor = foreground
-            self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.slice.useclipped")
     def setUseClipped(self, useClipped):
@@ -817,7 +818,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationX.Representation = mode
             self.representationY.Representation = mode
             self.representationZ.Representation = mode
-        self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.slice.color")
     def updateColorBy(self, field):
@@ -927,7 +928,6 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
     def setForegroundColor(self, foreground):
         if self.representation:
             self.representation.DiffuseColor = foreground
-        self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.mslice.useclipped")
     def setUseClipped(self, useClipped):
@@ -961,22 +961,21 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             normal = [0, 0, 0]
             normal[self.normal] = 1
             self.slice.SliceType.Normal = normal
-        self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.mslice.positions")
     def updateSlicePositions(self, positions):
         self.slicePositions = positions;
         if self.slice:
             self.slice.SliceOffsetValues = positions
-        self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.mslice.representation")
     def updateRepresentation(self, mode):
         self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
-
-        self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.mslice.color")
     def updateColorBy(self, field):
@@ -1064,7 +1063,6 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
     def setForegroundColor(self, foreground):
         if self.representation:
             self.representation.DiffuseColor = foreground
-        self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.streamline.getstate")
     def getState(self):
@@ -1137,8 +1135,8 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
                     if array['name'] == field:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
-            self.getApplication().InvokeEvent('PushRender')
             simple.Render()
+            self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.streamline.enable")
     def enableStreamline(self, enable):
@@ -1216,7 +1214,8 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
                 self.passThrough = None
                 self.enableVolume(oldVisibility)
 
-            self.getApplication().InvokeEvent('PushRender')
+
+                self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.volume.getstate")
     def getState(self):

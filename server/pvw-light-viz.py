@@ -186,6 +186,11 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         simple.GetRenderView().Background = [0,0,0]
         simple.GetRenderView().Background2 = [0,0,0]
 
+         # Update interaction mode
+        pxm = simple.servermanager.ProxyManager()
+        interactionProxy = pxm.GetProxy('settings', 'RenderViewInteractionSettings')
+        interactionProxy.Camera3DManipulators = ['Rotate', 'Pan', 'Zoom', 'Pan', 'Roll', 'Pan', 'Zoom', 'Rotate', 'Zoom']
+
 # =============================================================================
 # Main: Parse args and start server
 # =============================================================================

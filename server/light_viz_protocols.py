@@ -55,6 +55,60 @@ class LightVizConfig(pv_protocols.ParaViewWebProtocol):
         return [self.config, self.defaultProfile]
 
 # =============================================================================
+
+def simpleColorBy(rep=None, value=None):
+    """Set scalar color. This will automatically setup the color maps and others
+    necessary state for the representations. 'rep' must be the display
+    properties proxy i.e. the value returned by GetDisplayProperties() function.
+    If none is provided the display properties for the active source will be
+    used, if possible."""
+    rep = rep if rep else simple.GetDisplayProperties()
+    if not rep:
+        raise ValueError ("No display properties can be determined.")
+
+    association = rep.ColorArrayName.GetAssociation()
+    arrayname = rep.ColorArrayName.GetArrayName()
+    component = None
+    if value == None:
+        rep.SetScalarColoring(None, servermanager.GetAssociationFromString(association))
+        return
+    if not isinstance(value, tuple) and not isinstance(value, list):
+        value = (value,)
+    if len(value) == 1:
+        arrayname = value[0]
+    elif len(value) >= 2:
+        association = value[0]
+        arrayname = value[1]
+    if len(value) == 3:
+        # component name provided
+        componentName = value[2]
+        if componentName == "Magnitude":
+          component = -1
+        else:
+          if association == "POINTS":
+            array = rep.Input.PointData.GetArray(arrayname)
+          if association == "CELLS":
+            array = rep.Input.CellData.GetArray(arrayname)
+          if array:
+            # looking for corresponding component name
+            for i in range(0, array.GetNumberOfComponents()):
+              if componentName == array.GetComponentName(i):
+                component = i
+                break
+              # none have been found, try to use the name as an int
+              if i ==  array.GetNumberOfComponents() - 1:
+                try:
+                  component = int(componentName)
+                except ValueError:
+                  pass
+    if component is None:
+      rep.SetScalarColoring(arrayname, servermanager.GetAssociationFromString(association))
+    else:
+      rep.SetScalarColoring(arrayname, servermanager.GetAssociationFromString(association), component)
+    # rep.RescaleTransferFunctionToDataRange()
+
+
+# =============================================================================
 #
 # Dataset management
 #
@@ -74,6 +128,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.colormaps = {}
         self.foreground = [ 1, 1, 1]
         self.background = [ 0, 0, 0]
+        self.colorBy = ('__SOLID__', '__SOLID__')
         self.dataListeners = []
         self.view = simple.GetRenderView()
         self.view.UseOffscreenRenderingForScreenshots = offscreen
@@ -163,6 +218,8 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.datasetRep = simple.Show(self.dataset)
         self.datasetRep.Representation = 'Surface'
         self.datasetRep.Visibility = 1
+        self.colorBy = ('__SOLID__', '__SOLID__')
+        self.updateColorBy(self.colorBy[1], self.colorBy[0])
         self.view = simple.Render()
         self.view.Background = self.background
 
@@ -318,8 +375,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         tmp = {
                 "opacity": self.datasetRep.Opacity,
                 "representation": self.datasetRep.Representation,
-                "color": '__SOLID__' if len(self.datasetRep.ColorArrayName[1]) == 0 \
-                                     else self.datasetRep.ColorArrayName[1],
+                "color": self.colorBy,
                 "enabled": self.datasetRep.Visibility == 1,
             }
 
@@ -351,19 +407,21 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.dataset.color")
-    def updateColorBy(self, field):
+    def updateColorBy(self, field, location):
+        self.colorBy = (location, field)
         if field == '__SOLID__':
             self.datasetRep.ColorArrayName = ''
         else:
             # Select data array
-            vtkSMPVRepresentationProxy.SetScalarColoring(self.datasetRep.SMProxy, field, vtkDataObject.POINT)
+            simpleColorBy(self.datasetRep, (location, field))
             lutProxy = self.datasetRep.LookupTable
             pwfProxy = self.datasetRep.ScalarOpacityFunction
-            # lutProxy = simple.GetColorTransferFunction(field)
             for array in self.activeMeta['data']['arrays']:
-                if array['name'] == field:
-                    vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
-                    vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
+                if array['name'] == field and array['location'] == location:
+                    if lutProxy:
+                      vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+                    if pwfProxy:
+                      vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
         simple.Render()
         self.getApplication().InvokeEvent('PushRender')
@@ -392,12 +450,12 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         self.box = None
         self.boxRepr = None
         self.reprMode = 'Surface'
-        self.colorBy = '__SOLID__'
+        self.colorBy = ('__SOLID__', '__SOLID__')
         dataset_manager.addListener(self)
 
     def dataChanged(self):
         self.updateRepresentation('Surface')
-        self.updateColorBy('__SOLID__')
+        self.updateColorBy('__SOLID__', '__SOLID__')
         if self.clipX:
             self.clipX.Input = self.ds.getInput()
             bounds = self.ds.activeMeta['data']['bounds']
@@ -507,21 +565,21 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.clip.color")
-    def updateColorBy(self, field):
-        self.colorBy = field
+    def updateColorBy(self, field, location):
+        self.colorBy = (location, field)
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
-                # Select data array
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                simpleColorBy(self.representation, (location, field))
                 lutProxy = self.representation.LookupTable
                 pwfProxy = self.representation.ScalarOpacityFunction
-                # lutProxy = simple.GetColorTransferFunction(field)
                 for array in self.ds.activeMeta['data']['arrays']:
-                    if array['name'] == field:
+                    if array['name'] == field and array['location'] == location:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
-                        vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
+                        if pwfProxy:
+                          vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
+
 
             simple.Render()
             self.getApplication().InvokeEvent('PushRender')
@@ -549,7 +607,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
                 self.representation = simple.Show(self.clipZ)
                 self.representation.Representation = self.reprMode
                 self.representation.DiffuseColor = self.ds.foreground
-                self.updateColorBy(self.colorBy)
+                self.updateColorBy(self.colorBy[1], self.colorBy[0])
 
             self.representation.Visibility = 1
 
@@ -593,13 +651,13 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         self.contour = None
         self.representation = None
         self.reprMode = 'Surface'
-        self.colorBy = '__SOLID__'
+        self.colorBy = ('__SOLID__', '__SOLID__')
         self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
         self.updateRepresentation('Surface')
-        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"], self.ds.activeMeta["data"]["arrays"][0]["location"])
         if self.contour:
             self.contour.Input = self.ds.getInput()
             self.contour.Isosurfaces = [ sum(self.ds.activeMeta["data"]["arrays"][0]["range"]) * 0.5, ]
@@ -624,7 +682,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
     def getState(self):
         ret = {
             "representation": "Surface",
-            "color": "__SOLID__",
+            "color": self.colorBy,
             "enabled": False,
             "field": '',
             "use_clipped": self.useClippedInput,
@@ -632,8 +690,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         }
         if self.contour:
             ret["representation"] = self.representation.Representation
-            ret["color"] = '__SOLID__' if len(self.representation.ColorArrayName[1]) == 0 \
-                                     else self.representation.ColorArrayName[1]
+            ret["color"] = self.colorBy
             ret["enabled"] = self.representation.Visibility == 1,
             ret["field"] = self.contour.ContourBy[1]
             ret["values"] = [i for i in self.contour.Isosurfaces]
@@ -664,18 +721,16 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.contour.color")
-    def updateColorBy(self, field):
-        self.colorBy = field
+    def updateColorBy(self, field, location):
+        self.colorBy = (location, field)
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
-                # Select data array
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                simpleColorBy(self.representation, (location, field))
                 lutProxy = self.representation.LookupTable
-                # lutProxy = simple.GetColorTransferFunction(field)
                 for array in self.ds.activeMeta['data']['arrays']:
-                    if array['name'] == field:
+                    if array['name'] == field and array['location'] == location:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
@@ -690,7 +745,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
                 self.representation = simple.Show(self.contour)
                 self.representation.Representation = self.reprMode
                 self.representation.DiffuseColor = self.ds.foreground
-                self.updateColorBy(self.colorBy)
+                self.updateColorBy(self.colorBy[1], self.colorBy[0])
             else:
                 self.contour.Input = inpt
 
@@ -724,13 +779,13 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
         self.visible = [1, 1, 1]
         self.enabled = False
         self.reprMode = 'Surface'
-        self.colorBy = '__SOLID__'
+        self.colorBy = ('__SOLID__', '__SOLID__')
         self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
         self.updateRepresentation('Surface')
-        self.updateColorBy('__SOLID__')
+        self.updateColorBy('__SOLID__', '__SOLID__')
         if self.sliceX:
             bounds = self.ds.activeMeta['data']['bounds']
             center = [(bounds[i*2] + bounds[i*2+1])*0.5 for i in range(3)]
@@ -821,27 +876,23 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.slice.color")
-    def updateColorBy(self, field):
-        self.colorBy = field
+    def updateColorBy(self, field, location):
+        self.colorBy = (location, field)
         if self.representationX:
             if field == '__SOLID__':
                 self.representationX.ColorArrayName = ''
                 self.representationY.ColorArrayName = ''
                 self.representationZ.ColorArrayName = ''
             else:
-                # Select data array
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representationX.SMProxy, field, vtkDataObject.POINT)
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representationY.SMProxy, field, vtkDataObject.POINT)
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representationZ.SMProxy, field, vtkDataObject.POINT)
-                lutProxyX = self.representationX.LookupTable
-                lutProxyY = self.representationY.LookupTable
-                lutProxyZ = self.representationZ.LookupTable
-                # lutProxy = simple.GetColorTransferFunction(field)
-                for array in self.ds.activeMeta['data']['arrays']:
-                    if array['name'] == field:
-                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxyX.SMProxy, array['range'][0], array['range'][1], False)
-                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxyY.SMProxy, array['range'][0], array['range'][1], False)
-                        vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxyZ.SMProxy, array['range'][0], array['range'][1], False)
+                simpleColorBy(self.representationX, self.colorBy)
+                simpleColorBy(self.representationY, self.colorBy)
+                simpleColorBy(self.representationZ, self.colorBy)
+                # Update data array range
+                for rep in [self.representationX, self.representationY, self.representationZ]:
+                  lutProxy = rep.LookupTable
+                  for array in self.ds.activeMeta['data']['arrays']:
+                      if array['name'] == field and array['location'] == location:
+                          vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
             self.getApplication().InvokeEvent('PushRender')
@@ -875,7 +926,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                 self.representationZ.DiffuseColor = self.ds.foreground
 
                 self.updateRepresentation(self.reprMode)
-                self.updateColorBy(self.colorBy)
+                self.updateColorBy(self.colorBy[1], self.colorBy[0])
             else:
                 self.sliceX.Input = inpt
                 self.sliceY.Input = inpt
@@ -910,13 +961,13 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
         self.normal = 0
         self.slicePositions = []
         self.reprMode = "Surface"
-        self.colorBy = '__SOLID__'
+        self.colorBy = ('__SOLID__', '__SOLID__')
         self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
         self.updateRepresentation('Surface')
-        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"], self.ds.activeMeta["data"]["arrays"][0]["location"])
         bounds = self.ds.activeMeta['data']['bounds']
         center = [(bounds[i*2] + bounds[i*2+1])*0.5 for i in range(3)]
         self.updateNormal(0)
@@ -978,18 +1029,17 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.mslice.color")
-    def updateColorBy(self, field):
-        self.colorBy = field
+    def updateColorBy(self, field, location):
+        self.colorBy = (location, field)
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
-                # Select data array
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                simpleColorBy(self.representation, self.colorBy)
+                # Update data array range
                 lutProxy = self.representation.LookupTable
-                # lutProxy = simple.GetColorTransferFunction(field)
                 for array in self.ds.activeMeta['data']['arrays']:
-                    if array['name'] == field:
+                    if array['name'] == field and array['location'] == location:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
@@ -1008,7 +1058,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
                 self.representation = simple.Show(self.slice)
                 self.representation.Representation = self.reprMode
                 self.representation.DiffuseColor = self.ds.foreground
-                self.updateColorBy(self.colorBy)
+                self.updateColorBy(self.colorBy[1], self.colorBy[0])
             else:
                 self.slice.Input = inpt
             self.representation.Visibility = 1
@@ -1035,7 +1085,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
         self.position = [ 0.0, 0.0, 0.0 ]
         self.representation = None
         self.reprMode = 'Surface'
-        self.colorBy = '__SOLID__'
+        self.colorBy = ('__SOLID__', '__SOLID__')
         self.vector = None
         self.numPoints = 50
         self.radius = 1.0
@@ -1045,7 +1095,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
         bounds = self.ds.activeMeta['data']['bounds']
         length = [bounds[i*2+1] - bounds[i*2] for i in range(3)]
         self.updateRepresentation('Surface')
-        self.updateColorBy('__SOLID__')
+        self.updateColorBy('__SOLID__', '__SOLID__')
         self.vector = None
         self.updateRadius(min(length) / 8.0)
         self.updatePosition((bounds[1] + bounds[0])/2.0,
@@ -1121,18 +1171,17 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
             self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.streamline.color")
-    def updateColorBy(self, field):
-        self.colorBy = field
+    def updateColorBy(self, field, location):
+        self.colorBy = (location, field)
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
-                # Select data array
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                simpleColorBy(self.representation, self.colorBy)
+                # Update data array range
                 lutProxy = self.representation.LookupTable
-                # lutProxy = simple.GetColorTransferFunction(field)
                 for array in self.ds.activeMeta['data']['arrays']:
-                    if array['name'] == field:
+                    if array['name'] == field and array['location'] == location:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
@@ -1163,7 +1212,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
                 self.representation = simple.Show(self.tube)
                 self.representation.Representation = self.reprMode
                 self.representation.DiffuseColor = self.ds.foreground
-                self.updateColorBy(self.colorBy)
+                self.updateColorBy(self.colorBy[1], self.colorBy[0])
 
             self.representation.Visibility = 1
 
@@ -1187,12 +1236,12 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
         self.clip = clip
         self.passThrough = None
         self.representation = None
-        self.colorBy = '__SOLID__'
+        self.colorBy = ('__SOLID__', '__SOLID__')
         self.useClippedInput = False
         dataset_manager.addListener(self)
 
     def dataChanged(self):
-        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"])
+        self.updateColorBy(self.ds.activeMeta["data"]["arrays"][0]["name"], self.ds.activeMeta["data"]["arrays"][0]["location"])
         if self.passThrough:
             simple.Delete(self.passThrough)
             self.passThrough = None
@@ -1233,19 +1282,21 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
         pass # It is a volume rendering, so that is the only valid representation
 
     @exportRpc("light.viz.volume.color")
-    def updateColorBy(self, field):
-        self.colorBy = field
+    def updateColorBy(self, field, location):
+        self.colorBy = (location, field)
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
-                # Select data array
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                simpleColorBy(self.representation, self.colorBy)
+                # Update data array range
                 lutProxy = self.representation.LookupTable
-                # lutProxy = simple.GetColorTransferFunction(field)
+                pwfProxy = self.representation.ScalarOpacityFunction
                 for array in self.ds.activeMeta['data']['arrays']:
-                    if array['name'] == field:
+                    if array['name'] == field and array['location'] == location:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+                        if pwfProxy:
+                          vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
             self.getApplication().InvokeEvent('PushRender')
@@ -1261,7 +1312,7 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
             if not self.representation:
                 self.representation = simple.Show(self.passThrough)
                 self.representation.Representation = 'Volume'
-                self.updateColorBy(self.colorBy)
+                self.updateColorBy(self.colorBy[1], self.colorBy[0])
             self.representation.Visibility = 1
 
         if not enable and self.representation:
@@ -1284,7 +1335,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
         self.clip = clip
         self.thresh = None
         self.representation = None
-        self.colorBy = '__SOLID__'
+        self.colorBy = ('__SOLID__', '__SOLID__')
         self.useClippedInput = False
         self.rangeMin = 0
         self.rangeMax = 1
@@ -1301,7 +1352,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
         if self.representation:
             simple.Delete(self.representation)
             self.representation = None
-        self.updateColorBy('__SOLID__')
+        self.updateColorBy('__SOLID__', '__SOLID__')
 
     def setForegroundColor(self, foreground):
         if self.representation:
@@ -1343,19 +1394,21 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
             self.getApplication().InvokeEvent('PushRender')
 
     @exportRpc("light.viz.threshold.color")
-    def updateColorBy(self, field):
-        self.colorBy = field
+    def updateColorBy(self, field, location):
+        self.colorBy = (location, field)
         if self.representation:
             if field == '__SOLID__':
                 self.representation.ColorArrayName = ''
             else:
-                # Select data array
-                vtkSMPVRepresentationProxy.SetScalarColoring(self.representation.SMProxy, field, vtkDataObject.POINT)
+                simpleColorBy(self.representation, self.colorBy)
+                # Update data array range
                 lutProxy = self.representation.LookupTable
-                # lutProxy = simple.GetColorTransferFunction(field)
+                pwfProxy = self.representation.ScalarOpacityFunction
                 for array in self.ds.activeMeta['data']['arrays']:
-                    if array['name'] == field:
+                    if array['name'] == field and array['location'] == location:
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
+                        if pwfProxy:
+                          vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
             self.getApplication().InvokeEvent('PushRender')

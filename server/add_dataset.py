@@ -51,8 +51,8 @@ def loadArrayDataMultiBlock(dataset, pointArrayMap, cellArrayMap):
         for i in range(dataset.GetNumberOfBlocks()):
             loadArrayDataMultiBlock(dataset.GetBlock(i), pointArrayMap, cellArrayMap)
     else:
-        loadArrayData(dataset.GetPointData(), 'Point', pointArrayMap)
-        loadArrayData(dataset.GetCellData(), 'Cell', cellArrayMap)
+        loadArrayData(dataset.GetPointData(), 'POINTS', pointArrayMap)
+        loadArrayData(dataset.GetCellData(), 'CELLS', cellArrayMap)
 
 def unionBounds(b1, b2):
     if b1 is None:

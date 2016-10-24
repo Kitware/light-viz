@@ -4,7 +4,7 @@ r"""
 
         $ pvpython -dr .../pvw-light-viz.py --data-dir /.../path-to-your-data-directory
 
-        --data-dir
+        --data
              Path used to list that directory on the server and let the client choose a
              file to load.  You may also specify multiple directories, each with a name
              that should be displayed as the top-level name of the directory in the UI.
@@ -204,6 +204,8 @@ if __name__ == "__main__":
     LightVizServer.add_arguments(parser)
     args = parser.parse_args()
     LightVizServer.configure(args)
+
+    args.fsEndpoints = 'ds:' + args.data
 
     # Start server
     server.start_webserver(options=args, protocol=LightVizServer)

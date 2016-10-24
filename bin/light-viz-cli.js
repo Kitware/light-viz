@@ -90,6 +90,8 @@ if(pvPythonExecs.length < 1) {
         if (program.data) {
           cmdLine.push('--data');
           cmdLine.push(program.data);
+          // cmdLine.push('--fs-endpoints');
+          // cmdLine.push('ds:' + program.data);
         }
         if (program.config) {
           cmdLine.push('--config');

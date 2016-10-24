@@ -165,11 +165,15 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
     def getThumbnails(self, datasetName):
         thumbnails = []
         info = self.datasetMap[datasetName]
+        oldVersion = servermanager.vtkSMProxyManager.GetVersionMinor() < 2 and servermanager.vtkSMProxyManager.GetVersionMajor() < 6
         if info:
             basePath = info['path']
             for fileName in info['meta']['thumbnails']:
-                with open(os.path.join(basePath, fileName), 'rb') as image:
+                if oldVersion:
+                  with open(os.path.join(basePath, fileName), 'rb') as image:
                     thumbnails.append('data:image/%s;base64,%s' % (fileName.split('.')[-1], base64.b64encode(image.read())))
+                else:
+                  thumbnails.append('/ds/%s/%s' % (datasetName, fileName))
 
         return thumbnails
 

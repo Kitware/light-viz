@@ -649,6 +649,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         self.ds = dataset_manager
         self.clip = clip
         self.contour = None
+        self.contourByField = None
         self.representation = None
         self.reprMode = 'Surface'
         self.colorBy = ('__SOLID__', '__SOLID__')
@@ -710,8 +711,11 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
     @exportRpc("light.viz.contour.by")
     def updateContourBy(self, field):
         if self.contour:
+            self.contourByField = None
             self.contour.ContourBy = field
             self.getApplication().InvokeEvent('PushRender')
+        else:
+          self.contourByField = field
 
     @exportRpc("light.viz.contour.representation")
     def updateRepresentation(self, mode):
@@ -746,6 +750,8 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
                 self.representation.Representation = self.reprMode
                 self.representation.DiffuseColor = self.ds.foreground
                 self.updateColorBy(self.colorBy[1], self.colorBy[0])
+                if self.contourByField:
+                  self.updateContourBy(self.contourByField)
             else:
                 self.contour.Input = inpt
 

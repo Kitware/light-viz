@@ -1088,6 +1088,8 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
         self.ds = dataset_manager
         self.streamline = None
         self.tube = None
+        self.seed = None
+        self.seedRep = None
         self.position = [ 0.0, 0.0, 0.0 ]
         self.representation = None
         self.reprMode = 'Surface'
@@ -1145,6 +1147,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
     def updatePosition(self, x, y, z):
         self.position = [x, y, z]
         if self.streamline:
+            self.seed.Center = self.position
             self.streamline.SeedType.Center = self.position
             self.getApplication().InvokeEvent('PushRender')
 
@@ -1166,6 +1169,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
     def updateRadius(self, rad):
         self.radius = float(rad)
         if self.streamline:
+            self.seed.Radius = self.radius
             self.streamline.SeedType.Radius = self.radius
             self.getApplication().InvokeEvent('PushRender')
 
@@ -1207,6 +1211,15 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
                 self.streamline.SeedType.Radius = self.radius
                 self.streamline.SeedType.NumberOfPoints = self.numPoints
 
+                if not self.seed:
+                  self.seed = simple.Sphere()
+                  self.seed.Center = self.position
+                  self.seed.Radius = self.radius
+                  self.seedRep = simple.Show(Input=self.seed)
+                  self.seedRep.Representation = 'Wireframe'
+                  self.seedRep.DiffuseColor = [1, 1, 1]
+                  self.seedRep.Visibility = 0
+
                 self.tube = simple.Tube(Input=self.streamline)
                 self.tube.Capping = 1
                 self.tube.Radius = min(length) / 100.0
@@ -1226,6 +1239,22 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
+        self.getApplication().InvokeEvent('PushRender')
+
+    @exportRpc("light.viz.streamline.seed.show")
+    def showSeed(self, enable):
+        if enable and self.ds.getInput():
+            self.seedRep.Visibility = 1
+        elif (not enable) and self.seedRep:
+            self.seedRep.Visibility = 0
+
+        self.getApplication().InvokeEvent('PushRender')
+
+    @exportRpc("light.viz.streamline.seed.update")
+    def updateSeed(self, position, radius):
+      if self.seed:
+        self.seed.Center = position
+        self.seed.Radius = radius
         self.getApplication().InvokeEvent('PushRender')
 
 # =============================================================================

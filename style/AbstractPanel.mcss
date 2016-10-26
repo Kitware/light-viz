@@ -25,7 +25,7 @@
 .topBar {
   border-bottom: 1px solid black;
   text-align: center;
-  flex: 1;
+  flex: none;
   padding: 5px 10px;
   position: relative;
   min-height: 15px;

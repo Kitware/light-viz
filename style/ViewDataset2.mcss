@@ -26,7 +26,7 @@
 }
 
 .controls {
-  flex: 1;
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -164,6 +164,7 @@
   position: relative;
   height: 22px;
   width: 22px;
+  min-width: 22px;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -176,6 +177,7 @@
   flex-direction: row;
   cursor: pointer;
   padding: 0 3px;
+  white-space: nowrap;
 }
 
 .autoApplyOnIcon {

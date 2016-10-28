@@ -49,7 +49,7 @@ $ LightViz
 
 ```
 
-Once you've added your dataset(s) to your LightViz data directory using the ```--add-dataset``` option, you will be able to open it/them with a command line similar to the one below. 
+Once you've added your dataset(s) to your LightViz data directory using the `--add-dataset` option, you will be able to open it/them with a command line similar to the one below. 
 
 ```sh
 $ LightViz --paraview /Applications/paraview.app --data ~/LightViz-database

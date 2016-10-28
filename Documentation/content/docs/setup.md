@@ -85,7 +85,7 @@ The default configuration looks as follow and must respect the JSON format:
 }
 ```
 
-While the current set of modules are `dataset, clip, contour, slice, mslice, streamline, volume, threshold`.
+While the current set of modules are `dataset`, `clip`, `contour`, `slice`, `mslice`, `streamline`, `volume`, `threshold`.
 
 By default ParaView LightViz uses a profile that enables everything and uses the default look and feel.  There is one other profile in the default configuration that uses an alternate look and feel for the UI.  Its name is 'secondary' so to use it add `--profile secondary` to the command line when starting ParaView LightViz.
 

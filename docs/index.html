@@ -2,7 +2,7 @@
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
   <meta charset="utf-8">
-  <title>LightViz</title>
+  <title>ParaView LightViz | LightViz</title>
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Canonical links -->
@@ -39,19 +39,19 @@
   <!-- RSS -->
   <link rel="alternate" href="/light-viz/atom.xml" title="LightViz">
   <!-- Open Graph -->
-  <meta name="description" content="ParaView LightVizParaView LightViz is a simple paraviewweb-based application for viewing datasets.  It can be installed with npm (npm install light-viz).
-To learn how to start LightViz and load your d">
+  <meta name="description" content="The ParaView LightViz is a Web application that aims to enable scientific visualization on the Web using a ParaView backend for data processing and rendering.
+If you encounter any problems when using">
 <meta property="og:type" content="website">
-<meta property="og:title" content="LightViz">
+<meta property="og:title" content="ParaView LightViz">
 <meta property="og:url" content="https://kitware.github.io/light-viz/docs/index.html">
 <meta property="og:site_name" content="LightViz">
-<meta property="og:description" content="ParaView LightVizParaView LightViz is a simple paraviewweb-based application for viewing datasets.  It can be installed with npm (npm install light-viz).
-To learn how to start LightViz and load your d">
-<meta property="og:updated_time" content="2016-10-20T23:36:06.168Z">
+<meta property="og:description" content="The ParaView LightViz is a Web application that aims to enable scientific visualization on the Web using a ParaView backend for data processing and rendering.
+If you encounter any problems when using">
+<meta property="og:updated_time" content="2016-10-28T15:31:18.138Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LightViz">
-<meta name="twitter:description" content="ParaView LightVizParaView LightViz is a simple paraviewweb-based application for viewing datasets.  It can be installed with npm (npm install light-viz).
-To learn how to start LightViz and load your d">
+<meta name="twitter:title" content="ParaView LightViz">
+<meta name="twitter:description" content="The ParaView LightViz is a Web application that aims to enable scientific visualization on the Web using a ParaView backend for data processing and rendering.
+If you encounter any problems when using">
   <!-- Google Analytics -->
   
 </head>
@@ -89,16 +89,25 @@ To learn how to start LightViz and load your d">
           <div class="article">
             <div class="inner">
               <header class="article-header">
-                <h1 class="article-title" itemprop="name"></h1>
+                <h1 class="article-title" itemprop="name">ParaView LightViz</h1>
               </header>
               <div class="article-content" itemprop="articleBody">
-                <h2 id="ParaView-LightViz" class="article-heading"><a href="#ParaView-LightViz" class="headerlink" title="ParaView LightViz"></a>ParaView LightViz<a class="article-anchor" href="#ParaView-LightViz" aria-hidden="true"></a></h2><p>ParaView LightViz is a simple paraviewweb-based application for viewing datasets.  It can be installed with npm (<code>npm install light-viz</code>).</p>
-<p>To learn how to start LightViz and load your datasets into it, see the <a href="setup.html">setup guide</a>.</p>
-<p>To get started using the application see the <a href="userguide.html">user’s guide</a>.</p>
+                <p>The ParaView LightViz is a Web application that aims to enable scientific visualization on the Web using a ParaView backend for data processing and rendering.</p>
+<p>If you encounter any problems when using ParaView LightViz, you can find the solutions in <a href="troubleshooting.html">Troubleshooting</a> or ask me on <a href="https://github.com/kitware/light-viz/issues" target="_blank" rel="external">GitHub</a> or <a href="http://www.paraview.org/mailman/listinfo/paraview" target="_blank" rel="external">Mailing list</a>. If you can’t find the answer, please report it on GitHub.</p>
+<h2 id="What-is-ParaView-LightViz" class="article-heading"><a href="#What-is-ParaView-LightViz" class="headerlink" title="What is ParaView LightViz?"></a>What is ParaView LightViz?<a class="article-anchor" href="#What-is-ParaView-LightViz" aria-hidden="true"></a></h2><p>ParaView LightViz is a standalone application that leverage ParaView capabilities on the backend to produce interactive visualizations over the Web. The LightViz application can be used locally as a command line tool or remotely when properly deployed.</p>
+<p>The ParaViewWeb LightViz aims to provides a simple and customizable visualization application for your browser.</p>
+<h2 id="Installation" class="article-heading"><a href="#Installation" class="headerlink" title="Installation"></a>Installation<a class="article-anchor" href="#Installation" aria-hidden="true"></a></h2><p>It only takes few minutes to set up ParaView LightViz. If you encounter a problem and can’t find the solution here, please <a href="https://github.com/kitware/light-viz/issues" target="_blank" rel="external">submit a GitHub issue</a>.</p>
+<p>ParaView LightViz require ParaView 5.2+ which can be downloaded <a href="http://www.paraview.org/download/" target="_blank" rel="external">here</a> which also bundle the ParaView LightViz application along.</p>
+<p>Although using ParaView LightViz from the command line via <a href="https://nodejs.org/en/" target="_blank" rel="external">Node</a> and <a href="https://www.npmjs.com/" target="_blank" rel="external">NPM</a> could be easier for trying it out.</p>
+<p>In order to install and execute the LightViz application on your system from your command line environment, just run the following commands assuming <a href="https://nodejs.org/en/" target="_blank" rel="external">Node</a> is available on your system:</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><div class="line">$ npm install -g light-viz</div><div class="line">$ LightViz</div><div class="line"></div><div class="line">  Usage: LightViz [options]</div><div class="line"></div><div class="line">  Options:</div><div class="line"></div><div class="line">    -h, --help                   output usage information</div><div class="line">    -V, --version                output the version number</div><div class="line">    -p, --port [8080]            Start web server with given port</div><div class="line">    <span class="_">-d</span>, --data [directory]       Data directory to serve</div><div class="line">    <span class="_">-s</span>, --server-only            Do not open the web browser</div><div class="line">    </div><div class="line">    --paraview [path]            Provide the ParaView root path to use</div><div class="line">    --offscreen                  Use flag to specify that ParaView should be used <span class="keyword">in</span> Offscreen mode</div><div class="line">    </div><div class="line">    --data-analysis              Inspect data directory and compute metadata</div><div class="line">    </div><div class="line">    --config [path]              Provide a Lightviz config file to use</div><div class="line">    --profile [profile]          Specify <span class="built_in">which</span> profile from the config file to use</div><div class="line">    </div><div class="line">    --add-dataset [path]         Specify a dataset to add to the given data directory.  Requires the description and data flags</div><div class="line">    --description [description]  Specify the description <span class="keyword">for</span> the dataset being added</div><div class="line">    --autoApply                  Optional <span class="keyword">for</span> use with --add-dataset.  Specifies that apply/reset buttons are not needed with the dataset</div></pre></td></tr></table></figure>
+<p>Once you’ve added your dataset(s) to your LightViz data directory using the <figure class="highlight plain"><figcaption><span>option, you will be able to open it/them with a command line similar to the one below. </span></figcaption><table><tr><td class="code"><pre><div class="line"></div><div class="line">```sh</div><div class="line">$ LightViz --paraview /Applications/paraview.app --data ~/LightViz-database</div></pre></td></tr></table></figure></p>
+<h3 id="Requirements" class="article-heading"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements<a class="article-anchor" href="#Requirements" aria-hidden="true"></a></h3><p>LightViz as opposed to other visualization tools requires to pre-process your data so it can make smarter choice via the user interface.</p>
+<p>You can learn more how to get started with the <a href="setup.html">setup guide</a>.<br>Then once you have some dataset, you can learn more on how to use the application via our <a href="userguide.html">user’s guide</a>.</p>
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2016-10-20T23:36:06.168Z" itemprop="dateModified">Last updated: 2016-10-20</time>
+                <time class="article-footer-updated" datetime="2016-10-28T15:31:18.138Z" itemprop="dateModified">Last updated: 2016-10-28</time>
                 <a href="/light-viz/docs/index.html" class="article-footer-next" title="Overview"><span>Next</span><i class="fa fa-chevron-right"></i></a>
               </footer>
               
@@ -107,7 +116,7 @@ To learn how to start LightViz and load your d">
           <aside id="article-toc" role="navigation">
             <div id="article-toc-inner">
               <strong class="sidebar-title">Contents</strong>
-              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ParaView-LightViz"><span class="toc-text">ParaView LightViz</span></a></li></ol>
+              <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-is-ParaView-LightViz"><span class="toc-text">What is ParaView LightViz?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Installation"><span class="toc-text">Installation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Requirements"><span class="toc-text">Requirements</span></a></li></ol></li></ol>
               <a href="#" id="article-toc-top">Back to Top</a>
             </div>
           </aside>

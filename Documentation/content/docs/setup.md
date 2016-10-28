@@ -31,9 +31,11 @@ $ LightViz
     --autoApply                  Optional for use with --add-dataset.  Specifies that apply/reset buttons are not needed with the dataset
 ```
 
-# Setup
+# Requirement
 
-The ParaView LightViz executable needs ParaView 5.1.0 (currently the master branch) or greater build with paraviewweb enabled installed on your computer.  The ParaView binaries have paraviewweb enabled, so you can use these rather than building ParaView yourself.  If the location of the pvpython executable is not in you PATH environment variable, you will need to add the `--paraview ROOT` flag on all invocations of ParaView LightViz or set the `PARAVIEW_HOME` environment variable to the root of your ParaView installation.  The root is two levels up from the pvpython executable so pvpython should be located at ROOT/bin/pvpython.
+ParaView LightViz executable requires ParaView 5.2+ which can be downloaded [here](http://www.paraview.org/download/).
+
+Then you can either set the `PARAVIEW_HOME` environment variable to the root of your ParaView installation or add the `--paraview ROOT` flag on all invocations of ParaView LightViz.
 
 # Importing Data
 
@@ -49,6 +51,7 @@ The first step for a new user or a user on a new computer will be to set up a da
 ```
 
 ParaView LightViz has an option to help you generate your data directory.
+
 ```
 LightViz --data DATA_DIR --add-dataset path/to/dataset --description "Description of my data"
 ```
@@ -62,6 +65,27 @@ To run ParaView LightViz you will need a data directory created.  To learn how t
 Run `LightViz --paraview ROOT -d DATA_DIR` and ParaView LightViz will open a web browser pointed at the locally served paraviewweb content.  If you want to suppress the automatic opening of the web browser, you can add the `-s` flag.
 
 ParaView LightViz supports profiles that modify which modules are available and which look & feel to use for the UI.  If you have a configuration file that specifies profiles add the `--config CONFIG_FILE` option when starting ParaView LightViz.  To specify which profile to use, add the `--profile PROFILE_NAME`.
+
+The default configuration looks as follow and must respect the JSON format:
+
+```js
+{
+  "profiles": {
+    "default": {
+        "modules_included": [],
+        "modules_excluded": [],
+        "viewType": 1,
+    },
+    "secondary": {
+        "modules_included": [],
+        "modules_excluded": [],
+        "viewType": 2,
+    }
+  }
+}
+```
+
+While the current set of modules are `dataset, clip, contour, slice, mslice, streamline, volume, threshold`.
 
 By default ParaView LightViz uses a profile that enables everything and uses the default look and feel.  There is one other profile in the default configuration that uses an alternate look and feel for the UI.  Its name is 'secondary' so to use it add `--profile secondary` to the command line when starting ParaView LightViz.
 

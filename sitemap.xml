@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://kitware.github.io/light-viz/index.html</loc>
-    
-    <lastmod>2016-10-28T15:31:18.142Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://kitware.github.io/light-viz/docs/setup.html</loc>
     
-    <lastmod>2016-10-28T15:31:18.142Z</lastmod>
+    <lastmod>2016-10-28T15:41:49.765Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://kitware.github.io/light-viz/docs/index.html</loc>
     
-    <lastmod>2016-10-28T15:31:18.138Z</lastmod>
+    <lastmod>2016-10-28T15:41:49.757Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://kitware.github.io/light-viz/index.html</loc>
+    
+    <lastmod>2016-10-28T15:31:18.142Z</lastmod>
     
   </url>
   

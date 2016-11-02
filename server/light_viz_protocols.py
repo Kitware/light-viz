@@ -122,6 +122,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.datasetMap = {}
         self.dataset = None
         self.reader = None
+        self.context = None
         self.extractBlocks = None
         self.datasets = []
         self.activeMeta = None
@@ -205,7 +206,18 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             self.datasetRep = None
             self.view = None
 
+        if self.context:
+          simple.Delete(self.reader)
+          self.context = None
+          self.contextRep = None
+
         self.activeMeta = self.datasetMap[datasetName]['meta']
+
+
+        if 'context' in self.activeMeta['data']:
+          self.context = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['context']))
+          self.contextRep = simple.Show(self.context)
+
         filesToLoad = []
         if type(self.activeMeta['data']['file']) is list:
           for fileName in self.activeMeta['data']['file']:

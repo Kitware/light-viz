@@ -206,7 +206,14 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             self.view = None
 
         self.activeMeta = self.datasetMap[datasetName]['meta']
-        self.reader = simple.OpenDataFile(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
+        filesToLoad = []
+        if type(self.activeMeta['data']['file']) is list:
+          for fileName in self.activeMeta['data']['file']:
+            filesToLoad.append(os.path.join(self.datasetMap[datasetName]['path'], fileName))
+        else:
+          filesToLoad.append(os.path.join(self.datasetMap[datasetName]['path'], self.activeMeta['data']['file']))
+
+        self.reader = simple.OpenDataFile(filesToLoad)
         # Have to do this to force the reader to execute and get the data information
         readerRep = simple.Show(self.reader)
         readerRep.Visibility = 0

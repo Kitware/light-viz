@@ -206,7 +206,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     LightVizServer.configure(args)
 
-    args.fsEndpoints = 'ds:' + args.data
+    args.fsEndpoints = 'ds=' + args.data
 
     # Start server
     server.start_webserver(options=args, protocol=LightVizServer)

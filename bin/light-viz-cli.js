@@ -8,6 +8,10 @@ var fs = require('fs'),
 
 require('shelljs/global');
 
+function quotePath(str) {
+  return '"' + str + '"';
+}
+
 program
   .version('1.0.0')
   .option('-p, --port [8080]', 'Start web server with given port', 8080)
@@ -51,7 +55,7 @@ if(!paraview) {
     });
 }
 
-if (!process.argv.slice(2).length) {
+if (!process.argv.slice(2).length || !program.help) {
     program.outputHelp();
     process.exit(0);
 }
@@ -70,10 +74,16 @@ if(pvPythonExecs.length < 1) {
         if (!program.description) {
             console.log('Adding data requires specifying the description of the dataset with --description');
         }
-        const addDatasetCmdLine = [ pvPythonExecs[0], '-dr',
-            path.normalize(path.join(__dirname, '../server/add_dataset.py')),
-            '--data-dir', program.data, '--file', program.addDataset, '--description',
-            program.description
+        const addDatasetCmdLine = [
+          quotePath(pvPythonExecs[0]),
+          '-dr',
+          quotePath(path.normalize(path.join(__dirname, '../server/add_dataset.py'))),
+          '--data-dir',
+          quotePath(program.data),
+          '--file',
+          quotePath(program.addDataset),
+          '--description',
+          quotePath(program.description),
         ];
         if (program.autoApply) {
           addDatasetCmdLine.push('--autoApply');
@@ -83,7 +93,7 @@ if(pvPythonExecs.length < 1) {
         console.log('| Execute:');
         console.log('| $', addDatasetCmdLine.join('\n|\t'));
         console.log('===============================================================================\n');
-        shell.exec(addDatasetCmdLine.join(' '), {async:true}).stdout.on('data', function(data) {
+        shell.exec(addDatasetCmdLine.join(' '), { async: true }).stdout.on('data', function(data) {
             if(data.indexOf('Starting factory') !== -1) {
                 // Open browser if asked
                 if (!program.serverOnly) {
@@ -93,24 +103,25 @@ if(pvPythonExecs.length < 1) {
         });
     } else {
         const cmdLine = [
-            pvPythonExecs[0], '-dr',
-            path.normalize(path.join(__dirname, '../server/pvw-light-viz.py')),
-            '--content', path.normalize(path.join(__dirname, '../dist')),
+            quotePath(pvPythonExecs[0]),
+            '-dr',
+            quotePath(path.normalize(path.join(__dirname, '../server/pvw-light-viz.py'))),
+            '--content', quotePath(path.normalize(path.join(__dirname, '../dist'))),
             '--port', program.port,
         ];
         if (program.data) {
           cmdLine.push('--data');
-          cmdLine.push(program.data);
+          cmdLine.push(quotePath(program.data));
           // cmdLine.push('--fs-endpoints');
           // cmdLine.push('ds:' + program.data);
         }
         if (program.config) {
           cmdLine.push('--config');
-          cmdLine.push(program.config);
+          cmdLine.push(quotePath(program.config));
         }
         if (program.profile) {
           cmdLine.push('--profile');
-          cmdLine.push(program.profile);
+          cmdLine.push(quotePath(program.profile));
         }
         if (program.offscreen) {
           cmdLine.push('--offscreen');
@@ -120,7 +131,7 @@ if(pvPythonExecs.length < 1) {
         console.log('| Execute:');
         console.log('| $', cmdLine.join('\n|\t'));
         console.log('===============================================================================\n');
-        shell.exec(cmdLine.join(' '), {async:true}).stdout.on('data', function(data) {
+        shell.exec(cmdLine.join(' '), { async: true }).stdout.on('data', function(data) {
             if(data.indexOf('Starting factory') !== -1) {
                 // Open browser if asked
                 if (!program.serverOnly) {

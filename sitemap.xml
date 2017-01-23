@@ -2,58 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://kitware.github.io/light-viz/docs/setup.html</loc>
-    
-    <lastmod>2016-10-28T15:41:49.765Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://kitware.github.io/light-viz/docs/index.html</loc>
-    
-    <lastmod>2016-10-28T15:41:49.757Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://kitware.github.io/light-viz/index.html</loc>
     
-    <lastmod>2016-10-28T15:31:18.142Z</lastmod>
+    <lastmod>2017-01-23T20:10:21.400Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://kitware.github.io/light-viz/docs/tools.html</loc>
     
-    <lastmod>2016-10-20T23:36:06.176Z</lastmod>
+    <lastmod>2017-01-23T20:10:21.400Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://kitware.github.io/light-viz/docs/troubleshooting.html</loc>
     
-    <lastmod>2016-10-20T23:36:06.176Z</lastmod>
+    <lastmod>2017-01-23T20:10:21.400Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://kitware.github.io/light-viz/docs/setup.html</loc>
+    
+    <lastmod>2017-01-23T20:10:21.400Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://kitware.github.io/light-viz/docs/userguide.html</loc>
     
-    <lastmod>2016-10-20T23:36:06.176Z</lastmod>
+    <lastmod>2017-01-23T20:10:21.400Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://kitware.github.io/light-viz/docs/contributing.html</loc>
     
-    <lastmod>2016-10-20T23:36:06.168Z</lastmod>
+    <lastmod>2017-01-23T20:10:21.392Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://kitware.github.io/light-viz/docs/index.html</loc>
+    
+    <lastmod>2017-01-23T20:10:21.392Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://kitware.github.io/light-viz/light-viz/2016/04/29/kw-doc/</loc>
     
-    <lastmod>2016-10-20T23:36:06.160Z</lastmod>
+    <lastmod>2017-01-23T20:10:21.384Z</lastmod>
     
   </url>
   

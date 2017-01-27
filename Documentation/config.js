@@ -11,5 +11,6 @@ module.exports = {
     url: 'https://kitware.github.io/light-viz',
     root: '/light-viz/',
     github: 'kitware/light-viz',
+    google_analytics: 'UA-90338862-6',
   }
 };

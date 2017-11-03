@@ -82,16 +82,16 @@ r"""
 import os
 
 # import paraview modules.
-from paraview.web import wamp      as pv_wamp
+from paraview.web import pv_wslink
 from paraview.web import protocols as pv_protocols
 
 import light_viz_protocols as lv_protocols
 
 # import RPC annotation
-from autobahn.wamp import register as exportRpc
+from wslink import register as exportRpc
 
 from paraview import simple
-from vtk.web import server
+from wslink import server
 
 import json
 
@@ -106,7 +106,7 @@ except ImportError:
 # Create custom Pipeline Manager class to handle clients requests
 # =============================================================================
 
-class LightVizServer(pv_wamp.PVServerProtocol):
+class LightVizServer(pv_wslink.PVServerProtocol):
 
     dataDir = os.getcwd()
     authKey = "vtkweb-secret"
@@ -115,7 +115,6 @@ class LightVizServer(pv_wamp.PVServerProtocol):
     rsHost = None
     rsPort = 11111
     rcPort = -1
-    offscreen = False
     fileToLoad = None
     groupRegex = "[0-9]+\\."
     excludeRegex = "^\\.|~$|^\\$"
@@ -146,13 +145,11 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         parser.add_argument("--data", default=os.getcwd(), help="path to data directory to list", dest="data")
         parser.add_argument("--config", help="path to lightviz.config file", dest="configFile")
         parser.add_argument("--profile", default="default", help="name of lightviz profile to use", dest="profile")
-        parser.add_argument("--offscreen", action="store_true", help="Use offscreen rendering", dest="offscreen")
 
     @staticmethod
     def configure(args):
         LightVizServer.authKey   = args.authKey
         LightVizServer.data      = args.data
-        LightVizServer.offscreen = args.offscreen
         if args.configFile and os.path.exists(args.configFile):
             with open(args.configFile) as fp:
                 LightVizServer.config = json.load(fp)
@@ -165,10 +162,10 @@ class LightVizServer(pv_wamp.PVServerProtocol):
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebMouseHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebTimeHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort())
+        self.registerVtkWebProtocol(pv_protocols.ParaViewWebPublishImageDelivery(decode=False))
 
-        # self.registerVtkWebProtocol(lv_protocols.LightVizViewportSize())
         self.registerVtkWebProtocol(lv_protocols.LightVizConfig(LightVizServer.config, LightVizServer.profile))
-        datasetManager = lv_protocols.LightVizDatasets(LightVizServer.data, 1 if LightVizServer.offscreen else 0)
+        datasetManager = lv_protocols.LightVizDatasets(LightVizServer.data)
         clipManager = lv_protocols.LightVizClip(datasetManager)
         self.registerVtkWebProtocol(datasetManager)
         self.registerVtkWebProtocol(clipManager)
@@ -181,6 +178,9 @@ class LightVizServer(pv_wamp.PVServerProtocol):
 
         # Update authentication key to use
         self.updateSecret(LightVizServer.authKey)
+
+        # tell the C++ web app to use no encoding. ParaViewWebPublishImageDelivery must be set to decode=False to match.
+        self.getApplication().SetImageEncoding(0);
 
         # Disable interactor-based render calls
         simple.GetRenderView().EnableRenderOnInteraction = 0

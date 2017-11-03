@@ -3,7 +3,7 @@ import os, sys, logging, types, inspect, traceback, logging, re, json, base64
 from time import time
 
 # import RPC annotation
-from autobahn.wamp import register as exportRpc
+from wslink import register as exportRpc
 
 # import paraview modules.
 import paraview
@@ -15,15 +15,15 @@ from paraview.web import protocols as pv_protocols
 #    vtkSMPVRepresentationProxy
 #    vtkSMTransferFunctionProxy
 #    vtkSMTransferFunctionManager
-from vtk.vtkPVServerManagerRenderingPython import *
+from vtk.vtkPVServerManagerRendering import vtkSMPVRepresentationProxy, vtkSMTransferFunctionProxy, vtkSMTransferFunctionManager
 
 # Needed for:
 #    vtkSMProxyManager
-from vtk.vtkPVServerManagerCorePython import *
+from vtk.vtkPVServerManagerCore import vtkSMProxyManager
 
 # Needed for:
 #    vtkDataObject
-from vtk.vtkCommonDataModelPython import *
+from vtk.vtkCommonDataModel import vtkDataObject
 
 # =============================================================================
 #
@@ -116,7 +116,7 @@ def simpleColorBy(rep=None, value=None):
 
 class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
 
-    def __init__(self, data_directory, offscreen = 1):
+    def __init__(self, data_directory):
         super(LightVizDatasets, self).__init__()
         self.basedir = data_directory
         self.datasetMap = {}
@@ -132,8 +132,6 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.colorBy = ('__SOLID__', '__SOLID__')
         self.dataListeners = []
         self.view = simple.GetRenderView()
-        self.view.UseOffscreenRenderingForScreenshots = offscreen
-        self.view.UseOffscreenRendering = offscreen
         for filePath in os.listdir(self.basedir):
             indexPath = os.path.join(self.basedir, filePath, 'index.json')
             if os.path.exists(indexPath):

@@ -124,6 +124,9 @@ class LightVizServer(pv_wslink.PVServerProtocol):
     proxies = None
     allReaders = True
     saveDataDir = os.getcwd()
+    viewportScale=1.0
+    viewportMaxWidth=2560
+    viewportMaxHeight=1440
     config = {
         "profiles": {
             "default": {
@@ -145,6 +148,9 @@ class LightVizServer(pv_wslink.PVServerProtocol):
         parser.add_argument("--data", default=os.getcwd(), help="path to data directory to list", dest="data")
         parser.add_argument("--config", help="path to lightviz.config file", dest="configFile")
         parser.add_argument("--profile", default="default", help="name of lightviz profile to use", dest="profile")
+        parser.add_argument("--viewport-scale", default=1.0, type=float, help="Viewport scaling factor", dest="viewportScale")
+        parser.add_argument("--viewport-max-width", default=2560, type=int, help="Viewport maximum size in width", dest="viewportMaxWidth")
+        parser.add_argument("--viewport-max-height", default=1440, type=int, help="Viewport maximum size in height", dest="viewportMaxHeight")
 
     @staticmethod
     def configure(args):
@@ -154,6 +160,9 @@ class LightVizServer(pv_wslink.PVServerProtocol):
             with open(args.configFile) as fp:
                 LightVizServer.config = json.load(fp)
         LightVizServer.profile = args.profile
+        LightVizServer.viewportScale     = args.viewportScale
+        LightVizServer.viewportMaxWidth  = args.viewportMaxWidth
+        LightVizServer.viewportMaxHeight = args.viewportMaxHeight
 
     def initialize(self):
         # Bring used components
@@ -161,7 +170,7 @@ class LightVizServer(pv_wslink.PVServerProtocol):
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebColorManager())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebMouseHandler())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebTimeHandler())
-        self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort())
+        self.registerVtkWebProtocol(pv_protocols.ParaViewWebViewPort(LightVizServer.viewportScale, LightVizServer.viewportMaxWidth, LightVizServer.viewportMaxHeight))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebPublishImageDelivery(decode=False))
 
         self.registerVtkWebProtocol(lv_protocols.LightVizConfig(LightVizServer.config, LightVizServer.profile))

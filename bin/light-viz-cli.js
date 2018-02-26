@@ -28,6 +28,7 @@ program
   .option('--add-dataset [path]', 'Specify a dataset to add to the given data directory.  Requires the description and data flags')
   .option('--description [description]', 'Specify the description for the dataset being added')
   .option('--autoApply', 'Optional for use with --add-dataset.  Specifies that apply/reset buttons are not needed with the dataset')
+  .option('--virtual-env [path]', 'Path to virtual environment to use\n')
 
   .parse(process.argv);
 
@@ -87,6 +88,10 @@ if(pvPythonExecs.length < 1) {
         if (program.autoApply) {
           addDatasetCmdLine.push('--autoApply');
         }
+        if (program.virtualEnv) {
+          cmdLine.push('--virtual-env');
+          cmdLine.push(program.virtualEnv);
+        }
 
         console.log('\n===============================================================================');
         console.log('| Execute:');
@@ -122,6 +127,10 @@ if(pvPythonExecs.length < 1) {
         if (program.profile) {
           cmdLine.push('--profile');
           cmdLine.push(quotePath(program.profile));
+        }
+        if (program.virtualEnv) {
+          cmdLine.push('--virtual-env');
+          cmdLine.push(program.virtualEnv);
         }
 
         console.log('\n===============================================================================');

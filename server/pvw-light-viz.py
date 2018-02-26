@@ -80,6 +80,13 @@ r"""
 
 # import to process args
 import os
+import sys
+
+# Try to handle virtual env if provided
+if '--virtual-env' in sys.argv:
+  virtualEnvPath = sys.argv[sys.argv.index('--virtual-env') + 1]
+  virtualEnv = os.path.join(virtualEnvPath, 'bin', 'activate_this.py')
+  execfile(virtualEnv, dict(__file__=virtualEnv))
 
 # import paraview modules.
 from paraview.web import pv_wslink
@@ -145,6 +152,7 @@ class LightVizServer(pv_wslink.PVServerProtocol):
 
     @staticmethod
     def add_arguments(parser):
+        parser.add_argument("--virtual-env", default=None, help="Path to virtual environment to use")
         parser.add_argument("--data", default=os.getcwd(), help="path to data directory to list", dest="data")
         parser.add_argument("--config", help="path to lightviz.config file", dest="configFile")
         parser.add_argument("--profile", default="default", help="name of lightviz profile to use", dest="profile")

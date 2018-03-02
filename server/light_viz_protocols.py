@@ -249,7 +249,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         self.view.CenterOfRotation = self.view.CameraFocalPoint
         simple.Render(self.view)
 
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
         self.anim = simple.GetAnimationScene()
 
         # Notify listeners
@@ -263,7 +263,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             self.setColormapRange(arrName, arrRange)
 
         simple.Render(self.view)
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
         return self.activeMeta
 
@@ -273,7 +273,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         if self.extractBlocks is None:
             return
         self.extractBlocks.BlockIndices = visible
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.dataset.getblockstructure")
     def getBlockStructure(self):
@@ -311,7 +311,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         rtDataLUT = simple.GetColorTransferFunction(array);
         rtDataLUT.ApplyPreset(presetName, True)
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.colormap.setrange")
     def setColormapRange(self, array, newRange):
@@ -323,7 +323,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         rtDataLUT.RescaleTransferFunction(newRange[0], newRange[1])
         opacityLUT = simple.GetOpacityTransferFunction(array)
         opacityLUT.RescaleTransferFunction(newRange[0], newRange[1])
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.colormap.rescale.todatarange")
     def setColormapRangeToDataRange(self, array):
@@ -336,7 +336,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         rtDataOpacityTF = simple.GetOpacityTransferFunction(array)
         rtDataOpacityTF.RescaleTransferFunction(self.colormaps[array]['range'])
 
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
         return self.colormaps[array]['range']
 
@@ -361,7 +361,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
         rtDataLUT = simple.GetOpacityTransferFunction(array);
         rtDataLUT.Points = points
 
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.opacitymap.get")
     def getOpacityMap(self, array):
@@ -382,14 +382,14 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
             obs.setForegroundColor(self.foreground)
         if self.datasetRep:
             self.datasetRep.DiffuseColor = self.foreground
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.background.color")
     def setBackgroundColor(self, background):
         self.background = [ float(x) for x in background.split(' ')]
         if self.view:
             self.view.Background = self.background
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.dataset.getstate")
     def getState(self):
@@ -409,7 +409,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
     def updateOpacity(self, opacity):
         if self.datasetRep:
             self.datasetRep.Opacity = opacity
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
         return opacity
 
@@ -417,7 +417,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
     def updateTime(self, timeIdx):
         if len(self.anim.TimeKeeper.TimestepValues) > 0:
             self.anim.TimeKeeper.Time = self.anim.TimeKeeper.TimestepValues[timeIdx]
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
         return self.anim.TimeKeeper.Time
 
@@ -425,7 +425,7 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
     def updateRepresentation(self, mode):
         if self.datasetRep:
             self.datasetRep.Representation = mode
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.dataset.color")
     def updateColorBy(self, field, location):
@@ -445,13 +445,13 @@ class LightVizDatasets(pv_protocols.ParaViewWebProtocol):
                       vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.dataset.enable")
     def enableDataset(self, enable):
         self.datasetRep.Visibility = 1 if enable else 0
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
 # =============================================================================
 #
@@ -507,7 +507,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             self.box.YLength = abs(boundsPoint[1] - newClipCenter[1])
             self.box.ZLength = abs(boundsPoint[2] - newClipCenter[2])
 
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.clip.box.show")
     def showBox(self, enable):
@@ -525,7 +525,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         elif (not enable) and self.boxRepr:
             self.boxRepr.Visibility = 0
 
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
 
     @exportRpc("light.viz.clip.getstate")
@@ -565,7 +565,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         if self.clipZ:
             self.clipZ.ClipType.Origin = [0.0, 0.0, float(z)]
 
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.clip.insideout")
     def updateInsideOut(self, x, y, z):
@@ -576,14 +576,14 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
         if self.clipZ:
             self.clipZ.InsideOut = 1 if z else 0
 
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.clip.representation")
     def updateRepresentation(self, mode):
         self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.clip.color")
     def updateColorBy(self, field, location):
@@ -603,7 +603,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
 
 
             simple.Render()
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.clip.enable")
     def enableClip(self, enable):
@@ -636,7 +636,7 @@ class LightVizClip(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     def getOutput(self):
         if not self.clipX:
@@ -688,7 +688,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
     def setForegroundColor(self, foreground):
         if self.representation:
             self.representation.DiffuseColor = foreground
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.contour.useclipped")
     def setUseClipped(self, useClipped):
@@ -698,7 +698,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             elif self.useClippedInput and not useClipped:
                 self.contour.Input = self.ds.getInput()
         self.useClippedInput = useClipped
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.contour.getstate")
     def getState(self):
@@ -727,14 +727,14 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
     def updateValues(self, values):
         if self.contour:
             self.contour.Isosurfaces = values
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.contour.by")
     def updateContourBy(self, field):
         if self.contour:
             self.contourByField = None
             self.contour.ContourBy = field
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
         else:
           self.contourByField = field
 
@@ -743,7 +743,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
         self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.contour.color")
     def updateColorBy(self, field, location):
@@ -759,7 +759,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.contour.enable")
     def enableContour(self, enable):
@@ -782,7 +782,7 @@ class LightVizContour(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
 # =============================================================================
 #
@@ -844,7 +844,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                 for slice in [self.sliceX, self.sliceY, self.sliceZ]:
                     slice.Input = self.ds.getInput()
         self.useClippedInput = useClipped
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
 
     @exportRpc("light.viz.slice.getstate")
@@ -880,7 +880,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.sliceY.SliceType.Origin = self.center
         if self.sliceZ:
             self.sliceZ.SliceType.Origin = self.center
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.slice.visibility")
     def updateVisibility(self, x, y, z):
@@ -891,7 +891,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationY.Visibility = self.visible[1] and self.enabled
         if self.representationZ:
             self.representationZ.Visibility = self.visible[2] and self.enabled
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.slice.representation")
     def updateRepresentation(self, mode):
@@ -900,7 +900,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
             self.representationX.Representation = mode
             self.representationY.Representation = mode
             self.representationZ.Representation = mode
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.slice.color")
     def updateColorBy(self, field, location):
@@ -922,7 +922,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
                           vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.slice.enable")
     def enableSlice(self, enable):
@@ -969,7 +969,7 @@ class LightVizSlice(pv_protocols.ParaViewWebProtocol):
 
         self.enabled = enable
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
 # =============================================================================
 #
@@ -1015,7 +1015,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             elif self.useClippedInput and not useClipped:
                 self.slice.Input = self.ds.getInput()
         self.useClippedInput = useClipped
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.mslice.getstate")
     def getState(self):
@@ -1039,21 +1039,21 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             normal = [0, 0, 0]
             normal[self.normal] = 1
             self.slice.SliceType.Normal = normal
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.mslice.positions")
     def updateSlicePositions(self, positions):
         self.slicePositions = positions;
         if self.slice:
             self.slice.SliceOffsetValues = positions
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.mslice.representation")
     def updateRepresentation(self, mode):
         self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.mslice.color")
     def updateColorBy(self, field, location):
@@ -1070,7 +1070,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.mslice.enable")
     def enableSlice(self, enable):
@@ -1094,7 +1094,7 @@ class LightVizMultiSlice(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
 # =============================================================================
 #
@@ -1170,21 +1170,21 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
         if self.streamline:
             self.seed.Center = self.position
             self.streamline.SeedType.Center = self.position
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.streamline.vector")
     def updateVector(self, vectorName):
         self.vector = vectorName
         if self.streamline:
             self.streamline.Vectors = ['POINTS', self.vector]
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.streamline.numpoints")
     def updateNumPoints(self, num):
         self.numPoints = int(num)
         if self.streamline:
             self.streamline.SeedType.NumberOfPoints = self.numPoints
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.streamline.radius")
     def updateRadius(self, rad):
@@ -1192,14 +1192,14 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
         if self.streamline:
             self.seed.Radius = self.radius
             self.streamline.SeedType.Radius = self.radius
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.streamline.representation")
     def updateRepresentation(self, mode):
         self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.streamline.color")
     def updateColorBy(self, field, location):
@@ -1216,7 +1216,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
                         vtkSMTransferFunctionProxy.RescaleTransferFunction(lutProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.streamline.enable")
     def enableStreamline(self, enable):
@@ -1260,7 +1260,7 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.streamline.seed.show")
     def showSeed(self, enable):
@@ -1269,14 +1269,14 @@ class LightVizStreamline(pv_protocols.ParaViewWebProtocol):
         elif (not enable) and self.seedRep:
             self.seedRep.Visibility = 0
 
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.streamline.seed.update")
     def updateSeed(self, position, radius):
       if self.seed:
         self.seed.Center = position
         self.seed.Radius = radius
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
 # =============================================================================
 #
@@ -1320,7 +1320,7 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
                 self.enableVolume(oldVisibility)
 
 
-                self.getApplication().InvokeEvent('PushRender')
+                self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.volume.getstate")
     def getState(self):
@@ -1355,7 +1355,7 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
                           vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.volume.enable")
     def enableVolume(self, enable):
@@ -1375,7 +1375,7 @@ class LightVizVolume(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')
 
 # =============================================================================
 #
@@ -1418,7 +1418,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
     def setUseClipped(self, useClipped):
         if self.useClippedInput != useClipped:
             self.useClippedInput = useClipped
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.threshold.getstate")
     def getState(self):
@@ -1439,7 +1439,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
         self.reprMode = mode
         if self.representation:
             self.representation.Representation = mode
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.threshold.range")
     def updateRange(self, rangeMin, rangeMax):
@@ -1447,7 +1447,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
         self.rangeMax = rangeMax
         if self.thresh:
             self.thresh.ThresholdRange = [self.rangeMin, self.rangeMax]
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.threshold.color")
     def updateColorBy(self, field, location):
@@ -1467,7 +1467,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
                           vtkSMTransferFunctionProxy.RescaleTransferFunction(pwfProxy.SMProxy, array['range'][0], array['range'][1], False)
 
             simple.Render()
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.threshold.by")
     def updateThresholdBy(self, field):
@@ -1475,7 +1475,7 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
         if self.thresh:
             self.thresh.Scalars = ['POINTS', field]
             # simple.SaveState('/tmp/myteststate.pvsm')
-            self.getApplication().InvokeEvent('PushRender')
+            self.getApplication().InvokeEvent('UpdateEvent')
 
     @exportRpc("light.viz.threshold.enable")
     def enableThreshold(self, enable):
@@ -1492,4 +1492,4 @@ class LightVizThreshold(pv_protocols.ParaViewWebProtocol):
             self.representation.Visibility = 0
 
         simple.Render()
-        self.getApplication().InvokeEvent('PushRender')
+        self.getApplication().InvokeEvent('UpdateEvent')

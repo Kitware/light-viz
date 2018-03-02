@@ -35,6 +35,8 @@ module.exports = {
     'react/forbid-prop-types': 0,
     'react/no-array-index-key': 0,
     'react/no-unused-prop-types': 0,
+    'react/no-unused-state': 0,
+    'class-methods-use-this': 0,
   },
   plugins: [
     'prettier'

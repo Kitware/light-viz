@@ -1,46 +1,35 @@
-var path = require('path');
-var webpack = require('webpack');
-var loaders = require('./node_modules/paraviewweb/config/webpack.loaders.js');
-var plugins = [];
+const path = require('path');
+const pvwRules = require('./node_modules/paraviewweb/config/webpack.loaders.js');
 
-if(process.env.NODE_ENV === 'production') {
-  console.log('==> Production build');
-  plugins.push(new webpack.DefinePlugin({
-    "process.env": {
-      NODE_ENV: JSON.stringify("production"),
-    },
-  }));
-}
+const entry = path.join(__dirname, './lib/app.js');
+const outputPath = path.join(__dirname, './dist');
+const eslintrcPath = path.join(__dirname, '.eslintrc.js');
+
+const plugins = [];
 
 module.exports = {
-  plugins: plugins,
-  entry: './lib/app.js',
+  plugins,
+  entry,
   output: {
-    path: './dist',
+    path: outputPath,
     filename: 'LightViz.js',
   },
   module: {
-    preLoaders: [{
-      test: /\.js$/,
-      loader: 'eslint-loader',
-      exclude: /node_modules/,
-    }],
-    loaders: [
-      { test: require.resolve('./lib/app.js'), loader: 'expose?LightViz' },
-    ].concat(loaders),
+    rules: [
+      { test: entry, loader: 'expose-loader?LightViz' },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        options: { configFile: eslintrcPath },
+      },
+    ].concat(pvwRules),
   },
   resolve: {
     alias: {
       PVWStyle: path.resolve('./node_modules/paraviewweb/style'),
-      LightVizStyle: path.resolve('./style'),
+      LightVizStyle: path.join(__dirname, 'style'),
     },
-  },
-  postcss: [
-    require('autoprefixer')({ browsers: ['last 2 versions'] }),
-  ],
-  eslint: {
-    configFile: '.eslintrc.js',
-  },
-  externals: {
   },
 };

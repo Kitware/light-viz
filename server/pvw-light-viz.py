@@ -159,6 +159,7 @@ class LightVizServer(pv_wslink.PVServerProtocol):
         parser.add_argument("--viewport-scale", default=1.0, type=float, help="Viewport scaling factor", dest="viewportScale")
         parser.add_argument("--viewport-max-width", default=2560, type=int, help="Viewport maximum size in width", dest="viewportMaxWidth")
         parser.add_argument("--viewport-max-height", default=1440, type=int, help="Viewport maximum size in height", dest="viewportMaxHeight")
+        parser.add_argument("--settings-lod-threshold", default=102400, type=int, help="LOD Threshold in Megabytes", dest="settingsLODThreshold")
 
     @staticmethod
     def configure(args):
@@ -171,6 +172,7 @@ class LightVizServer(pv_wslink.PVServerProtocol):
         LightVizServer.viewportScale     = args.viewportScale
         LightVizServer.viewportMaxWidth  = args.viewportMaxWidth
         LightVizServer.viewportMaxHeight = args.viewportMaxHeight
+        LightVizServer.settingsLODThreshold = args.settingsLODThreshold
 
     def initialize(self):
         # Bring used components
@@ -208,6 +210,10 @@ class LightVizServer(pv_wslink.PVServerProtocol):
         pxm = simple.servermanager.ProxyManager()
         interactionProxy = pxm.GetProxy('settings', 'RenderViewInteractionSettings')
         interactionProxy.Camera3DManipulators = ['Rotate', 'Pan', 'Zoom', 'Pan', 'Roll', 'Pan', 'Zoom', 'Rotate', 'Zoom']
+
+        # Custom rendering settings
+        renderingSettings = pxm.GetProxy('settings', 'RenderViewSettings')
+        renderingSettings.LODThreshold = LightVizServer.settingsLODThreshold
 
 # =============================================================================
 # Main: Parse args and start server

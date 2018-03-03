@@ -1,19 +1,32 @@
 language: node_js
-sudo: false
+os: linux
+sudo: required
+dist: trusty
+group: travis_lts
+
 notifications:
   email:
     recipients:
       - sebastien.jourdain@kitware.com
-      - shawn.waldon@kitware.com
-      - patrick-oleary@kitware.com
     on_success: change
     on_failure: always
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libgif-dev
+  - npm install -g canvas@1.6.9
+
+addons:
+  chrome: stable
+
+node_js:
+  - '8'
+
 cache:
   directories:
     - node_modules
     - Documentation/build-tmp
-node_js:
-  - "5.1"
+
 script:
   - npm run build:release
   - git config --global user.name "Travis CI"

@@ -3,5 +3,6 @@ docs:
     overview: /light-viz/docs/index.html
     setup: /light-viz/docs/setup.html
     user: /light-viz/docs/userguide.html
+    version_compatibility: /light-viz/docs/compatibility.html
   miscellaneous:
     contributing: /light-viz/docs/contributing.html

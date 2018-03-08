@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kitware.github.io/light-viz/docs/compatibility.html</loc>
+    
+    <lastmod>2018-03-08T18:10:27.070Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://kitware.github.io/light-viz/index.html</loc>
     
     <lastmod>2018-03-03T04:19:06.934Z</lastmod>

@@ -6,7 +6,7 @@ Contributing to ParaView LightViz
 You will need a recent version of node/npm since ParaView LightViz uses npm and webpack for its builds.
 
 Check out the ParaView LightViz source with:
-`git clone git@github.com:kitware/light-viz.git`
+`git clone https://github.com/Kitware/light-viz.git`
 
 Change into the source directory.  First you need to tell npm to install the dependencies of ParaView LightViz.  Run `npm install` to install these locally.  This will probably take a few minutes.
 

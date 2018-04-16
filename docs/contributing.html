@@ -46,7 +46,7 @@
 <meta property="og:site_name" content="LightViz">
 <meta property="og:description" content="Contributing to ParaView LightVizSetting up your development environmentYou will need a recent version of node/npm since ParaView LightViz uses npm and webpack for its builds. Check out the ParaView L">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-03-03T04:19:06.926Z">
+<meta property="og:updated_time" content="2018-04-16T14:34:49.636Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LightViz">
 <meta name="twitter:description" content="Contributing to ParaView LightVizSetting up your development environmentYou will need a recent version of node/npm since ParaView LightViz uses npm and webpack for its builds. Check out the ParaView L">
@@ -101,7 +101,7 @@
               </header>
               <div class="article-content" itemprop="articleBody">
                 <h2 id="Contributing-to-ParaView-LightViz" class="article-heading"><a href="#Contributing-to-ParaView-LightViz" class="headerlink" title="Contributing to ParaView LightViz"></a>Contributing to ParaView LightViz<a class="article-anchor" href="#Contributing-to-ParaView-LightViz" aria-hidden="true"></a></h2><h1 id="Setting-up-your-development-environment" class="article-heading"><a href="#Setting-up-your-development-environment" class="headerlink" title="Setting up your development environment"></a>Setting up your development environment<a class="article-anchor" href="#Setting-up-your-development-environment" aria-hidden="true"></a></h1><p>You will need a recent version of node/npm since ParaView LightViz uses npm and webpack for its builds.</p>
-<p>Check out the ParaView LightViz source with:<br><code>git clone git@github.com:kitware/light-viz.git</code></p>
+<p>Check out the ParaView LightViz source with:<br><code>git clone https://github.com/Kitware/light-viz.git</code></p>
 <p>Change into the source directory.  First you need to tell npm to install the dependencies of ParaView LightViz.  Run <code>npm install</code> to install these locally.  This will probably take a few minutes.</p>
 <p>Create a branch and make your changes.  When you want to test your changes, run <code>npm run build</code>. The first time you run this command, you will probably need to run <code>npm link</code> to override the npm global light-viz module with your locally built one.  Then you should be able to start LightViz locally to test your changes.</p>
 <p>When you are satisfied with your changes, run <code>npm run build:release</code>.  This adds some minification to the LightViz.js built in the dist folder.  Add the contents of the dist folder to the git stage as well as your changes – this project commits the built version.</p>
@@ -110,7 +110,7 @@
 
               </div>
               <footer class="article-footer">
-                <time class="article-footer-updated" datetime="2018-03-03T04:19:06.926Z" itemprop="dateModified">Last updated: 2018-03-03</time>
+                <time class="article-footer-updated" datetime="2018-04-16T14:34:49.636Z" itemprop="dateModified">Last updated: 2018-04-16</time>
                 <a href="/light-viz/docs/index.html" class="article-footer-next" title="Overview"><span>Next</span><i class="fa fa-chevron-right"></i></a>
               </footer>
               

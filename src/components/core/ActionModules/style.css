@@ -1,0 +1,14 @@
+.toolbar {
+  height: 100%;
+}
+
+/* vuetify overrides */
+.toolbarButton {
+  min-width: 48px;
+  margin: 0;
+  height: inherit;
+}
+
+.toolbarButton span {
+  margin-left: 4px;
+}

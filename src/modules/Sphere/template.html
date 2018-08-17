@@ -1,0 +1,97 @@
+<div :class="$style.container">
+  <v-container fluid fill-height align-center :class="$style.topBar">
+    <v-layout row justify-start align-center>
+      <v-flex xs1 justify-center>
+        <v-icon :color="color">{{ module.icon }}</v-icon>
+      </v-flex>
+      <v-flex justify-start>
+        <label :class="$style.title" :color="color">{{ module.label }}</label>
+      </v-flex>
+      <v-spacer />
+      <v-btn
+        flat
+        icon
+        @click="deleteProxy"
+        :color="color"
+      >
+        <v-icon>delete_forever</v-icon>
+      </v-btn>
+    </v-layout>
+  </v-container>
+  <v-list>
+    <v-divider />
+    <!--
+      Center
+      EndPhi
+      EndTheta
+      PhiResolution
+      Radius
+      StartPhi
+      StartTheta
+      ThetaResolution
+    -->
+    <v-list-tile>
+      <v-list-tile-content>
+        <v-list-tile-title>
+          Center
+        </v-list-tile-title>
+      </v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile>
+      <v-list-tile-title>
+        Phi
+      </v-list-tile-title>
+      <v-list-tile-content>
+        <v-range-slider
+          v-model="phi"
+          :max="180"
+          :min="0"
+          :step="1"
+        ></v-range-slider>
+      </v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile>
+      <v-list-tile-content>
+        <v-slider
+          v-model="phiResolution"
+          :max="60"
+          :min="6"
+          :step="1"
+        ></v-slider>
+      </v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile>
+      <v-list-tile-title>
+        Theta
+      </v-list-tile-title>
+      <v-list-tile-content>
+        <v-range-slider
+          v-model="theta"
+          :max="360"
+          :min="0"
+          :step="1"
+        ></v-range-slider>
+      </v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile>
+      <v-list-tile-content>
+        <v-slider
+          v-model="thetaResolution"
+          :max="60"
+          :min="6"
+          :step="1"
+        ></v-slider>
+      </v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile>
+      <v-btn
+        block
+        outline
+        color="indigo"
+        v-if="create"
+        @click="createProxy"
+      >Create</v-btn>
+    </v-list-tile>
+  </v-list>
+
+</div>

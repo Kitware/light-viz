@@ -1,0 +1,79 @@
+/* eslint-disable import/prefer-default-export */
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Vuetify from 'vuetify';
+
+import vtkURLExtract from 'vtk.js/Sources/Common/Core/URLExtract';
+
+/* eslint-disable-next-line import/extensions */
+import 'typeface-roboto';
+import 'vuetify/dist/vuetify.min.css';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+
+import registerModules from 'pvw-lightviz/src/modules/registerModules';
+
+import App from 'pvw-lightviz/src/components/core/App';
+import createStore from 'pvw-lightviz/src/stores';
+import { Mutations, Actions } from 'pvw-lightviz/src/stores/types';
+
+Vue.use(Vuex);
+Vue.use(Vuetify);
+
+/**
+ * Sets the active proxy configuration to be used by createViewer.
+ *
+ * Once createViewer() is called, setActiveProxyConfiguration will do nothing.
+ * Proxy config precedence (decreasing order):
+ *   createViewer param, active proxy config, Generic config
+ */
+export function createConfigurationFromURLArgs(
+  addOn = { application: 'lightviz' }
+) {
+  return Object.assign({}, vtkURLExtract.extractURLParameters(), addOn);
+}
+
+export function createViewer(
+  container,
+  config = createConfigurationFromURLArgs()
+) {
+  const store = createStore();
+  store.commit(Mutations.NETWORK_CONFIG_SET, config);
+  registerModules(store);
+
+  /* eslint-disable no-new */
+  new Vue({
+    el: container || '#root-container',
+    components: { App },
+    store,
+    template: '<App />',
+  });
+
+  // support history-based navigation
+  function onRoute(event) {
+    const state = event.state || {};
+    if (state.app) {
+      store.dispatch(Actions.APP_ROUTE_RUN);
+    } else {
+      store.dispatch(Actions.APP_ROUTE_LANDING);
+    }
+  }
+  store.watch(
+    (state) => state.route,
+    (route) => {
+      const state = window.history.state || {};
+      if (route === 'landing' && state.app) {
+        window.history.back();
+      }
+      if (route === 'app' && !state.app) {
+        window.history.pushState({ app: true }, '');
+      }
+    }
+  );
+  window.history.replaceState({ app: false }, '');
+  window.addEventListener('popstate', onRoute);
+
+  return {
+    container,
+    store,
+  };
+}

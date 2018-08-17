@@ -1,0 +1,29 @@
+<v-container :class="$style.container">
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <span class="body-2">Background</span>
+    </div>
+    <v-divider :class="$style.divider" />
+    <palette-picker
+      :palette="palette"
+      :size="20"
+      v-model="background"
+    />
+  </v-card>
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <v-layout row align-center>
+        <v-flex xs10>
+          <span class="body-2">Orientation Axis</span>
+        </v-flex>
+        <v-flex xs2>
+          <v-switch
+            v-model="axis"
+            hide-details
+          />
+        </v-flex>
+      </v-layout>
+    </div>
+    <v-divider :class="$style.divider" />
+  </v-card>
+</v-container>

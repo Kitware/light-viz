@@ -1,0 +1,15 @@
+<span :class="$style.toolbar">
+  <v-btn
+    v-for="(module, idx) in modules"
+    :key="module.label"
+    :class="$style.toolbarButton"
+
+    v-if="module.showInMenu(activeSources)"
+
+    flat
+    @click="activate(module.name)"
+  >
+    <v-icon>{{ module.icon }}</v-icon>
+    <span v-show="!smallScreen">{{ module.label }}</span>
+  </v-btn>
+</span>

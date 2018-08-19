@@ -59,10 +59,19 @@ export default {
     },
   },
   actions: {
-    PROXY_CREATE({ rootState, commit, dispatch }, { name, parentId }) {
+    PROXY_CREATE(
+      { rootState, commit, dispatch },
+      { name, parentId, initialValues, skipDomain }
+    ) {
+      console.log('skipDomain', skipDomain);
       const client = rootState.network.client;
       if (client) {
-        client.remote.ProxyManager.create(name, parentId)
+        client.remote.ProxyManager.create(
+          name,
+          parentId,
+          initialValues,
+          skipDomain
+        )
           .then((proxy) => {
             commit(Mutations.PROXY_DATA_SET, proxy);
             commit(Mutations.PROXY_SELECTED_IDS_SET, [proxy.id]);
@@ -73,6 +82,7 @@ export default {
       }
     },
     PROXY_UPDATE({ rootState, state, dispatch }, changeset) {
+      console.log('UPDATE', changeset);
       const client = rootState.network.client;
       if (client) {
         // const idToUpdate = new Set(changeset.map((i) => i.id));
@@ -152,7 +162,7 @@ export default {
       const client = rootState.network.client;
       if (client) {
         // FIXME server side does not like needUI=false
-        client.remote.ProxyManager.get(proxyId, needUI || true)
+        client.remote.ProxyManager.get(proxyId, needUI)
           .then((proxy) => {
             commit(Mutations.PROXY_DATA_SET, proxy);
           })

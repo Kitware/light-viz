@@ -20,6 +20,7 @@ function floatToHex2(value) {
 // ----------------------------------------------------------------------------
 
 export default generateComponentWithServerBinding(
+  null, // We don't aim to create proxy
   'View',
   {
     bg: { name: 'Background' },

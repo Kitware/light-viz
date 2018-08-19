@@ -1,4 +1,4 @@
-import { Actions } from 'pvw-lightviz/src/stores/types';
+import { Actions, Mutations } from 'pvw-lightviz/src/stores/types';
 
 /* eslint-disable no-param-reassign */
 function extractProperties(names, properties, result) {
@@ -72,6 +72,7 @@ export function bool2int(value) {
 //   created,
 // }
 export function generateComponentWithServerBinding(
+  proxyNameToCreate, // Provide null if not expected to create new proxy
   proxyType,
   propMaps,
   componentDefinition
@@ -84,19 +85,30 @@ export function generateComponentWithServerBinding(
   const changeSet = [];
   const computed = Object.assign(
     {
-      proxyData() {
-        return this.$store.getters.PROXY_DATA_MAP;
-      },
-      activeSource() {
+      activeSourceId() {
         return this.$store.getters.PROXY_SELECTED_IDS[0];
       },
-      activeView() {
+      activeViewId() {
         return this.$store.getters.VIEW_ID;
       },
-      activeRepresentation() {
+      activeRepresentationId() {
         return this.$store.getters.PROXY_SOURCE_TO_REPRESENTATION_MAP[
           this.$store.getters.PROXY_SELECTED_IDS[0]
         ];
+      },
+      activeProxyData() {
+        const id = this[`active${proxyType}Id`];
+        if (!id) {
+          // console.log('No id available to update state');
+          return null;
+        }
+
+        const proxyData = this.$store.getters.PROXY_DATA_MAP;
+        if (!proxyData) {
+          // console.log('no proxy data for id', id, this.proxyData);
+          return null;
+        }
+        return proxyData[id];
       },
     },
     componentDefinition.computed
@@ -106,18 +118,24 @@ export function generateComponentWithServerBinding(
     // Create simple dependancy between method call and getters
     this.mtime = mtime++;
 
-    const id = this[`active${proxyType}`];
-    if (!id) {
-      // console.log('No id available to update state');
-      return;
-    }
-
-    const proxyData = this.proxyData ? this.proxyData[id] : null;
+    const proxyData = this.activeProxyData;
     if (!proxyData) {
-      // console.log('no proxy data for id', id, this.proxyData);
       return;
     }
 
+    if (this.create) {
+      // Reset props to default
+      Object.keys(propMaps).forEach((key) => {
+        serverState[propMaps[key].name] = {
+          id: '0',
+          value: propMaps[key].default,
+          subProxy: propMaps[key].subProxy,
+          label: propMaps[key].label || propMaps[key].name,
+        };
+        copyMap(serverState, localState);
+      });
+      return;
+    }
     // console.log(proxyData.properties);
 
     extractProperties(serverPropNames, proxyData.properties, serverState);
@@ -143,11 +161,11 @@ export function generateComponentWithServerBinding(
   }
 
   function apply() {
-    if (hasChange()) {
+    if (hasChange() && !this.create) {
       // console.log('apply', JSON.stringify(changeSet, null, 2));
       store.dispatch(Actions.PROXY_UPDATE, changeSet);
       store.dispatch(Actions.PROXY_DATA_FETCH, {
-        proxyId: this[`active${proxyType}`],
+        proxyId: this[`active${proxyType}Id`],
         needUI: false,
       });
     }
@@ -178,6 +196,17 @@ export function generateComponentWithServerBinding(
 
   return Object.assign({}, componentDefinition, {
     computed,
+    props: Object.assign(
+      proxyNameToCreate
+        ? {
+            create: {
+              type: Boolean,
+              default: false,
+            },
+          }
+        : {},
+      componentDefinition.props
+    ),
     data() {
       return Object.assign({ mtime: -1 }, componentDefinition.data.apply(this));
     },
@@ -187,12 +216,44 @@ export function generateComponentWithServerBinding(
         hasChange,
         refreshState,
       },
+      proxyNameToCreate
+        ? {
+            deleteProxy() {
+              console.log('deleteProxy', this.create, this.activeSourceId);
+              if (!this.create) {
+                this.$store.dispatch(Actions.PROXY_DELETE, this.activeSourceId);
+                this.$store.commit(Mutations.PROXY_SELECTED_IDS_SET, []);
+              } else {
+                this.$store.dispatch(Actions.MODULES_ACTIVE_CLEAR);
+              }
+            },
+            createProxy() {
+              const initialValues = {};
+              if (hasChange()) {
+                Object.keys(localState).forEach((key) => {
+                  if (!localState[key].subProxy) {
+                    initialValues[localState[key].label] =
+                      localState[key].value;
+                  }
+                  // FIXME create a post create changeSet
+                });
+              }
+              console.log('initialValues', initialValues);
+
+              this.$store.dispatch(Actions.PROXY_CREATE, {
+                name: proxyNameToCreate,
+                parentId: this.activeSourceId,
+                initialValues,
+                skipDomain: !!hasChange(),
+              });
+            },
+          }
+        : null,
       componentDefinition.methods
     ),
     watch: Object.assign(
       {
-        proxyData: refreshState,
-        [`active${proxyType}`]: refreshState,
+        activeProxyData: refreshState,
       },
       componentDefinition.watch
     ),

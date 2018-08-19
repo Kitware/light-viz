@@ -1,6 +1,3 @@
-import { mapActions } from 'vuex';
-import { Actions, Mutations } from 'pvw-lightviz/src/stores/types';
-
 import {
   generateComponentWithServerBinding,
   bool2int,
@@ -10,31 +7,39 @@ import {
 import module from './module';
 
 export default generateComponentWithServerBinding(
+  'Clip',
   'Source',
   {
     crinkleclip: {
       name: 'PreserveInputCells',
+      label: 'Crinkleclip',
       clientToServer: bool2int,
       serverToClient: toBoolean,
       autoApply: true,
+      default: 0,
     },
     invert: {
       name: 'Invert',
       clientToServer: bool2int,
       serverToClient: toBoolean,
       autoApply: true,
+      default: 1,
     },
-    origin: { name: 'Origin', autoApply: true, default: [0, 0, 0] },
-    normal: { name: 'Normal', autoApply: true, default: [0, 0, 1] },
+    origin: {
+      name: 'Origin',
+      autoApply: true,
+      default: [0, 0, 0],
+      subProxy: 'ClipType',
+    },
+    normal: {
+      name: 'Normal',
+      autoApply: true,
+      default: [0, 0, 1],
+      subProxy: 'ClipType',
+    },
   },
   {
     name: 'Clip',
-    props: {
-      create: {
-        type: Boolean,
-        default: false,
-      },
-    },
     data() {
       return {
         module,
@@ -134,28 +139,6 @@ export default generateComponentWithServerBinding(
         }
       },
     },
-    methods: Object.assign(
-      {
-        deleteProxy() {
-          if (!this.create) {
-            this.$store.commit(Mutations.PROXY_SELECTED_IDS, []);
-            this.$store.dispatch(Actions.PROXY_DELETE, this.activeSource);
-          } else {
-            this.removeActiveModule();
-          }
-        },
-        createProxy() {
-          this.createProxyInternal({
-            name: 'Clip',
-            parentId: this.activeSource,
-          });
-        },
-      },
-      mapActions({
-        removeActiveModule: Actions.MODULES_ACTIVE_CLEAR,
-        createProxyInternal: Actions.PROXY_CREATE,
-      })
-    ),
   }
 );
 

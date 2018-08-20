@@ -36,6 +36,7 @@ function createStore() {
   return new Vuex.Store({
     state: {
       route: 'landing', // valid values: landing, app
+      autoApply: true,
     },
     modules: {
       modules,
@@ -43,9 +44,17 @@ function createStore() {
       proxy,
       view,
     },
+    getters: {
+      APP_AUTO_APPLY(state) {
+        return state.autoApply;
+      },
+    },
     mutations: {
       APP_ROUTE_SET(state, route) {
         state.route = route;
+      },
+      APP_AUTO_APPLY_SET(state, auto) {
+        state.autoApply = auto;
       },
     },
     actions: {

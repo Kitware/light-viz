@@ -9,6 +9,9 @@ import filesModule from 'pvw-lightviz/src/modules/Files/module';
 import Sphere from 'pvw-lightviz/src/modules/Sphere';
 import sphereModule from 'pvw-lightviz/src/modules/Sphere/module';
 
+import Cone from 'pvw-lightviz/src/modules/Cone';
+import coneModule from 'pvw-lightviz/src/modules/Cone/module';
+
 import Clip from 'pvw-lightviz/src/modules/Clip';
 import clipModule from 'pvw-lightviz/src/modules/Clip/module';
 
@@ -34,6 +37,10 @@ export default function registerModules(store) {
   );
   store.commit(
     Mutations.MODULES_ADD,
+    Object.assign({}, coneModule, { component: Cone })
+  );
+  store.commit(
+    Mutations.MODULES_ADD,
     Object.assign({}, clipModule, { component: Clip })
   );
 
@@ -44,6 +51,11 @@ export default function registerModules(store) {
   store.commit(Mutations.PROXY_MODULE_BIND, {
     name: 'SphereSource',
     module: 'Sphere',
+  });
+
+  store.commit(Mutations.PROXY_MODULE_BIND, {
+    name: 'ConeSource',
+    module: 'Cone',
   });
 
   store.commit(Mutations.PROXY_MODULE_BIND, {

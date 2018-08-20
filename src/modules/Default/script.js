@@ -31,7 +31,7 @@ export default {
     deleteProxy() {
       const id = this.proxies[0];
       this.$store.dispatch(Actions.PROXY_DELETE, id);
-      this.$store.commit(Mutations.PROXY_SELECTED_IDS, []);
+      this.$store.commit(Mutations.PROXY_SELECTED_IDS_SET, []);
     },
   },
 };

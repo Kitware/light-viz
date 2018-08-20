@@ -67,3 +67,7 @@
 .iconWidth {
   width: 44px !important;
 }
+
+.buttonBar {
+  padding-top: 0;
+}

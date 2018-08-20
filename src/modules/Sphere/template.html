@@ -18,80 +18,94 @@
       </v-btn>
     </v-layout>
   </v-container>
-  <v-list>
-    <v-divider />
-    <!--
-      Center
-      EndPhi
-      EndTheta
-      PhiResolution
-      Radius
-      StartPhi
-      StartTheta
-      ThetaResolution
-    -->
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-list-tile-title>
-          Center
-        </v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-list-tile-title>
-        Phi
-      </v-list-tile-title>
-      <v-list-tile-content>
-        <v-range-slider
-          v-model="phi"
-          :max="180"
-          :min="0"
-          :step="1"
-        ></v-range-slider>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-slider
-          v-model="phiResolution"
-          :max="60"
-          :min="6"
-          :step="1"
-        ></v-slider>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-list-tile-title>
-        Theta
-      </v-list-tile-title>
-      <v-list-tile-content>
-        <v-range-slider
-          v-model="theta"
-          :max="360"
-          :min="0"
-          :step="1"
-        ></v-range-slider>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-list-tile-content>
-        <v-slider
-          v-model="thetaResolution"
-          :max="60"
-          :min="6"
-          :step="1"
-        ></v-slider>
-      </v-list-tile-content>
-    </v-list-tile>
-    <v-list-tile>
-      <v-btn
-        block
-        outline
-        color="indigo"
-        v-if="create"
-        @click="createProxy"
-      >Create</v-btn>
-    </v-list-tile>
-  </v-list>
 
+  <v-card flat :class="$style.block">
+    <v-card-title :class="$style.blockTitle">
+      <span class="body-2">Phi</span>
+    </v-card-title>
+    <v-card-text :class="$style.blockContent">
+      <v-container fluid grid-list-md :class="$style.noPaddingMargin">
+        <v-layout row wrap align-center>
+          <v-flex xs3>
+            <label :class="$style.smallLabel">Range</label>
+          </v-flex>
+          <v-flex xs9>
+            <v-range-slider
+              :class="$style.noTopPadding"
+              hide-details
+
+              v-model="phi"
+              :max="180"
+              :min="0"
+              :step="1"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <label :class="$style.smallLabel">Resolution</label>
+          </v-flex>
+          <v-flex xs9>
+            <v-slider
+              :class="$style.noTopPadding"
+              hide-details
+
+              v-model="phiResolution"
+              :max="60"
+              :min="3"
+              :step="1"
+            />
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-card-text>
+  </v-card>
+
+  <v-card flat :class="$style.block">
+    <v-card-title :class="$style.blockTitle">
+      <span class="body-2">Theta</span>
+    </v-card-title>
+    <v-card-text :class="$style.blockContent">
+      <v-container fluid grid-list-md :class="$style.noPaddingMargin">
+        <v-layout row wrap align-center>
+          <v-flex xs3>
+            <label :class="$style.smallLabel">Range</label>
+          </v-flex>
+          <v-flex xs9>
+            <v-range-slider
+              :class="$style.noTopPadding"
+              hide-details
+
+              v-model="theta"
+              :max="360"
+              :min="0"
+              :step="1"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <label :class="$style.smallLabel">Resolution</label>
+          </v-flex>
+          <v-flex xs9>
+            <v-slider
+              :class="$style.noTopPadding"
+              hide-details
+
+              v-model="thetaResolution"
+              :max="60"
+              :min="3"
+              :step="1"
+            />
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-card-text>
+  </v-card>
+
+  <v-card flat :class="$style.block">
+    <v-btn
+      block
+      outline
+      color="indigo"
+      v-if="create"
+      @click="createProxy"
+    >Create</v-btn>
+  </v-card>
 </div>

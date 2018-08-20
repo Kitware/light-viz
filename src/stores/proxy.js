@@ -63,7 +63,6 @@ export default {
       { rootState, commit, dispatch },
       { name, parentId, initialValues, skipDomain }
     ) {
-      console.log('skipDomain', skipDomain);
       const client = rootState.network.client;
       if (client) {
         client.remote.ProxyManager.create(
@@ -153,6 +152,11 @@ export default {
                 dispatch(Actions.PROXY_NAME_FETCH, proxy.rep);
               }
             });
+
+            // If only one source trigger a reset camera
+            if (sources.length === 1) {
+              dispatch(Actions.VIEW_RESET_CAMERA);
+            }
           })
           .catch(console.error);
       }

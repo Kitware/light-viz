@@ -1,82 +1,69 @@
-import { mapGetters, mapActions } from 'vuex';
-import { Getters, Actions, Mutations } from 'pvw-lightviz/src/stores/types';
+import { generateComponentWithServerBinding } from 'pvw-lightviz/src/proxyHelper';
 
 import module from './module';
 
-// ----------------------------------------------------------------------------
-// Component
-// ----------------------------------------------------------------------------
-
-export default {
-  name: 'Sphere',
-  props: {
-    create: {
-      type: Boolean,
-      default: false,
+export default generateComponentWithServerBinding(
+  'Sphere',
+  'Source',
+  {
+    startPhi: {
+      name: 'StartPhi',
+      autoApply: true,
+      default: 0,
+    },
+    endPhi: {
+      name: 'EndPhi',
+      autoApply: true,
+      default: 180,
+    },
+    phiResolution: {
+      name: 'PhiResolution',
+      autoApply: true,
+      default: 8,
+    },
+    startTheta: {
+      name: 'StartTheta',
+      autoApply: true,
+      default: 0,
+    },
+    endTheta: {
+      name: 'EndTheta',
+      autoApply: true,
+      default: 360,
+    },
+    thetaResolution: {
+      name: 'ThetaResolution',
+      autoApply: true,
+      default: 8,
     },
   },
-  data() {
-    return {
-      module,
-      color: 'grey darken-2',
-      phi: [0, 180],
-      theta: [0, 360],
-      phiResolution: 8,
-      thetaResolution: 8,
-    };
-  },
-  computed: mapGetters({
-    client: Getters.NETWORK_CLIENT,
-    proxies: Getters.PROXY_SELECTED_IDS,
-  }),
-  watch: {
-    /*
-      Center
-      EndPhi
-      EndTheta
-      PhiResolution
-      Radius
-      StartPhi
-      StartTheta
-      ThetaResolution
-    */
-    phi() {
-      this.updateFields(['StartPhi', 'EndPhi'], this.phi);
+  {
+    name: 'Sphere',
+    data() {
+      return {
+        module,
+        color: 'grey darken-2',
+      };
     },
-    theta() {
-      this.updateFields(['StartTheta', 'EndTheta'], this.theta);
-    },
-    thetaResolution() {
-      this.updateFields(['ThetaResolution'], [this.thetaResolution]);
-    },
-    phiResolution() {
-      this.updateFields(['PhiResolution'], [this.phiResolution]);
-    },
-  },
-  methods: Object.assign(
-    {
-      updateFields(fields, values) {
-        const id = this.proxies[0];
-        const changeSet = fields.map((name, idx) => ({
-          id,
-          name,
-          value: values[idx],
-        }));
-        this.$store.dispatch(Actions.PROXY_UPDATE, changeSet);
+    computed: {
+      phi: {
+        get() {
+          return [this.startPhi, this.endPhi];
+        },
+        set(value) {
+          this.startPhi = Number(value[0]);
+          this.endPhi = Number(value[1]);
+        },
       },
-      deleteProxy() {
-        if (!this.create) {
-          const id = this.proxies[0];
-          this.$store.commit(Mutations.PROXY_SELECTED_IDS_SET, []);
-          this.$store.dispatch(Actions.PROXY_DELETE, id);
-        } else {
-          this.removeActiveModule();
-        }
-      },
-      createProxy() {
-        console.log('create');
+      theta: {
+        get() {
+          return [this.startTheta, this.endTheta];
+        },
+        set(value) {
+          this.startTheta = Number(value[0]);
+          this.endTheta = Number(value[1]);
+        },
       },
     },
-    mapActions({ removeActiveModule: Actions.MODULES_ACTIVE_CLEAR })
-  ),
-};
+  }
+);

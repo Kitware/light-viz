@@ -43,7 +43,9 @@ export default {
             this.$store.dispatch(Actions.PROXY_NAME_FETCH, readerProxy.id);
             this.$store.dispatch(Actions.PROXY_PIPELINE_FETCH);
             this.$store.dispatch(Actions.MODULES_ACTIVE_CLEAR);
-            this.$store.commit(Mutations.PROXY_SELECTED_IDS, [readerProxy.id]);
+            this.$store.commit(Mutations.PROXY_SELECTED_IDS_SET, [
+              readerProxy.id,
+            ]);
           })
           .catch(console.error);
       },

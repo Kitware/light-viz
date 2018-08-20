@@ -171,6 +171,11 @@ export function generateComponentWithServerBinding(
     }
   }
 
+  function reset() {
+    copyMap(serverState, localState);
+    this.mtime++;
+  }
+
   // Fill computed fields
   Object.keys(propMaps).forEach((key) => {
     const propName = propMaps[key].name;
@@ -186,9 +191,12 @@ export function generateComponentWithServerBinding(
           : propMaps[key].default;
       },
       set(value) {
+        this.mtime++;
         localState[propName].value = setFn(value);
-        if (autoApply) {
+        if (autoApply || this.autoApply) {
           apply.apply(this);
+        } else {
+          this.$forceUpdate();
         }
       },
     };
@@ -203,6 +211,10 @@ export function generateComponentWithServerBinding(
               type: Boolean,
               default: false,
             },
+            autoApply: {
+              type: Boolean,
+              default: false,
+            },
           }
         : {},
       componentDefinition.props
@@ -213,6 +225,7 @@ export function generateComponentWithServerBinding(
     methods: Object.assign(
       {
         apply,
+        reset,
         hasChange,
         refreshState,
       },

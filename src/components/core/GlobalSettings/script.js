@@ -1,6 +1,8 @@
 import PalettePicker from 'pvw-lightviz/src/components/widgets/PalettePicker';
 import vtkMath from 'vtk.js/Sources/Common/Core/Math';
 
+import { Mutations } from 'pvw-lightviz/src/stores/types';
+
 import {
   generateComponentWithServerBinding,
   bool2int,
@@ -61,6 +63,14 @@ export default generateComponentWithServerBinding(
       };
     },
     computed: {
+      autoApply: {
+        get() {
+          return this.$store.getters.APP_AUTO_APPLY;
+        },
+        set(value) {
+          this.$store.commit(Mutations.APP_AUTO_APPLY_SET, value);
+        },
+      },
       background: {
         get() {
           if (!this.bg) {

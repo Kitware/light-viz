@@ -12,6 +12,7 @@ function objEnum(names) {
 
 export const Getters = objEnum([
   // index
+  'APP_AUTO_APPLY',
 
   // modules
   'MODULES_LIST',
@@ -41,6 +42,7 @@ export const Getters = objEnum([
 export const Mutations = objEnum([
   // index
   'APP_ROUTE_SET',
+  'APP_AUTO_APPLY_SET',
 
   // modules
   'MODULES_ADD',

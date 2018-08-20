@@ -33,6 +33,7 @@ export default {
       },
     },
     mapGetters({
+      autoApply: Getters.APP_AUTO_APPLY,
       panel: Getters.MODULES_ACTIVE,
       pipeline: Getters.PROXY_PIPELINE,
       selectedSources: Getters.PROXY_SELECTED_IDS,

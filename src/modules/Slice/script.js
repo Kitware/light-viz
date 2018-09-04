@@ -49,7 +49,7 @@ export default generateComponentWithServerBinding(
     mounted() {
       if (this.create) {
         // Use input bounds to set initial values
-        const bounds = this.boundsDomain;
+        const bounds = this.inputBounds;
         this.origin = [
           0.5 * (bounds[0] + bounds[1]),
           0.5 * (bounds[2] + bounds[3]),
@@ -71,7 +71,7 @@ export default generateComponentWithServerBinding(
         },
       },
       offsetDelta() {
-        const bounds = this.boundsDomain;
+        const bounds = this.inputBounds;
         return Math.sqrt(
           (bounds[1] - bounds[0]) * (bounds[1] - bounds[0]) +
             (bounds[3] - bounds[2]) * (bounds[3] - bounds[2]) +

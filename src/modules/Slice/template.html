@@ -35,8 +35,8 @@
               hide-details
 
               v-model="xOrigin"
-              :min="boundsDomain[0]"
-              :max="boundsDomain[1]"
+              :min="inputBounds[0]"
+              :max="inputBounds[1]"
               step="any"
             />
           </v-flex>
@@ -48,8 +48,8 @@
               type="number"
 
               v-model="xOrigin"
-              :min="boundsDomain[0]"
-              :max="boundsDomain[1]"
+              :min="inputBounds[0]"
+              :max="inputBounds[1]"
               step="any"
             />
           </v-flex>
@@ -62,8 +62,8 @@
               hide-details
 
               v-model="yOrigin"
-              :min="boundsDomain[2]"
-              :max="boundsDomain[3]"
+              :min="inputBounds[2]"
+              :max="inputBounds[3]"
               step="any"
             />
           </v-flex>
@@ -75,8 +75,8 @@
               type="number"
 
               v-model="yOrigin"
-              :min="boundsDomain[2]"
-              :max="boundsDomain[3]"
+              :min="inputBounds[2]"
+              :max="inputBounds[3]"
               step="any"
             />
           </v-flex>
@@ -89,8 +89,8 @@
               hide-details
 
               v-model="zOrigin"
-              :min="boundsDomain[4]"
-              :max="boundsDomain[5]"
+              :min="inputBounds[4]"
+              :max="inputBounds[5]"
               step="any"
             />
           </v-flex>
@@ -102,15 +102,15 @@
               type="number"
 
               v-model="zOrigin"
-              :min="boundsDomain[4]"
-              :max="boundsDomain[5]"
+              :min="inputBounds[4]"
+              :max="inputBounds[5]"
               step="any"
             />
           </v-flex>
-          <v-flex xs3>
+          <v-flex xs3 v-show="!crinkleslice">
             <label :class="$style.smallLabel">Offset</label>
           </v-flex>
-          <v-flex xs7>
+          <v-flex xs7 v-show="!crinkleslice">
             <v-slider
               :class="$style.noTopPadding"
               hide-details
@@ -121,7 +121,7 @@
               step="any"
             />
           </v-flex>
-          <v-flex xs2>
+          <v-flex xs2 v-show="!crinkleslice">
             <v-btn
               flat
               icon

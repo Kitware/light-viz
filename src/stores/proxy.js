@@ -44,9 +44,6 @@ export default {
       state.sourceToRepresentationMap[id] = rep;
     },
     PROXY_DATA_SET(state, proxy) {
-      if (proxy.id === '800') {
-        console.log(JSON.stringify(proxy, null, 2));
-      }
       const newValue = Object.assign({}, state.proxyDataMap[proxy.id], proxy);
       state.proxyDataMap = Object.assign({}, state.proxyDataMap, {
         [proxy.id]: newValue,
@@ -61,7 +58,7 @@ export default {
   actions: {
     PROXY_CREATE(
       { rootState, commit, dispatch },
-      { name, parentId, initialValues, skipDomain }
+      { name, parentId, initialValues, skipDomain, subProxyValues }
     ) {
       const client = rootState.network.client;
       if (client) {
@@ -69,13 +66,17 @@ export default {
           name,
           parentId,
           initialValues,
-          skipDomain
+          skipDomain,
+          subProxyValues
         )
           .then((proxy) => {
             commit(Mutations.PROXY_DATA_SET, proxy);
             commit(Mutations.PROXY_SELECTED_IDS_SET, [proxy.id]);
             dispatch(Actions.PROXY_PIPELINE_FETCH);
             dispatch(Actions.MODULES_ACTIVE_CLEAR);
+
+            // Make sure we pull the actual server values
+            dispatch(Actions.PROXY_DATA_FETCH, { proxyId: proxy.id });
           })
           .catch(console.error);
       }
@@ -165,7 +166,6 @@ export default {
       console.log('fetch', proxyId, needUI);
       const client = rootState.network.client;
       if (client) {
-        // FIXME server side does not like needUI=false
         client.remote.ProxyManager.get(proxyId, needUI)
           .then((proxy) => {
             commit(Mutations.PROXY_DATA_SET, proxy);

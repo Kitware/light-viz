@@ -18,6 +18,9 @@ import clipModule from 'pvw-lightviz/src/modules/Clip/module';
 import Slice from 'pvw-lightviz/src/modules/Slice';
 import sliceModule from 'pvw-lightviz/src/modules/Slice/module';
 
+import Contour from 'pvw-lightviz/src/modules/Contour';
+import contourModule from 'pvw-lightviz/src/modules/Contour/module';
+
 import DefaultComponent from 'pvw-lightviz/src/modules/Default';
 import defaultModule from 'pvw-lightviz/src/modules/Default/module';
 
@@ -50,6 +53,10 @@ export default function registerModules(store) {
     Mutations.MODULES_ADD,
     Object.assign({}, sliceModule, { component: Slice })
   );
+  store.commit(
+    Mutations.MODULES_ADD,
+    Object.assign({}, contourModule, { component: Contour })
+  );
 
   // --------------------------------------------------------------------------
   // Proxy to UI mapping
@@ -73,6 +80,10 @@ export default function registerModules(store) {
   store.commit(Mutations.PROXY_MODULE_BIND, {
     name: 'Cut',
     module: 'Slice',
+  });
+  store.commit(Mutations.PROXY_MODULE_BIND, {
+    name: 'Contour',
+    module: 'Contour',
   });
 
   // --------------------------------------------------------------------------

@@ -45,23 +45,6 @@ export default generateComponentWithServerBinding(
         module,
         color: 'grey darken-2',
         normalMode: 3,
-        domains: {
-          xOrigin: {
-            min: -5,
-            max: 5,
-            step: 1,
-          },
-          yOrigin: {
-            min: -5,
-            max: 5,
-            step: 1,
-          },
-          zOrigin: {
-            min: -5,
-            max: 5,
-            step: 1,
-          },
-        },
       };
     },
     computed: {

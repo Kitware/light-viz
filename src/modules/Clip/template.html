@@ -35,9 +35,9 @@
               hide-details
 
               v-model="xOrigin"
-              :min="domains.xOrigin.min"
-              :max="domains.xOrigin.max"
-              :step="domains.xOrigin.step"
+              :min="boundsDomain[0]"
+              :max="boundsDomain[1]"
+              step="any"
             />
           </v-flex>
           <v-flex xs1/>
@@ -48,9 +48,9 @@
               type="number"
 
               v-model="xOrigin"
-              :min="domains.xOrigin.min"
-              :max="domains.xOrigin.max"
-              :step="domains.xOrigin.step"
+              :min="boundsDomain[0]"
+              :max="boundsDomain[1]"
+              step="any"
             />
           </v-flex>
           <v-flex xs1>
@@ -62,9 +62,9 @@
               hide-details
 
               v-model="yOrigin"
-              :min="domains.yOrigin.min"
-              :max="domains.yOrigin.max"
-              :step="domains.yOrigin.step"
+              :min="boundsDomain[2]"
+              :max="boundsDomain[3]"
+              step="any"
             />
           </v-flex>
           <v-flex xs1/>
@@ -75,9 +75,9 @@
               type="number"
 
               v-model="yOrigin"
-              :min="domains.yOrigin.min"
-              :max="domains.yOrigin.max"
-              :step="domains.yOrigin.step"
+              :min="boundsDomain[2]"
+              :max="boundsDomain[3]"
+              step="any"
             />
           </v-flex>
           <v-flex xs1>
@@ -89,9 +89,9 @@
               hide-details
 
               v-model="zOrigin"
-              :min="domains.zOrigin.min"
-              :max="domains.zOrigin.max"
-              :step="domains.zOrigin.step"
+              :min="boundsDomain[4]"
+              :max="boundsDomain[5]"
+              step="any"
             />
           </v-flex>
           <v-flex xs1/>
@@ -102,9 +102,9 @@
               type="number"
 
               v-model="zOrigin"
-              :min="domains.zOrigin.min"
-              :max="domains.zOrigin.max"
-              :step="domains.zOrigin.step"
+              :min="boundsDomain[4]"
+              :max="boundsDomain[5]"
+              step="any"
             />
           </v-flex>
         </v-layout>
@@ -208,7 +208,7 @@
   <v-container
     fluid
     grid-list-md
-    v-if="hasChange() && !autoApply"
+    v-if="hasChange() && !autoApply && !create"
     :class="$style.buttonBar"
   >
     <v-layout row wrap align-center >

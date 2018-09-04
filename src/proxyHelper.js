@@ -50,6 +50,26 @@ export function bool2int(value) {
   return value ? 1 : 0;
 }
 
+export function getStep(min, max) {
+  if (Number.isInteger(min) && Number.isInteger(max) && max - min > 10) {
+    return 1;
+  }
+  let delta = max - min;
+  let targetStep = 1;
+  if (delta > 0) {
+    while (delta > 0) {
+      targetStep *= 10;
+      delta /= 10;
+    }
+    return targetStep;
+  }
+  while (delta < 0) {
+    targetStep /= 10;
+    delta *= 10;
+  }
+  return targetStep;
+}
+
 // Expected structure
 //
 // {
@@ -110,6 +130,22 @@ export function generateComponentWithServerBinding(
         }
         return proxyData[id];
       },
+      boundsDomain() {
+        if (this.create) {
+          return this.activeProxyData.data.bounds;
+        }
+        const myId = this.activeProxyData.id;
+        const nodeInfo = this.$store.getters.PROXY_PIPELINE.find(
+          (n) => n.id === myId
+        );
+        const parentId = nodeInfo.parent;
+        const proxyData = this.$store.getters.PROXY_DATA_MAP;
+        if (!proxyData || !proxyData[parentId]) {
+          // Fallback
+          return [-1, 1, -1, 1, -1, 1];
+        }
+        return proxyData[parentId].data.bounds;
+      },
     },
     componentDefinition.computed
   );
@@ -152,11 +188,11 @@ export function generateComponentWithServerBinding(
         serverState[key] &&
         isDifferent(localState[key].value, serverState[key].value)
       ) {
-        console.log('hasChange', key, localState[key], serverState[key]);
+        // console.log('hasChange', key, localState[key], serverState[key]);
         changeSet.push(localState[key]);
       }
     }
-    console.log('=>', changeSet.length);
+    // console.log('=>', changeSet.length);
     return changeSet.length;
   }
 
@@ -202,28 +238,29 @@ export function generateComponentWithServerBinding(
     };
   });
 
+  const props = Object.assign({}, componentDefinition.props);
+  if (!props.create && !computed.create) {
+    props.create = {
+      type: Boolean,
+      default: false,
+    };
+  }
+  if (!props.autoApply && !computed.autoApply) {
+    props.autoApply = {
+      type: Boolean,
+      default: false,
+    };
+  }
+
   return Object.assign({}, componentDefinition, {
     computed,
-    props: Object.assign(
-      proxyNameToCreate
-        ? {
-            create: {
-              type: Boolean,
-              default: false,
-            },
-            autoApply: {
-              type: Boolean,
-              default: false,
-            },
-          }
-        : {},
-      componentDefinition.props
-    ),
+    props,
     data() {
       return Object.assign({ mtime: -1 }, componentDefinition.data.apply(this));
     },
     methods: Object.assign(
       {
+        getStep,
         apply,
         reset,
         hasChange,
@@ -232,7 +269,6 @@ export function generateComponentWithServerBinding(
       proxyNameToCreate
         ? {
             deleteProxy() {
-              console.log('deleteProxy', this.create, this.activeSourceId);
               if (!this.create) {
                 this.$store.dispatch(Actions.PROXY_DELETE, this.activeSourceId);
                 this.$store.commit(Mutations.PROXY_SELECTED_IDS_SET, []);
@@ -242,21 +278,29 @@ export function generateComponentWithServerBinding(
             },
             createProxy() {
               const initialValues = {};
+              const subProxyValues = {};
               if (hasChange()) {
                 Object.keys(localState).forEach((key) => {
                   if (!localState[key].subProxy) {
                     initialValues[localState[key].label] =
                       localState[key].value;
+                  } else {
+                    if (!subProxyValues[localState[key].subProxy]) {
+                      subProxyValues[localState[key].subProxy] = {};
+                    }
+                    subProxyValues[localState[key].subProxy][
+                      localState[key].label
+                    ] =
+                      localState[key].value;
                   }
-                  // FIXME create a post create changeSet
                 });
               }
-              console.log('initialValues', initialValues);
 
               this.$store.dispatch(Actions.PROXY_CREATE, {
                 name: proxyNameToCreate,
                 parentId: this.activeSourceId,
                 initialValues,
+                subProxyValues,
                 skipDomain: !!hasChange(),
               });
             },

@@ -82,7 +82,7 @@ export default {
       }
     },
     PROXY_UPDATE({ rootState, state, dispatch }, changeset) {
-      console.log('UPDATE', changeset);
+      // console.log('UPDATE', JSON.stringify(changeset, null, 2));
       const client = rootState.network.client;
       if (client) {
         // const idToUpdate = new Set(changeset.map((i) => i.id));
@@ -163,7 +163,7 @@ export default {
       }
     },
     PROXY_DATA_FETCH({ rootState, commit, state }, { proxyId, needUI = true }) {
-      console.log('fetch', proxyId, needUI);
+      // console.log('fetch', proxyId, needUI);
       const client = rootState.network.client;
       if (client) {
         client.remote.ProxyManager.get(proxyId, needUI)

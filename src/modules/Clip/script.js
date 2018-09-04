@@ -47,6 +47,16 @@ export default generateComponentWithServerBinding(
         normalMode: 3,
       };
     },
+    mounted() {
+      // Use input bounds to set initial values
+      const bounds = this.boundsDomain;
+      console.log('bounds', bounds);
+      this.origin = [
+        0.5 * (bounds[0] + bounds[1]),
+        0.5 * (bounds[2] + bounds[3]),
+        0.5 * (bounds[4] + bounds[5]),
+      ];
+    },
     computed: {
       xNormal: {
         get() {

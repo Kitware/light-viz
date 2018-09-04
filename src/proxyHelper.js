@@ -130,7 +130,7 @@ export function generateComponentWithServerBinding(
         }
         return proxyData[id];
       },
-      boundsDomain() {
+      inputBounds() {
         if (this.create) {
           return this.activeProxyData.data.bounds;
         }
@@ -145,6 +145,22 @@ export function generateComponentWithServerBinding(
           return [-1, 1, -1, 1, -1, 1];
         }
         return proxyData[parentId].data.bounds;
+      },
+      inputArrays() {
+        if (this.create) {
+          return this.activeProxyData.data.arrays;
+        }
+        const myId = this.activeProxyData.id;
+        const nodeInfo = this.$store.getters.PROXY_PIPELINE.find(
+          (n) => n.id === myId
+        );
+        const parentId = nodeInfo.parent;
+        const proxyData = this.$store.getters.PROXY_DATA_MAP;
+        if (!proxyData || !proxyData[parentId]) {
+          // Fallback
+          return [];
+        }
+        return proxyData[parentId].data.arrays;
       },
     },
     componentDefinition.computed
@@ -223,7 +239,7 @@ export function generateComponentWithServerBinding(
         this.mtime; // eslint-disable-line
         return localState[propName]
           ? getFn(localState[propName].value)
-          : propMaps[key].default;
+          : getFn(propMaps[key].default);
       },
       set(value) {
         this.mtime++;

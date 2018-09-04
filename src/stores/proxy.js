@@ -60,6 +60,14 @@ export default {
       { rootState, commit, dispatch },
       { name, parentId, initialValues, skipDomain, subProxyValues }
     ) {
+      // console.log(
+      //   'CREATE',
+      //   JSON.stringify(
+      //     { name, parentId, initialValues, subProxyValues },
+      //     null,
+      //     2
+      //   )
+      // );
       const client = rootState.network.client;
       if (client) {
         client.remote.ProxyManager.create(

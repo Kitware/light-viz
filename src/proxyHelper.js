@@ -168,11 +168,10 @@ export function generateComponentWithServerBinding(
           subProxy: propMaps[key].subProxy,
           label: propMaps[key].label || propMaps[key].name,
         };
-        copyMap(serverState, localState);
       });
+      copyMap(serverState, localState);
       return;
     }
-    // console.log(proxyData.properties);
 
     extractProperties(serverPropNames, proxyData.properties, serverState);
     copyMap(serverState, localState);

@@ -59,54 +59,67 @@ export default generateComponentWithServerBinding(
       return {
         module,
         color: 'grey darken-2',
-        isoRange: [0, 1],
+        sliderData: [0, 1, 0.5],
+        computeIsoValue: false,
       };
     },
     mounted() {
       if (this.create) {
+        this.computeIsoValue = true;
         this.contourBy = this.contourByArrays[0];
       }
+      this.updateRange();
     },
     computed: {
-      // contourByArray() {
-      //   return this.inputArrays.find(
-      //     (array) =>
-      //       array.location === 'POINTS' &&
-      //       array.size === 1 &&
-      //       array.name === this.contourBy
-      //   );
-      // },
       contourByArrays() {
         return this.inputArrays
           .filter((array) => array.location === 'POINTS' && array.size === 1)
           .map((a) => a.name);
       },
-      isosurface: {
-        get() {
-          // register dependency
-          this.mtime; // eslint-disable-line
-          return this.isosurfaces[0];
-        },
-        set(value) {
-          this.mtime++;
-          this.isosurfaces = [Number(value)];
-          this.$forceUpdate();
-        },
-      },
     },
     watch: {
       contourBy() {
-        console.log('contourBy');
+        this.updateRange();
+      },
+    },
+    methods: {
+      updateData(value) {
+        const iso = Number(value);
+        const sliderData = this.sliderData.slice();
+        sliderData[2] = iso;
+        this.sliderData = sliderData;
+        return iso;
+      },
+      updateIsoValue(value) {
+        this.isosurfaces = [this.updateData(value)];
+      },
+      updateRange() {
+        const name = this.contourBy;
+        const compute = this.computeIsoValue;
+        const newData = [0, 1, this.isosurfaces[0]];
+
         const { min, max } = this.inputArrays.find(
           (array) =>
             array.location === 'POINTS' &&
             array.size === 1 &&
-            array.name === this.contourBy
+            array.name === name
         ).range[0];
-        this.isoRange = [min, max];
-        this.isosurfaces = [(this.isoRange[0] + this.isoRange[1]) * 0.5];
-        console.log('update isosurface', this.isosurface, this.isosurfaces);
-        this.$nextTick(this.$forceUpdate);
+        const mean = (min + max) * 0.5;
+
+        newData[0] = min;
+        newData[1] = max;
+        if (compute) {
+          newData[2] = mean;
+          this.isosurfaces = [mean];
+          this.computeIsoValue = false;
+        }
+
+        this.sliderData = newData;
+        console.log(name, 'range', newData.join(', '), compute);
+      },
+      blur() {
+        this.computeIsoValue = true;
+        this.$nextTick(this.$refs.comboBox.blur);
       },
     },
   }

@@ -25,14 +25,20 @@ export default {
       default: '#1E88E5',
     },
   },
+  data() {
+    return {
+      lastStyle: '',
+    };
+  },
   computed: {
     style() {
       if (this.progress > 1) {
-        return `background: ${this.color}; width: ${width(
+        this.lastStyle = `background: ${this.color}; ${side(
           this.progress
-        )}%; ${side(this.progress)}: 0;`;
+        )}: 0;`;
+        return `${this.lastStyle} width: ${width(this.progress)}%;`;
       }
-      return 'display: none;';
+      return `opacity: 0; width: 0; ${this.lastStyle}`;
     },
   },
 };

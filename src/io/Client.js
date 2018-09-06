@@ -92,7 +92,7 @@ export default class Client {
           // Try to delay the notification of idle
           this.timeoutId = setTimeout(() => {
             this.notifyBusy();
-          }, 250);
+          }, 50);
         } else {
           this.notifyBusy();
         }
@@ -112,7 +112,6 @@ export default class Client {
     if (this.connection) {
       return Promise.reject(new Error('Need to disconnect before'));
     }
-    console.log('connect config', config);
     return new Promise((resolve, reject) => {
       this.smartConnect = SmartConnect.newInstance({ config });
       this.smartConnect.onConnectionReady((connection) => {

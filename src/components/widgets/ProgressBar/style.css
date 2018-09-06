@@ -3,5 +3,15 @@
   top: 0;
   height: 2px;
   z-index: 10;
-  transition: width 50ms;
+
+}
+
+.active {
+  composes: container;
+  transition: width 10ms, opacity 250ms ease-in;
+}
+
+.inactive {
+  composes: container;
+  transition: width 250ms cubic-bezier(1,0,1,0), opacity 250ms ease-in;
 }

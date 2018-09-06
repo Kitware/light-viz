@@ -9,6 +9,11 @@
   height: 100%;
 }
 
+.jumbotron {
+  width: 100%;
+  background: rgb(66, 66, 66);
+}
+
 .fileUpload {
   display: flex;
   flex-flow: row;

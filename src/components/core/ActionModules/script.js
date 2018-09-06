@@ -11,6 +11,8 @@ export default {
   computed: mapGetters({
     modules: Getters.MODULES_LIST,
     activeSources: Getters.PROXY_SELECTED_IDS,
+    proxyDataMap: Getters.PROXY_DATA_MAP,
+    proxyPipeline: Getters.PROXY_PIPELINE,
   }),
   methods: mapActions({
     activate: Actions.MODULES_ACTIVE_BY_NAME,

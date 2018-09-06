@@ -20,6 +20,23 @@ export default {
     this.imageStream = WslinkImageStream.newInstance({ client });
     this.imageStream.connect({}).then(() => {
       this.mouseListener = new VtkWebMouseListener(client);
+
+      // Attach interaction listener for image quality
+      this.mouseListener.onInteraction((interact) => {
+        if (this.interacting === interact) {
+          return;
+        }
+        this.interacting = interact;
+        if (interact) {
+          this.imageStream.startInteractiveQuality();
+        } else {
+          this.imageStream
+            .stopInteractiveQuality()
+            .then(this.imageStream.invalidateCache);
+          setTimeout(this.imageStream.invalidateCache, 500);
+        }
+      });
+
       this.renderer = new NativeImageRenderer(
         container,
         this.imageStream,
@@ -36,8 +53,11 @@ export default {
       // On resize
       this.subscription = SizeHelper.onSizeChange(sizeChange);
       sizeChange();
-      // console.log('still render (from view)');
       this.imageStream.stillRender();
+
+      // Initial config
+      this.imageStream.updateQuality(100, 80);
+      this.imageStream.updateResolutionRatio(1, 1);
     });
   },
   data() {

@@ -1,3 +1,4 @@
+import RepresentationToolbar from 'pvw-lightviz/src/components/core/RepresentationToolbar';
 import VtkView from 'pvw-lightviz/src/components/core/View';
 import { Breakpoints } from 'pvw-lightviz/src/constants';
 
@@ -15,6 +16,7 @@ export default {
     },
   },
   components: {
+    RepresentationToolbar,
     VtkView,
   },
 };

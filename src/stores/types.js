@@ -69,6 +69,9 @@ export const Mutations = objEnum([
 // ----------------------------------------------------------------------------
 
 export const Actions = objEnum([
+  // color
+  'COLOR_BY',
+
   // index
   'APP_ROUTE_LANDING',
   'APP_ROUTE_RUN',

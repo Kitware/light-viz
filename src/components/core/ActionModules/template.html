@@ -4,7 +4,7 @@
     :key="module.label"
     :class="$style.toolbarButton"
 
-    v-if="module.showInMenu(activeSources)"
+    v-if="module.showInMenu(activeSources, proxyDataMap, proxyPipeline)"
 
     flat
     @click="activate(module.name)"

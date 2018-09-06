@@ -115,7 +115,6 @@ export default generateComponentWithServerBinding(
         }
 
         this.sliderData = newData;
-        console.log(name, 'range', newData.join(', '), compute);
       },
       blur() {
         this.computeIsoValue = true;

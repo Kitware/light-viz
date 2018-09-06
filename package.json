@@ -39,13 +39,13 @@
   "dependencies": {
     "hammerjs": "^2.0.8",
     "material-design-icons-iconfont": "3.0.3",
-    "monologue.js": "^0.3.5",
+    "monologue.js": "0.3.5",
     "mousetrap": "1.6.2",
-    "paraviewweb": "3.2.4",
+    "paraviewweb": "3.2.5",
     "typeface-roboto": "0.0.54",
-    "vtk.js": "7.5.8",
+    "vtk.js": "7.8.1",
     "vue": "2.5.17",
-    "vuetify": "1.1.10",
+    "vuetify": "1.2.3",
     "vuex": "3.0.1",
     "wslink": "0.1.7"
   },
@@ -54,11 +54,11 @@
     "eslint-plugin-vue": "4.7.1",
     "kw-doc": "1.2.1",
     "kw-web-suite": "6.2.0",
-    "vue-loader": "15.3.0",
-    "vue-style-loader": "4.1.1",
+    "vue-loader": "15.4.1",
+    "vue-style-loader": "4.1.2",
     "vue-template-compiler": "2.5.17",
     "webpack-merge": "4.1.4",
-    "write-file-webpack-plugin": "4.3.2"
+    "write-file-webpack-plugin": "4.4.0"
   },
   "config": {
     "commitizen": {

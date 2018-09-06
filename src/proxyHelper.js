@@ -147,20 +147,28 @@ export function generateComponentWithServerBinding(
         return proxyData[parentId].data.bounds;
       },
       inputArrays() {
-        if (this.create) {
-          return this.activeProxyData.data.arrays;
-        }
-        const myId = this.activeProxyData.id;
-        const nodeInfo = this.$store.getters.PROXY_PIPELINE.find(
-          (n) => n.id === myId
-        );
-        const parentId = nodeInfo.parent;
+        const sourceId = this.activeSourceId;
         const proxyData = this.$store.getters.PROXY_DATA_MAP;
-        if (!proxyData || !proxyData[parentId]) {
-          // Fallback
+        const nodeInfo = this.$store.getters.PROXY_PIPELINE.find(
+          (n) => n.id === sourceId
+        );
+        if (!proxyData || !proxyData[sourceId]) {
           return [];
         }
-        return proxyData[parentId].data.arrays;
+
+        if (this.create) {
+          return proxyData[sourceId].data.arrays;
+        }
+
+        if (proxyType === 'Representation') {
+          return proxyData[sourceId].data.arrays;
+        }
+
+        const idToUse = nodeInfo.parent === '0' ? sourceId : nodeInfo.parent;
+        if (!nodeInfo || !proxyData[idToUse]) {
+          return [];
+        }
+        return proxyData[idToUse].data.arrays;
       },
     },
     componentDefinition.computed

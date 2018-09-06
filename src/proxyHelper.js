@@ -105,6 +105,9 @@ export function generateComponentWithServerBinding(
   const changeSet = [];
   const computed = Object.assign(
     {
+      isNetworkBusy() {
+        return this.$store.getters.BUSY_COUNT;
+      },
       activeSourceId() {
         return this.$store.getters.PROXY_SELECTED_IDS[0];
       },
@@ -219,8 +222,19 @@ export function generateComponentWithServerBinding(
     return changeSet.length;
   }
 
+  let scheduledApply = null;
+
   function apply() {
-    if (hasChange() && !this.create) {
+    if (this.create) {
+      return;
+    }
+    if (this.isNetworkBusy && !scheduledApply) {
+      scheduledApply = setTimeout(() => {
+        scheduledApply = null;
+        apply.apply(this);
+      }, 100);
+    }
+    if (this.isNetworkBusy < 3 && hasChange()) {
       // console.log('apply', JSON.stringify(changeSet, null, 2));
       store.dispatch(Actions.PROXY_UPDATE, changeSet);
       store.dispatch(Actions.PROXY_DATA_FETCH, {

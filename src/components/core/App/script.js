@@ -9,6 +9,7 @@ import ErrorBox from 'pvw-lightviz/src/components/core/ErrorBox';
 import Landing from 'pvw-lightviz/src/components/core/Landing';
 import LayoutView from 'pvw-lightviz/src/components/core/LayoutView';
 import SvgIcon from 'pvw-lightviz/src/components/widgets/SvgIcon';
+import ProgressBar from 'pvw-lightviz/src/components/widgets/ProgressBar';
 import { Actions } from 'pvw-lightviz/src/stores/types';
 import shortcuts from 'pvw-lightviz/src/shortcuts';
 
@@ -27,6 +28,7 @@ export default {
     Landing,
     LayoutView,
     SvgIcon,
+    ProgressBar,
   },
   props: {},
   data() {
@@ -38,7 +40,9 @@ export default {
     };
   },
   computed: mapState({
-    client: 'client',
+    busyPercent(state) {
+      return state.busy.progress;
+    },
     landingVisible: (state) => state.route === 'landing',
     smallScreen() {
       // vuetify xs is 600px, but our buttons collide at around 700.

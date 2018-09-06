@@ -39,6 +39,7 @@ export function createViewer(
   const store = createStore();
   store.commit(Mutations.NETWORK_CONFIG_SET, config);
   registerModules(store);
+  setInterval(() => store.dispatch(Actions.BUSY_UPDATE_PROGRESS, 1), 50);
 
   /* eslint-disable no-new */
   new Vue({

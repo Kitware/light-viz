@@ -11,6 +11,10 @@ function objEnum(names) {
 // ----------------------------------------------------------------------------
 
 export const Getters = objEnum([
+  // busy
+  'BUSY_PROGRESS',
+  'BUSY_COUNT',
+
   // index
   'APP_AUTO_APPLY',
 
@@ -40,6 +44,10 @@ export const Getters = objEnum([
 // ----------------------------------------------------------------------------
 
 export const Mutations = objEnum([
+  // busy
+  'BUSY_PROGRESS_SET',
+  'BUSY_COUNT_SET',
+
   // index
   'APP_ROUTE_SET',
   'APP_AUTO_APPLY_SET',
@@ -69,6 +77,9 @@ export const Mutations = objEnum([
 // ----------------------------------------------------------------------------
 
 export const Actions = objEnum([
+  // busy
+  'BUSY_UPDATE_PROGRESS',
+
   // color
   'COLOR_BY',
 

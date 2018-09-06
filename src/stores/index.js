@@ -1,6 +1,7 @@
 // import Vue from 'vue';
 import Vuex from 'vuex';
 
+import busy from 'pvw-lightviz/src/stores/busy';
 import color from 'pvw-lightviz/src/stores/color';
 import modules from 'pvw-lightviz/src/stores/modules';
 import network from 'pvw-lightviz/src/stores/network';
@@ -40,6 +41,7 @@ function createStore() {
       autoApply: true,
     },
     modules: {
+      busy,
       color,
       modules,
       network,

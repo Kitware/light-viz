@@ -39,6 +39,10 @@ export default {
         .catch((error) => {
           console.error(error);
         });
+
+      clientToConnect.setBusyCallback((count) => {
+        commit(Mutations.BUSY_COUNT_SET, count);
+      });
     },
   },
 };

@@ -16,6 +16,7 @@
     clipped-left
     app
   >
+    <progress-bar :progress="busyPercent" />
     <v-toolbar-side-icon
       :disabled="landingVisible"
       @click.native.stop="controlsDrawer = !controlsDrawer"

@@ -34,15 +34,78 @@ const REMOTE_API = {
   ProxyName,
 };
 
+// ----------------------------------------------------------------------------
+// Busy feedback handling
+// ----------------------------------------------------------------------------
+
+function busy(fn, update) {
+  return (...args) =>
+    new Promise((resolve, reject) => {
+      update(1);
+      fn(...args).then(
+        (response) => {
+          update(-1);
+          resolve(response);
+        },
+        (error) => {
+          update(-1);
+          reject(error);
+        }
+      );
+    });
+}
+
+// ----------------------------------------------------------------------------
+
+function busyWrap(methodMap, update) {
+  const busyContainer = {};
+  Object.keys(methodMap).forEach((methodName) => {
+    busyContainer[methodName] = busy(methodMap[methodName], update);
+  });
+  return busyContainer;
+}
+
+// ----------------------------------------------------------------------------
+// Client
+// ----------------------------------------------------------------------------
+
 export default class Client {
   constructor() {
     this.config = null;
     this.connection = null;
     this.remote = {};
+    this.busyCount = 0;
+    this.notifyBusy = () => {
+      if (this.busyCallback) {
+        this.busyCallback(this.busyCount);
+      }
+    };
+    this.timeoutId = 0;
+    this.updateBusy = (delta = 0) => {
+      this.busyCount += delta;
+      if (this.busyCallback) {
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId);
+          this.timeoutId = 0;
+        }
+        if (!this.busyCount) {
+          // Try to delay the notification of idle
+          this.timeoutId = setTimeout(() => {
+            this.notifyBusy();
+          }, 250);
+        } else {
+          this.notifyBusy();
+        }
+      }
+    };
   }
 
   isConnected() {
     return !!this.connection;
+  }
+
+  setBusyCallback(callback) {
+    this.busyCallback = callback;
   }
 
   connect(config) {
@@ -59,7 +122,10 @@ export default class Client {
 
         // Link remote API
         Object.keys(REMOTE_API).forEach((name) => {
-          this.remote[name] = REMOTE_API[name](session);
+          this.remote[name] = busyWrap(
+            REMOTE_API[name](session),
+            this.updateBusy
+          );
         });
 
         resolve(this);

@@ -30,6 +30,7 @@
     ],
 
     "readers": [
-        { "name": "LegacyVTKReader", "extensions": [ "vtk" ], "method": "FileNames" }
+        { "name": "LegacyVTKReader", "extensions": [ "vtk" ], "method": "FileNames" },
+        { "name": "VERAOUTReader", "extensions": [ "h5" ], "method": "FileName" }
     ]
 }

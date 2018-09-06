@@ -21,6 +21,9 @@ import sliceModule from 'pvw-lightviz/src/modules/Slice/module';
 import Contour from 'pvw-lightviz/src/modules/Contour';
 import contourModule from 'pvw-lightviz/src/modules/Contour/module';
 
+import Threshold from 'pvw-lightviz/src/modules/Threshold';
+import thresholdModule from 'pvw-lightviz/src/modules/Threshold/module';
+
 import DefaultComponent from 'pvw-lightviz/src/modules/Default';
 import defaultModule from 'pvw-lightviz/src/modules/Default/module';
 
@@ -57,6 +60,10 @@ export default function registerModules(store) {
     Mutations.MODULES_ADD,
     Object.assign({}, contourModule, { component: Contour })
   );
+  store.commit(
+    Mutations.MODULES_ADD,
+    Object.assign({}, thresholdModule, { component: Threshold })
+  );
 
   // --------------------------------------------------------------------------
   // Proxy to UI mapping
@@ -84,6 +91,10 @@ export default function registerModules(store) {
   store.commit(Mutations.PROXY_MODULE_BIND, {
     name: 'Contour',
     module: 'Contour',
+  });
+  store.commit(Mutations.PROXY_MODULE_BIND, {
+    name: 'Threshold',
+    module: 'Threshold',
   });
 
   // --------------------------------------------------------------------------

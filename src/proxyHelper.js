@@ -253,6 +253,7 @@ export function generateComponentWithServerBinding(
   Object.keys(propMaps).forEach((key) => {
     const propName = propMaps[key].name;
     const autoApply = propMaps[key].autoApply || false;
+    const noAutoApply = propMaps[key].noAutoApply || false;
     const getFn = propMaps[key].serverToClient || defaultConvert;
     const setFn = propMaps[key].clientToServer || defaultConvert;
     computed[key] = {
@@ -266,7 +267,7 @@ export function generateComponentWithServerBinding(
       set(value) {
         this.mtime++;
         localState[propName].value = setFn(value);
-        if (autoApply || this.autoApply) {
+        if (autoApply || (this.autoApply && !noAutoApply)) {
           apply.apply(this);
         } else {
           this.$forceUpdate();

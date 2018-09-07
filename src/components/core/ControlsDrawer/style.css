@@ -7,3 +7,7 @@
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
 }
+
+.contentPadding {
+  padding-top: 10px;
+}

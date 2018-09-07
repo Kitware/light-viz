@@ -3,11 +3,13 @@
     :class="$style.tabs"
     v-model="activeTab"
     v-show="!panel"
+    centered
+    grow
   >
     <v-tab>Datasets</v-tab>
     <v-tab>Global</v-tab>
     <v-tabs-items touchless>
-      <v-tab-item>
+      <v-tab-item :class="$style.contentPadding">
         <git-tree
           :sources="pipeline"
           :actives="selectedSources"

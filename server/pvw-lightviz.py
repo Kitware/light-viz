@@ -204,8 +204,11 @@ class _Server(pv_wslink.PVServerProtocol):
         self.getApplication().SetImageEncoding(0);
 
         # Disable interactor-based render calls
-        simple.GetRenderView().EnableRenderOnInteraction = 0
-        simple.GetRenderView().Background = [0,0,0]
+        view = simple.GetRenderView()
+        view.EnableRenderOnInteraction = 0
+        view.Background = [0.4470588235294118, 0.4470588235294118, 0.4470588235294118]
+        view.Background2 = [0.2235294117647059, 0.2235294117647059, 0.2235294117647059]
+        view.UseGradientBackground = 1
 
         # ProxyManager helper
         pxm = simple.servermanager.ProxyManager()

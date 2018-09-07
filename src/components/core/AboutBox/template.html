@@ -1,6 +1,6 @@
 <v-card>
   <v-card-title>
-    <svg-icon icon="lightviz" :class="$style.logoIcon" />
+    <svg-icon :icon="darkMode ? 'lightviz-dark' : 'lightviz'" :class="$style.logoIcon" />
     <v-spacer />
     <v-btn
       flat
@@ -44,7 +44,7 @@
       <v-flex xs6>
         <div>&nbsp;</div>
         <a href="https://kitware.github.io/paraview/">
-          <svg-icon icon="paraview" :class="$style.aboutIcon" />
+          <svg-icon :icon="darkMode ? 'paraview-dark' : 'paraview'" :class="$style.aboutIcon" />
         </a>
       </v-flex>
     </v-layout>

@@ -12,4 +12,9 @@ export default {
       version: window.LIGHTVIZ_VERSION || 'not available',
     };
   },
+  computed: {
+    darkMode() {
+      return this.$store.getters.APP_DARK_THEME;
+    },
+  },
 };

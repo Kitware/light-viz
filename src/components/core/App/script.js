@@ -40,6 +40,9 @@ export default {
     };
   },
   computed: mapState({
+    darkMode() {
+      return this.$store.getters.APP_DARK_THEME;
+    },
     busyPercent(state) {
       return state.busy.progress;
     },
@@ -52,6 +55,9 @@ export default {
       return this.smallScreen ? 'v-bottom-sheet' : 'v-dialog';
     },
     iconLogo() {
+      if (this.darkMode) {
+        return this.smallScreen ? 'lightviz-small-dark' : 'lightviz-dark';
+      }
       return this.smallScreen ? 'lightviz-small' : 'lightviz';
     },
   }),

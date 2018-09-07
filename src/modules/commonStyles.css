@@ -5,7 +5,14 @@
 .topBar {
   padding: 0 0 0 15px;
   margin: 0;
+}
+
+:global(.theme--light) .topBar {
   background: #E0E0E0;
+}
+
+:global(.theme--dark) .topBar {
+  background: rgb(33,33,33);
 }
 
 .title {

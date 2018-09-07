@@ -1,6 +1,6 @@
 export default {
   name: 'Threshold',
-  icon: 'fingerprint',
+  icon: 'gradient',
   label: 'Threshold',
   showInMenu(selectedSourceIds, proxyDataMap) {
     if (selectedSourceIds.length === 1 && proxyDataMap) {

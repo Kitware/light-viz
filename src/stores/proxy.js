@@ -41,7 +41,11 @@ export default {
       state.proxyToModuleMap[name] = module;
     },
     PROXY_SOURCE_TO_REPRESENTATION_SET(state, { id, rep }) {
-      state.sourceToRepresentationMap[id] = rep;
+      state.sourceToRepresentationMap = Object.assign(
+        {},
+        state.sourceToRepresentationMap,
+        { [id]: rep }
+      );
     },
     PROXY_DATA_SET(state, proxy) {
       const newValue = Object.assign({}, state.proxyDataMap[proxy.id], proxy);

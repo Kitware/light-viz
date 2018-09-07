@@ -121,14 +121,15 @@ export function generateComponentWithServerBinding(
       },
       activeProxyData() {
         const id = this[`active${proxyType}Id`];
+        const proxyData = this.$store.getters.PROXY_DATA_MAP;
+
         if (!id) {
-          // console.log('No id available to update state');
+          // console.log(proxyType, 'No id available to update state');
           return null;
         }
 
-        const proxyData = this.$store.getters.PROXY_DATA_MAP;
-        if (!proxyData) {
-          // console.log('no proxy data for id', id, this.proxyData);
+        if (!proxyData || !proxyData[id]) {
+          // console.log(proxyType, 'no proxy data for id', id, this.proxyData);
           return null;
         }
         return proxyData[id];

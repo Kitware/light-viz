@@ -82,7 +82,11 @@ export default generateComponentWithServerBinding(
       },
     },
     methods: {
-      applyColor({ value }) {
+      applyColor(arg) {
+        if (!arg || !arg.value) {
+          return;
+        }
+        const { value } = arg;
         const representationId = this.activeRepresentationId;
         const [colorMode, arrayLocation, arrayName] = value.split(SEPARATOR);
         const vectorMode = 'Magnitude';

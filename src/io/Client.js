@@ -108,6 +108,10 @@ export default class Client {
     this.busyCallback = callback;
   }
 
+  setConnectionErrorCallback(callback) {
+    this.connectionCallback = callback;
+  }
+
   connect(config) {
     if (this.connection) {
       return Promise.reject(new Error('Need to disconnect before'));
@@ -130,9 +134,15 @@ export default class Client {
         resolve(this);
       });
       this.smartConnect.onConnectionError((error) => {
+        if (this.connectionCallback) {
+          this.connectionCallback('errored', error);
+        }
         reject(error);
       });
       this.smartConnect.onConnectionClose((close) => {
+        if (this.connectionCallback) {
+          this.connectionCallback('closed', close);
+        }
         reject(close);
       });
       this.smartConnect.connect();

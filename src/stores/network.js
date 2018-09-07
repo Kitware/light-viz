@@ -43,6 +43,12 @@ export default {
       clientToConnect.setBusyCallback((count) => {
         commit(Mutations.BUSY_COUNT_SET, count);
       });
+
+      clientToConnect.setConnectionErrorCallback((type, error) => {
+        const message = (error && error.message) || `Connection ${type}`;
+        console.log(error);
+        console.error(message);
+      });
     },
   },
 };

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-// import { Mutations, Actions } from 'pvw-lightviz/src/stores/types';
+import { Mutations } from 'pvw-lightviz/src/stores/types';
 
 export default {
   state: {
@@ -11,6 +11,7 @@ export default {
     interactiveRatio: 1,
     maxFPS: 30,
     mouseThrottle: 16.6,
+    cameraMode: true, // left+/right-
   },
   getters: {
     VIEW_STATS(state) {
@@ -37,6 +38,9 @@ export default {
     VIEW_MOUSE_THROTTLE(state) {
       return state.mouseThrottle;
     },
+    VIEW_CAMERA_MODE(state) {
+      return state.cameraMode;
+    },
   },
   mutations: {
     VIEW_ID_SET(state, id) {
@@ -62,6 +66,9 @@ export default {
     },
     VIEW_MOUSE_THROTTLE_SET(state, value) {
       state.mouseThrottle = value;
+    },
+    VIEW_CAMERA_MODE_SET(state, value) {
+      state.cameraMode = value;
     },
   },
   actions: {
@@ -121,6 +128,9 @@ export default {
       } else {
         console.error('no client', rootState);
       }
+    },
+    VIEW_CAMERA_MODE_TOGGLE({ state, commit }) {
+      commit(Mutations.VIEW_CAMERA_MODE_SET, !state.cameraMode);
     },
   },
 };

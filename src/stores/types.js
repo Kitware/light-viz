@@ -45,6 +45,7 @@ export const Getters = objEnum([
   'VIEW_RATIO_INTERACTIVE',
   'VIEW_FPS_MAX',
   'VIEW_MOUSE_THROTTLE',
+  'VIEW_CAMERA_MODE',
 ]);
 
 // ----------------------------------------------------------------------------
@@ -86,6 +87,7 @@ export const Mutations = objEnum([
   'VIEW_RATIO_INTERACTIVE_SET',
   'VIEW_FPS_MAX_SET',
   'VIEW_MOUSE_THROTTLE_SET',
+  'VIEW_CAMERA_MODE_SET',
 ]);
 
 // ----------------------------------------------------------------------------
@@ -124,6 +126,7 @@ export const Actions = objEnum([
   'VIEW_ROLL_RIGHT',
   'VIEW_UPDATE_ORIENTATION',
   'VIEW_RENDER',
+  'VIEW_CAMERA_MODE_TOGGLE',
 ]);
 
 // ----------------------------------------------------------------------------

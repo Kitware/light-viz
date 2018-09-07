@@ -65,10 +65,11 @@ export default {
   },
   data() {
     return {
-      orientationLabels: ['X', 'Y', 'Z'],
+      orientationLabels: ['+X', '+Y', '+Z'],
     };
   },
   computed: mapGetters({
+    cameraMode: Getters.VIEW_CAMERA_MODE,
     client: Getters.NETWORK_CLIENT,
     showRenderingStats: Getters.VIEW_STATS,
     stillQuality: Getters.VIEW_QUALITY_STILL,
@@ -100,9 +101,17 @@ export default {
     maxFPS() {
       this.imageStream.setMaxFrameRate(this.maxFPS);
     },
+    cameraMode() {
+      this.orientationLabels = ['X', 'Y', 'Z'].map(
+        (v) => `${this.cameraMode ? '+' : '-'}${v}`
+      );
+    },
   },
   methods: Object.assign(
     {
+      toggleMode() {
+        this.cameraMode = !this.cameraMode;
+      },
       updateQuality() {
         this.imageStream.updateQuality(
           this.stillQuality,

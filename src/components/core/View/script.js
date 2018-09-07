@@ -40,7 +40,8 @@ export default {
       this.renderer = new NativeImageRenderer(
         container,
         this.imageStream,
-        this.mouseListener.getListeners()
+        this.mouseListener.getListeners(),
+        this.showRenderingStats
       );
 
       const sizeChange = () => {
@@ -56,8 +57,10 @@ export default {
       this.imageStream.stillRender();
 
       // Initial config
-      this.imageStream.updateQuality(100, 80);
-      this.imageStream.updateResolutionRatio(1, 1);
+      this.updateQuality();
+      this.updateRatio();
+      this.mouseListener.setThrottleTime(this.mouseThrottle);
+      this.imageStream.setMaxFrameRate(this.maxFPS);
     });
   },
   data() {
@@ -67,13 +70,59 @@ export default {
   },
   computed: mapGetters({
     client: Getters.NETWORK_CLIENT,
+    showRenderingStats: Getters.VIEW_STATS,
+    stillQuality: Getters.VIEW_QUALITY_STILL,
+    interactiveQuality: Getters.VIEW_QUALITY_INTERACTIVE,
+    stillRatio: Getters.VIEW_RATIO_STILL,
+    interactiveRatio: Getters.VIEW_RATIO_INTERACTIVE,
+    mouseThrottle: Getters.VIEW_MOUSE_THROTTLE,
+    maxFPS: Getters.VIEW_FPS_MAX,
   }),
-  methods: mapActions({
-    updateOrientation: Actions.VIEW_UPDATE_ORIENTATION,
-    resetCamera: Actions.VIEW_RESET_CAMERA,
-    rollLeft: Actions.VIEW_ROLL_LEFT,
-    rollRight: Actions.VIEW_ROLL_RIGHT,
-  }),
+  watch: {
+    showRenderingStats() {
+      this.renderer.setDrawFPS(this.showRenderingStats);
+    },
+    stillQuality() {
+      this.updateQuality();
+    },
+    interactiveQuality() {
+      this.updateQuality();
+    },
+    stillRatio() {
+      this.updateRatio();
+    },
+    interactiveRatio() {
+      this.updateRatio();
+    },
+    mouseThrottle() {
+      this.mouseListener.setThrottleTime(this.mouseThrottle);
+    },
+    maxFPS() {
+      this.imageStream.setMaxFrameRate(this.maxFPS);
+    },
+  },
+  methods: Object.assign(
+    {
+      updateQuality() {
+        this.imageStream.updateQuality(
+          this.stillQuality,
+          this.interactiveQuality
+        );
+      },
+      updateRatio() {
+        this.imageStream.updateResolutionRatio(
+          this.stillRatio,
+          this.interactiveRatio
+        );
+      },
+    },
+    mapActions({
+      updateOrientation: Actions.VIEW_UPDATE_ORIENTATION,
+      resetCamera: Actions.VIEW_RESET_CAMERA,
+      rollLeft: Actions.VIEW_ROLL_LEFT,
+      rollRight: Actions.VIEW_ROLL_RIGHT,
+    })
+  ),
   beforeDestroy() {
     this.subscription.unsubscribe();
     this.renderer.destroy();

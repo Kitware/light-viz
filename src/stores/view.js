@@ -4,15 +4,64 @@
 export default {
   state: {
     view: '-1',
+    stats: false,
+    stillQuality: 100,
+    interactiveQuality: 80,
+    stillRatio: 1,
+    interactiveRatio: 1,
+    maxFPS: 30,
+    mouseThrottle: 16.6,
   },
   getters: {
+    VIEW_STATS(state) {
+      return state.stats;
+    },
     VIEW_ID(state) {
       return state.view;
+    },
+    VIEW_QUALITY_STILL(state) {
+      return state.stillQuality;
+    },
+    VIEW_QUALITY_INTERACTIVE(state) {
+      return state.interactiveQuality;
+    },
+    VIEW_RATIO_STILL(state) {
+      return state.stillRatio;
+    },
+    VIEW_RATIO_INTERACTIVE(state) {
+      return state.interactiveRatio;
+    },
+    VIEW_FPS_MAX(state) {
+      return state.maxFPS;
+    },
+    VIEW_MOUSE_THROTTLE(state) {
+      return state.mouseThrottle;
     },
   },
   mutations: {
     VIEW_ID_SET(state, id) {
       state.view = id;
+    },
+    VIEW_STATS_SET(state, enable) {
+      state.stats = enable;
+    },
+    VIEW_QUALITY_STILL_SET(state, value) {
+      state.stillQuality = value;
+    },
+    VIEW_QUALITY_INTERACTIVE_SET(state, value) {
+      state.interactiveQuality = value;
+    },
+    VIEW_RATIO_STILL_SET(state, value) {
+      state.stillRatio = value;
+    },
+    VIEW_RATIO_INTERACTIVE_SET(state, value) {
+      state.interactiveRatio = value;
+    },
+    VIEW_FPS_MAX_SET(state, value) {
+      state.maxFPS = value;
+    },
+    VIEW_MOUSE_THROTTLE_SET(state, value) {
+      state.mouseThrottle = value;
     },
   },
   actions: {

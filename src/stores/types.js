@@ -17,6 +17,7 @@ export const Getters = objEnum([
 
   // index
   'APP_AUTO_APPLY',
+  'APP_DARK_THEME',
 
   // modules
   'MODULES_LIST',
@@ -37,6 +38,13 @@ export const Getters = objEnum([
 
   // view
   'VIEW_ID',
+  'VIEW_STATS',
+  'VIEW_QUALITY_STILL',
+  'VIEW_QUALITY_INTERACTIVE',
+  'VIEW_RATIO_STILL',
+  'VIEW_RATIO_INTERACTIVE',
+  'VIEW_FPS_MAX',
+  'VIEW_MOUSE_THROTTLE',
 ]);
 
 // ----------------------------------------------------------------------------
@@ -51,6 +59,7 @@ export const Mutations = objEnum([
   // index
   'APP_ROUTE_SET',
   'APP_AUTO_APPLY_SET',
+  'APP_DARK_THEME_SET',
 
   // modules
   'MODULES_ADD',
@@ -70,6 +79,13 @@ export const Mutations = objEnum([
 
   // view
   'VIEW_ID_SET',
+  'VIEW_STATS_SET',
+  'VIEW_QUALITY_STILL_SET',
+  'VIEW_QUALITY_INTERACTIVE_SET',
+  'VIEW_RATIO_STILL_SET',
+  'VIEW_RATIO_INTERACTIVE_SET',
+  'VIEW_FPS_MAX_SET',
+  'VIEW_MOUSE_THROTTLE_SET',
 ]);
 
 // ----------------------------------------------------------------------------

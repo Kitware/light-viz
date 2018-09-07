@@ -1,7 +1,7 @@
 import PalettePicker from 'pvw-lightviz/src/components/widgets/PalettePicker';
 import vtkMath from 'vtk.js/Sources/Common/Core/Math';
 
-import { Mutations } from 'pvw-lightviz/src/stores/types';
+import { Actions, Mutations } from 'pvw-lightviz/src/stores/types';
 
 import {
   generateComponentWithServerBinding,
@@ -25,9 +25,9 @@ export default generateComponentWithServerBinding(
   null, // We don't aim to create proxy
   'View',
   {
-    bg: { name: 'Background' },
-    bg2: { name: 'Background2' },
-    gradient: { name: 'UseGradientBackground' },
+    bg: { name: 'Background', noAutoApply: true },
+    bg2: { name: 'Background2', noAutoApply: true },
+    gradient: { name: 'UseGradientBackground', noAutoApply: true },
     axis: {
       name: 'OrientationAxesVisibility',
       clientToServer: bool2int,
@@ -44,25 +44,78 @@ export default generateComponentWithServerBinding(
       return {
         palette: [
           '#000000',
+          '#393939',
+          'linear-gradient(#393939, #666666)',
+          '#666666',
+          'linear-gradient(#393939, #727272)',
+          '#727272',
+          'linear-gradient(#666666, #aaaaaa)',
+          '#aaaaaa',
           '#ffffff',
-          '#9e0142',
-          '#d53e4f',
-          '#f46d43',
-          '#fdae61',
-          '#fee08b',
-          '#ffffbf',
-          '#e6f598',
-          '#abdda4',
-          '#66c2a5',
-          '#3288bd',
-          '#5e4fa2',
+          //
           'linear-gradient(#7478be, #c1c3ca)', // from 3D Slicer default
+          '#c1c3ca',
+          // -
           'linear-gradient(#00002a, #52576e)', // from ParaView
-          'linear-gradient(#333333, #999999)',
+          '#52576e',
+          // -
+          '#7aba7b',
+          '#66c2a5',
+          '#9dd9ff',
+          '#889cba',
+          '#9689aa',
         ],
       };
     },
     computed: {
+      darkMode: {
+        get() {
+          return this.$store.getters.APP_DARK_THEME;
+        },
+        set(value) {
+          this.$store.commit(Mutations.APP_DARK_THEME_SET, value);
+        },
+      },
+      interactiveQuality: {
+        get() {
+          return this.$store.getters.VIEW_QUALITY_INTERACTIVE;
+        },
+        set(value) {
+          this.$store.commit(Mutations.VIEW_QUALITY_INTERACTIVE_SET, value);
+        },
+      },
+      interactiveRatio: {
+        get() {
+          return this.$store.getters.VIEW_RATIO_INTERACTIVE;
+        },
+        set(value) {
+          this.$store.commit(Mutations.VIEW_RATIO_INTERACTIVE_SET, value);
+        },
+      },
+      maxFPS: {
+        get() {
+          return this.$store.getters.VIEW_FPS_MAX;
+        },
+        set(value) {
+          this.$store.commit(Mutations.VIEW_FPS_MAX_SET, value);
+          this.$store.commit(
+            Mutations.VIEW_MOUSE_THROTTLE_SET,
+            1000 / (2 * value)
+          );
+        },
+      },
+      mouseThottle() {
+        return this.$store.getters.VIEW_MOUSE_THROTTLE;
+      },
+      showRenderingStats: {
+        get() {
+          return this.$store.getters.VIEW_STATS;
+        },
+        set(value) {
+          this.$store.commit(Mutations.VIEW_STATS_SET, value);
+          this.$store.dispatch(Actions.VIEW_RENDER);
+        },
+      },
       autoApply: {
         get() {
           return this.$store.getters.APP_AUTO_APPLY;
@@ -90,9 +143,9 @@ export default generateComponentWithServerBinding(
               .split(',')
               .map((i) => i.slice(-7))
               .map((i) => vtkMath.hex2float(i));
+            this.gradient = 1;
             this.bg = values[1];
             this.bg2 = values[0];
-            this.gradient = 1;
           } else {
             this.bg = vtkMath.hex2float(value);
             this.gradient = 0;

@@ -39,6 +39,7 @@ function createStore() {
     state: {
       route: 'landing', // valid values: landing, app
       autoApply: true,
+      dark: false,
     },
     modules: {
       busy,
@@ -52,6 +53,9 @@ function createStore() {
       APP_AUTO_APPLY(state) {
         return state.autoApply;
       },
+      APP_DARK_THEME(state) {
+        return state.dark;
+      },
     },
     mutations: {
       APP_ROUTE_SET(state, route) {
@@ -59,6 +63,9 @@ function createStore() {
       },
       APP_AUTO_APPLY_SET(state, auto) {
         state.autoApply = auto;
+      },
+      APP_DARK_THEME_SET(state, isDark) {
+        state.dark = isDark;
       },
     },
     actions: {

@@ -1,6 +1,20 @@
 /* eslint-disable no-unused-vars */
 import { Mutations } from 'pvw-lightviz/src/stores/types';
 
+import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
+import vtkMapper from 'vtk.js/Sources/Rendering/Core/Mapper';
+import vtkPolyData from 'vtk.js/Sources/Common/DataModel/PolyData';
+
+const ROTATION_STEP = 2;
+const VIEW_UPS = [[0, 1, 0], [0, 0, 1], [0, 1, 0]];
+
+const actor = vtkActor.newInstance();
+const mapper = vtkMapper.newInstance();
+const source = vtkPolyData.newInstance();
+
+actor.setMapper(mapper);
+mapper.setInputData(source);
+
 export default {
   state: {
     view: '-1',
@@ -12,6 +26,9 @@ export default {
     maxFPS: 30,
     mouseThrottle: 16.6,
     cameraMode: true, // left+/right-
+    camera: null,
+    viewProxy: null,
+    inAnimation: false,
   },
   getters: {
     VIEW_STATS(state) {
@@ -43,6 +60,15 @@ export default {
     },
   },
   mutations: {
+    VIEW_CAMERA_SET(state, camera) {
+      state.camera = camera;
+    },
+    VIEW_PROXY_SET(state, viewProxy) {
+      if (state.viewProxy !== viewProxy) {
+        state.viewProxy = viewProxy;
+        state.viewProxy.getRenderer().addActor(actor);
+      }
+    },
     VIEW_ID_SET(state, id) {
       state.view = id;
     },
@@ -76,46 +102,89 @@ export default {
       const client = rootState.network.client;
       const viewId = id || state.view;
       if (client) {
-        client.remote.ViewPort.resetCamera(viewId).catch(console.error);
+        console.log('reset camera');
+        client.remote.ViewPort.resetCamera(viewId)
+          .then(console.log)
+          .catch(console.error);
+
+        if (state.camera) {
+          client.remote.ViewPort.getCamera(viewId)
+            .then(({ focal, up, position, center, bounds }) => {
+              console.log('centerOfRotation', center);
+              console.log('bounds', bounds);
+
+              // Update bounds in local vtk.js renderer
+              source
+                .getPoints()
+                .setData(
+                  Float64Array.from([
+                    bounds[0],
+                    bounds[2],
+                    bounds[4],
+                    bounds[1],
+                    bounds[3],
+                    bounds[5],
+                  ]),
+                  3
+                );
+
+              state.camera.setFocalPoint(...focal);
+              state.camera.setViewUp(...up);
+              state.camera.setPosition(...position);
+            })
+            .catch(console.error);
+        }
       } else {
         console.error('no client', rootState);
       }
     },
-    VIEW_ROLL_LEFT({ rootState, commit }, id) {
-      console.log('roll left');
+    VIEW_ROLL_LEFT({ state, commit }, id) {
+      if (state.viewProxy) {
+        state.viewProxy.setAnimation(true, this);
+        let count = 0;
+        let intervalId = null;
+        const stopAnimation = () => state.viewProxy.setAnimation(false, this);
+        const rotate = () => {
+          if (count < 90) {
+            count += ROTATION_STEP;
+            state.viewProxy.rotate(+ROTATION_STEP);
+          } else {
+            clearInterval(intervalId);
+            setTimeout(stopAnimation, 100);
+          }
+        };
+        intervalId = setInterval(rotate, 10);
+      }
     },
-    VIEW_ROLL_RIGHT({ rootState, commit }, id) {
-      console.log('roll right');
+    VIEW_ROLL_RIGHT({ state, commit }, id) {
+      if (state.viewProxy) {
+        state.viewProxy.setAnimation(true, this);
+        let count = 0;
+        let intervalId = null;
+        const stopAnimation = () => state.viewProxy.setAnimation(false, this);
+        const rotate = () => {
+          if (count < 90) {
+            count += ROTATION_STEP;
+            state.viewProxy.rotate(-ROTATION_STEP);
+          } else {
+            clearInterval(intervalId);
+            setTimeout(stopAnimation, 100);
+          }
+        };
+        intervalId = setInterval(rotate, 10);
+      }
     },
-    VIEW_UPDATE_ORIENTATION({ rootState, commit }, { id, axis }) {
-      console.log('orientation', id, axis);
+    VIEW_UPDATE_ORIENTATION({ state, commit }, { axis, orientation }) {
+      console.log('orientation', orientation, axis);
+      if (state.viewProxy && !state.inAnimation) {
+        state.inAnimation = true;
+        state.viewProxy
+          .updateOrientation(axis, orientation, VIEW_UPS[axis], 100)
+          .then(() => {
+            state.inAnimation = false;
+          });
+      }
     },
-    // VIEW_UPDATE_ORIENTATION_AXIS_VISIBILITY({ state, dispatch }, visible) {
-    //   const changeSet = [
-    //     {
-    //       id: state.view,
-    //       name: 'OrientationAxesVisibility',
-    //       value: visible ? 1 : 0,
-    //     },
-    //   ];
-    //   dispatch(Actions.UPDATE_PROXY, changeSet);
-    // },
-    // UPDATE_BACKGROUND({ state, dispatch }, bgInfo) {
-    //   const changeSet = [];
-    //   const id = bgInfo.id || state.view;
-    //   ['Background', 'Background2', 'UseGradientBackground'].forEach((name) => {
-    //     if (bgInfo[name] !== undefined) {
-    //       changeSet.push({
-    //         id,
-    //         name,
-    //         value: bgInfo[name],
-    //       });
-    //     }
-    //   });
-    //   if (changeSet.length) {
-    //     dispatch(Actions.UPDATE_PROXY, changeSet);
-    //   }
-    // },
     VIEW_RENDER({ rootState, state }, id) {
       console.log('RENDER');
       const client = rootState.network.client;

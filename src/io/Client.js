@@ -1,5 +1,7 @@
 import SmartConnect from 'wslink/src/SmartConnect';
 
+import vtkImageStream from 'vtk.js/Sources/IO/Core/ImageStream';
+
 import ColorManager from 'paraviewweb/src/IO/WebSocket/ParaViewWebClient/ColorManager';
 import FileListing from 'paraviewweb/src/IO/WebSocket/ParaViewWebClient/FileListing';
 import KeyValuePairStore from 'paraviewweb/src/IO/WebSocket/ParaViewWebClient/KeyValuePairStore';
@@ -120,6 +122,7 @@ export default class Client {
       this.smartConnect = SmartConnect.newInstance({ config });
       this.smartConnect.onConnectionReady((connection) => {
         this.connection = connection;
+        this.imageStream = vtkImageStream.newInstance();
         this.remote = {};
         const session = connection.getSession();
 
@@ -130,6 +133,9 @@ export default class Client {
             this.updateBusy
           );
         });
+
+        // Link imageStream
+        this.imageStream.connect(session);
 
         resolve(this);
       });

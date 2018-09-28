@@ -16,9 +16,12 @@ const paths = {
 };
 
 module.exports = {
-  entry: Object.assign({
-    lightviz: paths.entry,
-  }, externals.getExternalEntries(paths.externals)),
+  entry: Object.assign(
+    {
+      lightviz: paths.entry,
+    },
+    externals.getExternalEntries(paths.externals)
+  ),
   output: {
     path: paths.output,
     filename: '[name].js',
@@ -26,6 +29,35 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.mcss$/,
+        use: [
+          { loader: 'style-loader' },
+          {
+            loader: 'css-loader',
+            options: {
+              localIdentName: '[name]-[local]_[sha512:hash:base32:5]',
+              modules: true,
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [autoprefixer('last 2 version', 'ie >= 10')],
+            },
+          },
+        ],
+      },
+      { test: /\.glsl$/i, loader: 'shader-loader' },
+      {
+        test: /\.worker\.js$/,
+        use: [
+          {
+            loader: 'worker-loader',
+            options: { inline: true, fallback: false },
+          },
+        ],
+      },
       {
         test: paths.entry,
         loader: 'expose-loader?LightViz',

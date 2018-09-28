@@ -1,10 +1,7 @@
-import WslinkImageStream from 'paraviewweb/src/IO/WebSocket/WslinkImageStream';
-import NativeImageRenderer from 'paraviewweb/src/NativeUI/Renderers/NativeImageRenderer';
-import VtkWebMouseListener from 'paraviewweb/src/Interaction/Core/VtkWebMouseListener';
-import SizeHelper from 'paraviewweb/src/Common/Misc/SizeHelper';
+import vtkViewProxy from 'vtk.js/Sources/Proxy/Core/ViewProxy';
 
 import { mapGetters, mapActions } from 'vuex';
-import { Getters, Actions } from 'pvw-lightviz/src/stores/types';
+import { Getters, Actions, Mutations } from 'pvw-lightviz/src/stores/types';
 
 // ----------------------------------------------------------------------------
 // Component API
@@ -16,52 +13,37 @@ export default {
   name: 'View3D',
   mounted() {
     const container = this.$el.querySelector('.js-renderer');
-    const client = this.client.remote;
-    this.imageStream = WslinkImageStream.newInstance({ client });
-    this.imageStream.connect({}).then(() => {
-      this.mouseListener = new VtkWebMouseListener(client);
 
-      // Attach interaction listener for image quality
-      this.mouseListener.onInteraction((interact) => {
-        if (this.interacting === interact) {
-          return;
-        }
-        this.interacting = interact;
-        if (interact) {
-          this.imageStream.startInteractiveQuality();
-        } else {
-          this.imageStream
-            .stopInteractiveQuality()
-            .then(this.imageStream.invalidateCache);
-          setTimeout(this.imageStream.invalidateCache, 500);
-        }
-      });
+    this.view = vtkViewProxy.newInstance();
+    this.view.setContainer(container);
+    this.view.resize();
 
-      this.renderer = new NativeImageRenderer(
-        container,
-        this.imageStream,
-        this.mouseListener.getListeners(),
-        this.showRenderingStats
-      );
+    // Create and link viewStream
+    this.viewStream = this.client.imageStream.createViewStream('-1');
+    this.view.getOpenglRenderWindow().setViewStream(this.viewStream);
+    this.view.setBackground([0, 0, 0, 0]);
+    this.view.setOrientationAxesVisibility(false);
+    this.viewStream.setCamera(this.view.getRenderer().getActiveCamera());
+    this.viewStream.pushCamera();
 
-      const sizeChange = () => {
-        this.renderer.resize();
-        const { clientWidth, clientHeight } = this.renderer.size;
-        this.mouseListener.updateSize(clientWidth, clientHeight);
-        this.imageStream.setViewSize(clientWidth, clientHeight);
-      };
+    // Bind user input
+    this.view
+      .getRenderWindow()
+      .getInteractor()
+      .onStartAnimation(this.viewStream.startInteraction);
+    this.view
+      .getRenderWindow()
+      .getInteractor()
+      .onEndAnimation(this.viewStream.endInteraction);
 
-      // On resize
-      this.subscription = SizeHelper.onSizeChange(sizeChange);
-      sizeChange();
-      this.imageStream.stillRender();
+    // Initial config
+    this.updateQuality();
+    this.updateRatio();
+    this.client.imageStream.setServerAnimationFPS(this.maxFPS);
 
-      // Initial config
-      this.updateQuality();
-      this.updateRatio();
-      this.mouseListener.setThrottleTime(this.mouseThrottle);
-      this.imageStream.setMaxFrameRate(this.maxFPS);
-    });
+    // Expose camera to store
+    this.$store.commit(Mutations.VIEW_PROXY_SET, this.view);
+    this.$store.commit(Mutations.VIEW_CAMERA_SET, this.view.getCamera());
   },
   data() {
     return {
@@ -81,7 +63,7 @@ export default {
   }),
   watch: {
     showRenderingStats() {
-      this.renderer.setDrawFPS(this.showRenderingStats);
+      // this.renderer.setDrawFPS(this.showRenderingStats);
     },
     stillQuality() {
       this.updateQuality();
@@ -96,10 +78,10 @@ export default {
       this.updateRatio();
     },
     mouseThrottle() {
-      this.mouseListener.setThrottleTime(this.mouseThrottle);
+      // this.mouseListener.setThrottleTime(this.mouseThrottle);
     },
     maxFPS() {
-      this.imageStream.setMaxFrameRate(this.maxFPS);
+      this.client.imageStream.setServerAnimationFPS(this.maxFPS);
     },
     cameraMode() {
       this.orientationLabels = ['X', 'Y', 'Z'].map(
@@ -109,20 +91,38 @@ export default {
   },
   methods: Object.assign(
     {
+      onResize() {
+        if (this.view) {
+          this.view.resize();
+          this.view.renderLater();
+          this.viewStream.render();
+        }
+      },
       toggleMode() {
         this.cameraMode = !this.cameraMode;
       },
       updateQuality() {
-        this.imageStream.updateQuality(
-          this.stillQuality,
-          this.interactiveQuality
-        );
+        this.viewStream.setInteractiveQuality(this.interactiveQuality);
       },
       updateRatio() {
-        this.imageStream.updateResolutionRatio(
-          this.stillRatio,
-          this.interactiveRatio
-        );
+        this.viewStream.setInteractiveRatio(this.interactiveRatio);
+      },
+      updateCamera({ position, focalPoint, viewUp, centerOfRotation }) {
+        const camera = this.view.getCamera();
+        if (position) {
+          camera.setPosition(...position);
+        }
+        if (focalPoint) {
+          camera.setFocalPoint(...focalPoint);
+        }
+        if (viewUp) {
+          camera.setViewUp(...viewUp);
+        }
+        if (centerOfRotation) {
+          this.view
+            .getInteractorStyle3D()
+            .setCenterOfRotation(centerOfRotation);
+        }
       },
     },
     mapActions({
@@ -133,9 +133,7 @@ export default {
     })
   ),
   beforeDestroy() {
-    this.subscription.unsubscribe();
-    this.renderer.destroy();
-    this.mouseListener.destroy();
-    this.imageStream.destroy();
+    this.viewStream.delete();
+    this.view.delete();
   },
 };

@@ -10,11 +10,11 @@ import 'typeface-roboto';
 import 'vuetify/dist/vuetify.min.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
-import registerModules from 'pvw-lightviz/src/modules/registerModules';
+import registerModules from 'paraview-lite/src/modules/registerModules';
 
-import App from 'pvw-lightviz/src/components/core/App';
-import createStore from 'pvw-lightviz/src/stores';
-import { Mutations, Actions } from 'pvw-lightviz/src/stores/types';
+import App from 'paraview-lite/src/components/core/App';
+import createStore from 'paraview-lite/src/stores';
+import { Mutations, Actions } from 'paraview-lite/src/stores/types';
 
 Vue.use(Vuex);
 Vue.use(Vuetify);

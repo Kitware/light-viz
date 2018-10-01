@@ -1,5 +1,5 @@
 import { mapGetters, mapActions } from 'vuex';
-import { Getters, Actions } from 'pvw-lightviz/src/stores/types';
+import { Getters, Actions } from 'paraview-lite/src/stores/types';
 
 export default {
   name: 'ActionModules',

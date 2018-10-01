@@ -1,3 +1,3 @@
-<template src="pvw-lightviz/src/components/widgets/PalettePicker/template.html" />
-<style module src="pvw-lightviz/src/components/widgets/PalettePicker/style.css" />
-<script src="pvw-lightviz/src/components/widgets/PalettePicker/script.js" />
+<template src="paraview-lite/src/components/widgets/PalettePicker/template.html" />
+<style module src="paraview-lite/src/components/widgets/PalettePicker/style.css" />
+<script src="paraview-lite/src/components/widgets/PalettePicker/script.js" />

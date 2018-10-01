@@ -1,17 +1,17 @@
 import { mapState, mapActions } from 'vuex';
 import Mousetrap from 'mousetrap';
 
-import AboutBox from 'pvw-lightviz/src/components/core/AboutBox';
-import ActionModules from 'pvw-lightviz/src/components/core/ActionModules';
-import BrowserIssues from 'pvw-lightviz/src/components/core/BrowserIssues';
-import ControlsDrawer from 'pvw-lightviz/src/components/core/ControlsDrawer';
-import ErrorBox from 'pvw-lightviz/src/components/core/ErrorBox';
-import Landing from 'pvw-lightviz/src/components/core/Landing';
-import LayoutView from 'pvw-lightviz/src/components/core/LayoutView';
-import SvgIcon from 'pvw-lightviz/src/components/widgets/SvgIcon';
-import ProgressBar from 'pvw-lightviz/src/components/widgets/ProgressBar';
-import { Actions } from 'pvw-lightviz/src/stores/types';
-import shortcuts from 'pvw-lightviz/src/shortcuts';
+import AboutBox from 'paraview-lite/src/components/core/AboutBox';
+import ActionModules from 'paraview-lite/src/components/core/ActionModules';
+import BrowserIssues from 'paraview-lite/src/components/core/BrowserIssues';
+import ControlsDrawer from 'paraview-lite/src/components/core/ControlsDrawer';
+import ErrorBox from 'paraview-lite/src/components/core/ErrorBox';
+import Landing from 'paraview-lite/src/components/core/Landing';
+import LayoutView from 'paraview-lite/src/components/core/LayoutView';
+import SvgIcon from 'paraview-lite/src/components/widgets/SvgIcon';
+import ProgressBar from 'paraview-lite/src/components/widgets/ProgressBar';
+import { Actions } from 'paraview-lite/src/stores/types';
+import shortcuts from 'paraview-lite/src/shortcuts';
 
 // ----------------------------------------------------------------------------
 // Component API

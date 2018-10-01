@@ -3,7 +3,7 @@ set -ev
 
 # Update version.js with latest
 NIGHTLY_VERSION=`npm info | grep latest | cut -d " " -f 2`
-echo "window.LIGTHVIZ_VERSION = '$NIGHTLY_VERSION';" > dist/version.js
+echo "window.PARAVIEW_LITE_VERSION = '$NIGHTLY_VERSION';" > dist/version.js
 
 npm run build:release
 npm run validate

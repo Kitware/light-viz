@@ -1,8 +1,8 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import { Getters, Actions, Mutations } from 'pvw-lightviz/src/stores/types';
+import { Getters, Actions, Mutations } from 'paraview-lite/src/stores/types';
 
-import GitTree from 'pvw-lightviz/src/components/widgets/GitTree';
-import GlobalSettings from 'pvw-lightviz/src/components/core/GlobalSettings';
+import GitTree from 'paraview-lite/src/components/widgets/GitTree';
+import GlobalSettings from 'paraview-lite/src/components/core/GlobalSettings';
 
 // ----------------------------------------------------------------------------
 

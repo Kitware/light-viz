@@ -1,3 +1,3 @@
-<template src="pvw-lightviz/src/components/core/ControlsDrawer/template.html" />
-<style module src="pvw-lightviz/src/components/core/ControlsDrawer/style.css" />
-<script src="pvw-lightviz/src/components/core/ControlsDrawer/script.js" />
+<template src="paraview-lite/src/components/core/ControlsDrawer/template.html" />
+<style module src="paraview-lite/src/components/core/ControlsDrawer/style.css" />
+<script src="paraview-lite/src/components/core/ControlsDrawer/script.js" />

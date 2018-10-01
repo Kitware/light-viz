@@ -18,7 +18,7 @@ const paths = {
 module.exports = {
   entry: Object.assign(
     {
-      lightviz: paths.entry,
+      ParaViewLite: paths.entry,
     },
     externals.getExternalEntries(paths.externals)
   ),
@@ -117,7 +117,7 @@ module.exports = {
     extensions: ['.js', '.vue'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
-      'pvw-lightviz': paths.root,
+      'paraview-lite': paths.root,
     },
   },
   optimization: {

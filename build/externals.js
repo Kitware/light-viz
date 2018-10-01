@@ -31,7 +31,7 @@ function getExternalEntries(basePath) {
   const entries = {};
   names.forEach((name) => {
     const entry = path.join(basePath, name, 'index.js');
-    entries[`lightviz-external-${name}`] = entry;
+    entries[`paraview-lite-external-${name}`] = entry;
   });
 
   return entries;
@@ -53,7 +53,7 @@ function getExternalExposeRules(basePath) {
 
   return names.map((name) => ({
     test: path.join(basePath, name, 'index.js'),
-    loader: `expose-loader?LightViz.externals.${name}`,
+    loader: `expose-loader?ParaViewLite.externals.${name}`,
   }));
 }
 

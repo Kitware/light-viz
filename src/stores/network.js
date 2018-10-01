@@ -1,5 +1,5 @@
-import Client from 'pvw-lightviz/src/io/Client';
-import { Mutations, Actions } from 'pvw-lightviz/src/stores/types';
+import Client from 'paraview-lite/src/io/Client';
+import { Mutations, Actions } from 'paraview-lite/src/stores/types';
 
 export default {
   state: {

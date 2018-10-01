@@ -1,14 +1,14 @@
 // import Vue from 'vue';
 import Vuex from 'vuex';
 
-import busy from 'pvw-lightviz/src/stores/busy';
-import color from 'pvw-lightviz/src/stores/color';
-import modules from 'pvw-lightviz/src/stores/modules';
-import network from 'pvw-lightviz/src/stores/network';
-import proxy from 'pvw-lightviz/src/stores/proxy';
-import view from 'pvw-lightviz/src/stores/view';
+import busy from 'paraview-lite/src/stores/busy';
+import color from 'paraview-lite/src/stores/color';
+import modules from 'paraview-lite/src/stores/modules';
+import network from 'paraview-lite/src/stores/network';
+import proxy from 'paraview-lite/src/stores/proxy';
+import view from 'paraview-lite/src/stores/view';
 
-import { Mutations } from 'pvw-lightviz/src/stores/types';
+import { Mutations } from 'paraview-lite/src/stores/types';
 
 // http://jsperf.com/typeofvar
 // function typeOf(o) {

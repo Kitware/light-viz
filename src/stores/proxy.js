@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Mutations, Actions } from 'pvw-lightviz/src/stores/types';
+import { Mutations, Actions } from 'paraview-lite/src/stores/types';
 
 export default {
   state: {

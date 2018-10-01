@@ -1,5 +1,5 @@
 import { mapGetters } from 'vuex';
-import { Getters, Actions, Mutations } from 'pvw-lightviz/src/stores/types';
+import { Getters, Actions, Mutations } from 'paraview-lite/src/stores/types';
 
 import module from './module';
 

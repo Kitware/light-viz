@@ -1,5 +1,5 @@
-import { generateComponentWithServerBinding } from 'pvw-lightviz/src/proxyHelper';
-import { Actions } from 'pvw-lightviz/src/stores/types';
+import { generateComponentWithServerBinding } from 'paraview-lite/src/proxyHelper';
+import { Actions } from 'paraview-lite/src/stores/types';
 
 const SEPARATOR = ':|:';
 const SOLID_COLOR_ITEM = {

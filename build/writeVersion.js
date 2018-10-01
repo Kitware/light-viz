@@ -5,4 +5,4 @@ const packageJson = path.resolve(__dirname, '..', 'package.json');
 const versionFile = path.resolve(__dirname, '..', 'dist', 'version.js');
 
 const version = require(packageJson).version || 'master';
-fs.writeFileSync(versionFile, `window.LIGHTVIZ_VERSION = "${version}";\n`);
+fs.writeFileSync(versionFile, `window.PARAVIEW_LITE_VERSION = "${version}";\n`);

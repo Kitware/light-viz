@@ -1,4 +1,3 @@
-
 # import RPC annotation
 from wslink import register as exportRpc
 
@@ -13,7 +12,7 @@ from paraview.web import protocols as pv_protocols
 # =============================================================================
 
 class ProxyName(pv_protocols.ParaViewWebProtocol):
-    @exportRpc("light.viz.proxy.name")
+    @exportRpc("paraview.lite.proxy.name")
     def getProxyName(self, pid):
       proxy = self.mapIdToProxy(pid)
       return {

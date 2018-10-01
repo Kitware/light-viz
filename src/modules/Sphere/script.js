@@ -1,4 +1,4 @@
-import { generateComponentWithServerBinding } from 'pvw-lightviz/src/proxyHelper';
+import { generateComponentWithServerBinding } from 'paraview-lite/src/proxyHelper';
 
 import module from './module';
 

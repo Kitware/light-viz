@@ -1,4 +1,4 @@
-import SvgIcon from 'pvw-lightviz/src/components/widgets/SvgIcon';
+import SvgIcon from 'paraview-lite/src/components/widgets/SvgIcon';
 
 // ----------------------------------------------------------------------------
 

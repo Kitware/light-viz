@@ -1,7 +1,7 @@
 import vtkViewProxy from 'vtk.js/Sources/Proxy/Core/ViewProxy';
 
 import { mapGetters, mapActions } from 'vuex';
-import { Getters, Actions, Mutations } from 'pvw-lightviz/src/stores/types';
+import { Getters, Actions, Mutations } from 'paraview-lite/src/stores/types';
 
 // ----------------------------------------------------------------------------
 // Component API

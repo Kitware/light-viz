@@ -16,7 +16,7 @@ import ViewPortImageDelivery from 'paraviewweb/src/IO/WebSocket/ParaViewWebClien
 import VtkGeometryDelivery from 'paraviewweb/src/IO/WebSocket/ParaViewWebClient/VtkGeometryDelivery';
 import VtkImageDelivery from 'paraviewweb/src/IO/WebSocket/ParaViewWebClient/VtkImageDelivery';
 
-import ProxyName from 'pvw-lightviz/src/io/protocols/ProxyName';
+import ProxyName from 'paraview-lite/src/io/protocols/ProxyName';
 
 const REMOTE_API = {
   ColorManager,

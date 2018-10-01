@@ -1,4 +1,4 @@
-import Node from 'pvw-lightviz/src/components/widgets/TreeView/Node';
+import Node from 'paraview-lite/src/components/widgets/TreeView/Node';
 
 // ----------------------------------------------------------------------------
 // Component methods

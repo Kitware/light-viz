@@ -1,5 +1,5 @@
 import { mapActions } from 'vuex';
-import { Actions } from 'pvw-lightviz/src/stores/types';
+import { Actions } from 'paraview-lite/src/stores/types';
 
 import module from './module';
 

@@ -1,4 +1,4 @@
-import { Actions, Mutations } from 'pvw-lightviz/src/stores/types';
+import { Actions, Mutations } from 'paraview-lite/src/stores/types';
 
 /* eslint-disable no-param-reassign */
 function extractProperties(names, properties, result) {

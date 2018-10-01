@@ -2,7 +2,7 @@ r"""
     This module is a ParaViewWeb server application.
     The following command line illustrates how to use it::
 
-        $ pvpython -dr .../pvw-lightviz.py --data /.../path-to-your-data-directory
+        $ pvpython -dr .../pvw-lite.py --data /.../path-to-your-data-directory
 
         --data
              Path used to list that directory on the server and let the client choose a
@@ -91,7 +91,7 @@ from wslink import register as exportRpc
 from paraview import simple
 from wslink import server
 
-import lightviz_protocols as lv_protocols
+import lite_protocols as local_protocols
 
 try:
     import argparse
@@ -181,7 +181,7 @@ class _Server(pv_wslink.PVServerProtocol):
             _Server.fileToLoad  = os.path.join(args.path, args.file)
 
     def initialize(self):
-        # Bring used components
+        # Bring used components from ParaView
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebStartupRemoteConnection(_Server.dsHost, _Server.dsPort, _Server.rsHost, _Server.rsPort, _Server.rcPort))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebStartupPluginLoader(_Server.plugins))
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebFileListing(_Server.dataDir, "Home", _Server.excludeRegex, _Server.groupRegex))
@@ -195,7 +195,9 @@ class _Server(pv_wslink.PVServerProtocol):
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebWidgetManager())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebKeyValuePairStore())
         self.registerVtkWebProtocol(pv_protocols.ParaViewWebSaveData(baseSavePath=_Server.saveDataDir))
-        self.registerVtkWebProtocol(lv_protocols.ProxyName())
+
+        # Bring used components from ParaView Lite
+        self.registerVtkWebProtocol(local_protocols.ProxyName())
 
         # Update authentication key to use
         self.updateSecret(_Server.authKey)
@@ -227,7 +229,7 @@ class _Server(pv_wslink.PVServerProtocol):
 
 if __name__ == "__main__":
     # Create argument parser
-    parser = argparse.ArgumentParser(description="ParaView Web Visualizer")
+    parser = argparse.ArgumentParser(description="ParaView Lite")
 
     # Add arguments
     server.add_arguments(parser)

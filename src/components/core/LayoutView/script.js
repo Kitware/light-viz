@@ -1,6 +1,6 @@
-import RepresentationToolbar from 'pvw-lightviz/src/components/core/RepresentationToolbar';
-import VtkView from 'pvw-lightviz/src/components/core/View';
-import { Breakpoints } from 'pvw-lightviz/src/constants';
+import RepresentationToolbar from 'paraview-lite/src/components/core/RepresentationToolbar';
+import VtkView from 'paraview-lite/src/components/core/View';
+import { Breakpoints } from 'paraview-lite/src/constants';
 
 // ----------------------------------------------------------------------------
 // Component API

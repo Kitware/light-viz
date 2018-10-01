@@ -2,7 +2,7 @@ import {
   generateComponentWithServerBinding,
   bool2int,
   toBoolean,
-} from 'pvw-lightviz/src/proxyHelper';
+} from 'paraview-lite/src/proxyHelper';
 
 import module from './module';
 

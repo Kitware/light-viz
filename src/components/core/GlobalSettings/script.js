@@ -1,13 +1,13 @@
-import PalettePicker from 'pvw-lightviz/src/components/widgets/PalettePicker';
+import PalettePicker from 'paraview-lite/src/components/widgets/PalettePicker';
 import vtkMath from 'vtk.js/Sources/Common/Core/Math';
 
-import { Actions, Mutations } from 'pvw-lightviz/src/stores/types';
+import { Actions, Mutations } from 'paraview-lite/src/stores/types';
 
 import {
   generateComponentWithServerBinding,
   bool2int,
   toBoolean,
-} from 'pvw-lightviz/src/proxyHelper';
+} from 'paraview-lite/src/proxyHelper';
 
 function floatToHex2(value) {
   const integer = Math.floor(value * 255);

@@ -1,10 +1,10 @@
-![ParaView LightViz](documentation/content/ParaViewLightViz_Logo.png)
+![ParaView Lite](documentation/content/paraview_lite.png)
 
 Introduction
 ============
-[ParaView LightViz][] is an open-source, javascript visualization application created by [Kitware][], based on [ParaView][], and intended to serve a more refined and dedicated UI for controlling data processing and visualization remotely via a Web page. It is part of the [ParaView Web][] suite of tools.
+[ParaView Lite][] is an open-source, javascript visualization application created by [Kitware][], based on [ParaView][], and intended to serve a more refined and dedicated UI for controlling data processing and visualization remotely via a Web page. It is part of the [ParaView Web][] suite of tools.
 
-[ParaView Glance]: https://kitware.github.io/light-viz/
+[ParaView Lite]: https://kitware.github.io/paraview-lite/
 [ParaView Web]: http://www.paraview.org/web
 [ParaView]: http://www.paraview.org
 [VTK]: http://www.vtk.org
@@ -19,24 +19,21 @@ Learning Resources
 
 * Commercial [support][Kitware Support] and [training][Kitware Training] are available from [Kitware][].
 
-* Additional documentation is being created and will be released as it is created on our [documentation pages][ParaView LightViz GitHub.io].
+* Additional documentation is being created and will be released as it is created on our [documentation pages][ParaView Lite GitHub.io].
 
 [ParaView Discourse]: https://discourse.paraview.org/
 [Kitware Support]: http://www.kitware.com/products/support.html
 [Kitware Training]: http://www.kitware.com/products/protraining.php
-[ParaView LightViz GitHub.io]: https://kitware.github.io/light-viz/
+[ParaView Lite GitHub.io]: https://kitware.github.io/paraview-lite/
 
 
 Live Demonstrations
 ===================
 
-As a server based web application, ParaView LightViz can be run by starting the server process using the ParaView binaries and connecting to it with any browser at the appropriate URL.
+As a server based web application, ParaView Lite can be run by starting the server process using the ParaView binaries and connecting to it with any browser at the appropriate URL.
 
-*** FIXME ***
-Provide command line on how to do it...
-
-Building
-========
+Building for development
+========================
 
 The prerequisites are [git][] and [node.js + npm][].
 
@@ -44,13 +41,13 @@ If you wish to view, enhance, or adapt this application in any way, you can acce
 
 
 ```
-$ git clone https://github.com/Kitware/light-viz.git
-$ cd light-viz/
+$ git clone https://github.com/Kitware/paraview-lite.git
+$ cd paraview-lite/
 $ npm install
 $ npm run build -- --watch
 ```
 
-This will build a development version inside the `./dist` directory. You will have to point the ParaView process to use that directory as web content.
+This will build a development version inside the `./dist` directory. You will have to point the ParaView process to use that directory as web content. (i.e.: `$ pvpython ./server/pvw-lite.py --content ./dist --data ~ --port 1234`)
 
 To generate a production build, use the following commands:
 
@@ -67,19 +64,19 @@ This will output the final bundle and assets to `dist/`.
 Reporting Bugs and Making Contributions
 =======================================
 
-If you have found a bug or have a suggestion for improving ParaView LightViz:
+If you have found a bug or have a suggestion for improving ParaView Lite:
 
 1. If you have source code to contribute, please fork the github repository into your own github account, create a branch with your changes, and then create a merge request with the main repo.
 
-2. If you have a bug to report or a feature to request, please open an entry in the [ParaView LightViz Issue Tracker][].
+2. If you have a bug to report or a feature to request, please open an entry in the [ParaView Lite Issue Tracker][].
 
-[ParaView LightViz Issue Tracker]: https://github.com/kitware/light-viz/issues
+[ParaView Lite Issue Tracker]: https://github.com/kitware/paraview-lite/issues
 
 
 License
 =======
 
-ParaView LightViz is distributed under the OSI-approved BSD 3-clause License.  See [COPYRIGHT][] and [LICENSE][] for details. For additional licenses, refer to [ParaView Licenses][].
+ParaView Lite is distributed under the OSI-approved BSD 3-clause License.  See [COPYRIGHT][] and [LICENSE][] for details. For additional licenses, refer to [ParaView Licenses][].
 
 [COPYRIGHT]: COPYRIGHT
 [LICENSE]: LICENSE

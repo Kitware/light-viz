@@ -1,22 +1,22 @@
-Contributing to ParaView LightViz
+Contributing to ParaView-Lite
 ================================
 
-This page documents at a very high level how to contribute to ParaView LightViz Viewer.
+This page documents at a very high level how to contribute to ParaView-Lite.
 
-1. The ParaView LightViz Viewer source is maintained on Github at [github.com/kitware/light-viz](https://github.com/kitware/light-viz)
+1. The ParaView-Lite source is maintained on Github at [github.com/kitware/paraview-lite](https://github.com/kitware/paraview-lite)
 
-2. [Fork ParaView LightViz] into your user's namespace on Github.
+2. [Fork ParaView-Lite] into your user's namespace on Github.
 
 3. Create a local clone of the main repository:
 
     ```sh
-    $ git clone https://github.com/kitware/light-viz.git
-    $ cd light-viz
+    $ git clone https://github.com/kitware/paraview-lite.git
+    $ cd paraview-lite
     ```
 
     The main repository will be configured as your `origin` remote.
 
-4. Run the setup script to prepare ParaView LightViz:
+4. Run the setup script to prepare ParaView-Lite:
     ```sh
     $ npm install
     ```
@@ -33,22 +33,17 @@ This page documents at a very high level how to contribute to ParaView LightViz 
     $ git push
     ```
 
-7. Visit your fork in Github, browse to the "**Pull Requests**" link on the
-    left, and use the "**New Pull Request**" button in the upper right to
-    create a Pull Request.
+7. Visit your fork in Github, browse to the "**Pull Requests**" link on the left, and use the "**New Pull Request**" button in the upper right to create a Pull Request.
 
     For more information see: [Create a Pull Request]
 
 
-ParaView LightViz Viewer uses Github for code review and Travis-CI to test proposed
-patches before they are merged.
+ParaView-Lite uses Github for code review and Travis-CI to test proposed patches before they are merged.
 
-Our [DevSite] is used to document features, flesh out designs and host other
-documentation as well as the API. There are also a [forum]
-to coordinate development and to provide support.
+Our [DevSite] is used to document features, flesh out designs and host other documentation. There are also a [forum] to coordinate development and to provide support.
 
 
-[Fork ParaView LightViz]: https://help.github.com/articles/fork-a-repo/
+[Fork ParaView-Lite]: https://help.github.com/articles/fork-a-repo/
 [Create a Pull Request]: https://help.github.com/articles/creating-a-pull-request/
-[DevSite]: http://kitware.github.io/light-viz
+[DevSite]: http://kitware.github.io/paraview-lite
 [forum]: https://discourse.paraview.org/

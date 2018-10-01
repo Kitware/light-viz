@@ -1,4 +1,4 @@
-import Images from 'pvw-lightviz/src/samples/images';
+import Images from 'paraview-lite/src/samples/images';
 
 const version =
   window.GLANCE_VERSION && window.GLANCE_VERSION !== 'master'

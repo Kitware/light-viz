@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Mutations } from 'pvw-lightviz/src/stores/types';
+import { Mutations } from 'paraview-lite/src/stores/types';
 
 import vtkActor from 'vtk.js/Sources/Rendering/Core/Actor';
 import vtkMapper from 'vtk.js/Sources/Rendering/Core/Mapper';

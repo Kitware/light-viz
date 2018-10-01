@@ -1,4 +1,4 @@
-import { Mutations } from 'pvw-lightviz/src/stores/types';
+import { Mutations } from 'paraview-lite/src/stores/types';
 
 /* eslint-disable no-unused-vars */
 const DEFAULT_VALUES = {

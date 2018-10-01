@@ -1,31 +1,31 @@
-import { Mutations } from 'pvw-lightviz/src/stores/types';
+import { Mutations } from 'paraview-lite/src/stores/types';
 
-import Sources from 'pvw-lightviz/src/modules/Sources';
-import sourcesModule from 'pvw-lightviz/src/modules/Sources/module';
+import Sources from 'paraview-lite/src/modules/Sources';
+import sourcesModule from 'paraview-lite/src/modules/Sources/module';
 
-import Files from 'pvw-lightviz/src/modules/Files';
-import filesModule from 'pvw-lightviz/src/modules/Files/module';
+import Files from 'paraview-lite/src/modules/Files';
+import filesModule from 'paraview-lite/src/modules/Files/module';
 
-import Sphere from 'pvw-lightviz/src/modules/Sphere';
-import sphereModule from 'pvw-lightviz/src/modules/Sphere/module';
+import Sphere from 'paraview-lite/src/modules/Sphere';
+import sphereModule from 'paraview-lite/src/modules/Sphere/module';
 
-import Cone from 'pvw-lightviz/src/modules/Cone';
-import coneModule from 'pvw-lightviz/src/modules/Cone/module';
+import Cone from 'paraview-lite/src/modules/Cone';
+import coneModule from 'paraview-lite/src/modules/Cone/module';
 
-import Clip from 'pvw-lightviz/src/modules/Clip';
-import clipModule from 'pvw-lightviz/src/modules/Clip/module';
+import Clip from 'paraview-lite/src/modules/Clip';
+import clipModule from 'paraview-lite/src/modules/Clip/module';
 
-import Slice from 'pvw-lightviz/src/modules/Slice';
-import sliceModule from 'pvw-lightviz/src/modules/Slice/module';
+import Slice from 'paraview-lite/src/modules/Slice';
+import sliceModule from 'paraview-lite/src/modules/Slice/module';
 
-import Contour from 'pvw-lightviz/src/modules/Contour';
-import contourModule from 'pvw-lightviz/src/modules/Contour/module';
+import Contour from 'paraview-lite/src/modules/Contour';
+import contourModule from 'paraview-lite/src/modules/Contour/module';
 
-import Threshold from 'pvw-lightviz/src/modules/Threshold';
-import thresholdModule from 'pvw-lightviz/src/modules/Threshold/module';
+import Threshold from 'paraview-lite/src/modules/Threshold';
+import thresholdModule from 'paraview-lite/src/modules/Threshold/module';
 
-import DefaultComponent from 'pvw-lightviz/src/modules/Default';
-import defaultModule from 'pvw-lightviz/src/modules/Default/module';
+import DefaultComponent from 'paraview-lite/src/modules/Default';
+import defaultModule from 'paraview-lite/src/modules/Default/module';
 
 export default function registerModules(store) {
   // --------------------------------------------------------------------------

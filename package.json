@@ -1,25 +1,23 @@
 {
-  "name": "pvw-lightviz",
+  "name": "paraview-lite",
   "version": "0.0.0-semantically-release",
-  "description": "Scientific Visualization application for tailored post-processing",
+  "description": "Lite ParaView client for Scientific Visualization on the Web",
   "keywords": [
     "3d",
     "visualization",
     "scientific",
     "paraview",
-    "geometry",
-    "point cloud",
-    "mesh"
+    "vtk"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kitware/light-viz.git"
+    "url": "git+https://github.com/kitware/paraview-lite.git"
   },
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/kitware/light-viz/issues"
+    "url": "https://github.com/kitware/paraview-lite/issues"
   },
-  "homepage": "https://github.com/kitware/light-viz#readme",
+  "homepage": "https://github.com/kitware/paraview-lite#readme",
   "scripts": {
     "validate": "prettier --config ./prettier.config.js --list-different \"src/**/*.js\"",
     "reformat": "prettier --config ./prettier.config.js --write \"src/**/*.js\"",
@@ -29,8 +27,8 @@
     "build": "webpack --config build/webpack.dev.config.js",
     "build:release": "webpack --config build/webpack.prod.config.js -p",
     "version": "node ./build/writeVersion.js",
-    "dev": "webpack-dev-server --config build/webpack.dev.config.js",
-    "bundle": "inline-source --compress false --root ./dist ./dist/index.html ./dist/LightViz.html",
+    "dev": "webpack --config build/webpack.dev.config.js --watch",
+    "bundle": "inline-source --compress false --root ./dist ./dist/index.html ./dist/ParaViewLite.html",
     "commit": "git cz",
     "semantic-release": "semantic-release",
     "prepublishOnly": "npm run version && npm run bundle"

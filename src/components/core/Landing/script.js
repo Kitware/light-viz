@@ -1,5 +1,5 @@
-import samples from 'pvw-lightviz/src/samples';
-import { Breakpoints } from 'pvw-lightviz/src/constants';
+import samples from 'paraview-lite/src/samples';
+import { Breakpoints } from 'paraview-lite/src/constants';
 
 export default {
   name: 'Landing',

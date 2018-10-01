@@ -9,7 +9,7 @@ export default {
   },
   data() {
     return {
-      version: window.LIGHTVIZ_VERSION || 'not available',
+      version: window.PARAVIEW_LITE_VERSION || 'not available',
     };
   },
   computed: {

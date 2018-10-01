@@ -24,7 +24,6 @@ export default {
     this.view.setBackground([0, 0, 0, 0]);
     this.view.setOrientationAxesVisibility(false);
     this.viewStream.setCamera(this.view.getRenderer().getActiveCamera());
-    this.viewStream.pushCamera();
 
     // Bind user input
     this.view
@@ -41,9 +40,14 @@ export default {
     this.updateRatio();
     this.client.imageStream.setServerAnimationFPS(this.maxFPS);
 
-    // Expose camera to store
+    // Expose viewProxy to store (for camera update...)
     this.$store.commit(Mutations.VIEW_PROXY_SET, this.view);
-    this.$store.commit(Mutations.VIEW_CAMERA_SET, this.view.getCamera());
+
+    // Link server side camera to local
+    this.client.remote.Camera.getCamera('-1').then((cameraInfo) => {
+      this.updateCamera(cameraInfo);
+      this.viewStream.pushCamera();
+    });
   },
   data() {
     return {

@@ -56,9 +56,9 @@ export default {
     },
     iconLogo() {
       if (this.darkMode) {
-        return this.smallScreen ? 'lightviz-small-dark' : 'lightviz-dark';
+        return this.smallScreen ? 'lite-small-dark' : 'lite-dark';
       }
-      return this.smallScreen ? 'lightviz-small' : 'lightviz';
+      return this.smallScreen ? 'lite-small' : 'lite';
     },
   }),
   watch: {
@@ -89,7 +89,11 @@ export default {
     if (window.console) {
       this.origConsoleError = window.console.error;
       window.console.error = (...args) => {
-        this.recordError(args.join(' '));
+        if (args.length > 1) {
+          this.recordError(args.join(' '));
+        } else {
+          this.recordError(args[0]);
+        }
         return this.origConsoleError(...args);
       };
     }

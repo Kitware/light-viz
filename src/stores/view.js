@@ -15,6 +15,26 @@ const source = vtkPolyData.newInstance();
 actor.setMapper(mapper);
 mapper.setInputData(source);
 
+function updateCamera(viewProxy, cameraInfo) {
+  if (!viewProxy) {
+    return;
+  }
+  const { position, focalPoint, viewUp, centerOfRotation } = cameraInfo;
+  const camera = viewProxy.getCamera();
+  if (position) {
+    camera.setPosition(...position);
+  }
+  if (focalPoint) {
+    camera.setFocalPoint(...focalPoint);
+  }
+  if (viewUp) {
+    camera.setViewUp(...viewUp);
+  }
+  if (centerOfRotation) {
+    viewProxy.getInteractorStyle3D().setCenterOfRotation(centerOfRotation);
+  }
+}
+
 export default {
   state: {
     view: '-1',
@@ -60,9 +80,6 @@ export default {
     },
   },
   mutations: {
-    VIEW_CAMERA_SET(state, camera) {
-      state.camera = camera;
-    },
     VIEW_PROXY_SET(state, viewProxy) {
       if (state.viewProxy !== viewProxy) {
         state.viewProxy = viewProxy;
@@ -102,36 +119,35 @@ export default {
       const client = rootState.network.client;
       const viewId = id || state.view;
       if (client) {
-        console.log('reset camera');
-        client.remote.ViewPort.resetCamera(viewId)
-          .then(console.log)
-          .catch(console.error);
+        client.remote.ViewPort.resetCamera(viewId).catch(console.error);
 
-        if (state.camera) {
-          client.remote.ViewPort.getCamera(viewId)
-            .then(({ focal, up, position, center, bounds }) => {
-              console.log('centerOfRotation', center);
-              console.log('bounds', bounds);
+        if (state.viewProxy) {
+          client.remote.Camera.getCamera(viewId)
+            .then(
+              ({ focalPoint, viewUp, position, centerOfRotation, bounds }) => {
+                // Update bounds in local vtk.js renderer
+                source
+                  .getPoints()
+                  .setData(
+                    Float64Array.from([
+                      bounds[0],
+                      bounds[2],
+                      bounds[4],
+                      bounds[1],
+                      bounds[3],
+                      bounds[5],
+                    ]),
+                    3
+                  );
 
-              // Update bounds in local vtk.js renderer
-              source
-                .getPoints()
-                .setData(
-                  Float64Array.from([
-                    bounds[0],
-                    bounds[2],
-                    bounds[4],
-                    bounds[1],
-                    bounds[3],
-                    bounds[5],
-                  ]),
-                  3
-                );
-
-              state.camera.setFocalPoint(...focal);
-              state.camera.setViewUp(...up);
-              state.camera.setPosition(...position);
-            })
+                updateCamera(state.viewProxy, {
+                  centerOfRotation,
+                  focalPoint,
+                  position,
+                  viewUp,
+                });
+              }
+            )
             .catch(console.error);
         }
       } else {

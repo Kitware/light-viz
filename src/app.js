@@ -27,7 +27,7 @@ Vue.use(Vuetify);
  *   createViewer param, active proxy config, Generic config
  */
 export function createConfigurationFromURLArgs(
-  addOn = { application: 'lightviz' }
+  addOn = { application: 'paraview-lite' }
 ) {
   return Object.assign({}, vtkURLExtract.extractURLParameters(), addOn);
 }

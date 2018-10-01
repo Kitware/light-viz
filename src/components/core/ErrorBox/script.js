@@ -39,16 +39,19 @@ export default {
   },
   computed: {
     readableErrors() {
-      const version = window.LIGTHVIZ_VERSION || 'not available';
+      const version = window.PARAVIEW_LITE_VERSION || 'not available';
       const errorStrings = this.errors.map((err) => {
         if (err instanceof ErrorEvent) {
           return err.message;
         }
-        return err;
+        if (typeof err === 'string') {
+          return err;
+        }
+        return JSON.stringify(err, null, 2);
       });
-      return `ParaView LightViz: ${version}\n${
+      return `ParaView Lite: ${version}\n${
         navigator.userAgent
-      }\n\n\`\`\`\n${errorStrings}\n\`\`\``;
+      }\n\n\`\`\`\n${errorStrings.join('\n')}\n\`\`\``;
     },
   },
   methods: {

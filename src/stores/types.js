@@ -88,7 +88,6 @@ export const Mutations = objEnum([
   'VIEW_FPS_MAX_SET',
   'VIEW_MOUSE_THROTTLE_SET',
   'VIEW_CAMERA_MODE_SET',
-  'VIEW_CAMERA_SET',
   'VIEW_PROXY_SET',
 ]);
 

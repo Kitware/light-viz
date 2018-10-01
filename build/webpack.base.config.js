@@ -60,7 +60,7 @@ module.exports = {
       },
       {
         test: paths.entry,
-        loader: 'expose-loader?LightViz',
+        loader: 'expose-loader?ParaViewLite',
       },
       {
         test: /\.vue$/,

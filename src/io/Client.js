@@ -17,6 +17,7 @@ import VtkGeometryDelivery from 'paraviewweb/src/IO/WebSocket/ParaViewWebClient/
 import VtkImageDelivery from 'paraviewweb/src/IO/WebSocket/ParaViewWebClient/VtkImageDelivery';
 
 import ProxyName from 'paraview-lite/src/io/protocols/ProxyName';
+import Camera from 'paraview-lite/src/io/protocols/Camera';
 
 const REMOTE_API = {
   ColorManager,
@@ -34,6 +35,7 @@ const REMOTE_API = {
   VtkImageDelivery,
   // custom
   ProxyName,
+  Camera,
 };
 
 // ----------------------------------------------------------------------------

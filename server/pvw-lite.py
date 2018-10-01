@@ -198,6 +198,7 @@ class _Server(pv_wslink.PVServerProtocol):
 
         # Bring used components from ParaView Lite
         self.registerVtkWebProtocol(local_protocols.ProxyName())
+        self.registerVtkWebProtocol(local_protocols.Camera())
 
         # Update authentication key to use
         self.updateSecret(_Server.authKey)

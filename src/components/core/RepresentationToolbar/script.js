@@ -1,5 +1,13 @@
+import { mapGetters } from 'vuex';
+
+import vtkMath from 'vtk.js/Sources/Common/Core/Math';
+
 import { generateComponentWithServerBinding } from 'paraview-lite/src/proxyHelper';
-import { Actions } from 'paraview-lite/src/stores/types';
+import { Getters, Actions } from 'paraview-lite/src/stores/types';
+
+import CollapsableItem from 'paraview-lite/src/components/widgets/CollapsableItem';
+import LookupTableToolbar from 'paraview-lite/src/components/widgets/LookupTableToolbar';
+import PalettePicker from 'paraview-lite/src/components/widgets/PalettePicker';
 
 const SEPARATOR = ':|:';
 const SOLID_COLOR_ITEM = {
@@ -21,67 +29,120 @@ export default generateComponentWithServerBinding(
       autoApply: true,
       default: 1,
     },
+    pointSize: {
+      name: 'PointSize',
+      clientToServer: Number,
+      autoApply: true,
+      default: 1,
+    },
+    lineWidth: {
+      name: 'LineWidth',
+      clientToServer: Number,
+      autoApply: true,
+      default: 1,
+    },
+    diffuseColor: {
+      name: 'DiffuseColor',
+      clientToServer: (str) => vtkMath.hex2float(str),
+      serverToClient: (float3) => vtkMath.floatRGB2HexCode(float3),
+      autoApply: true,
+      default: 1,
+    },
   },
   {
     name: 'RepresentationToolbar',
     data() {
       return {
+        SOLID_COLOR_ITEM,
         vectorComponent: 0,
       };
     },
-    computed: {
-      colorValue() {
-        if (this.activeProxyData) {
-          const [
-            location,
-            name,
-            vectorComponent,
-          ] = this.activeProxyData.colorBy.array;
-          const mode =
-            location && name.length && this.activeProxyData.colorBy.mode;
-          this.vectorComponent = vectorComponent;
-
-          // console.log(JSON.stringify(this.activeProxyData.colorBy, null, 2));
-
-          if (mode !== 'array') {
-            return SOLID_COLOR_ITEM;
-          }
-
-          return {
-            text: name,
-            value: `${mode}${SEPARATOR}${location}${SEPARATOR}${name}`,
-          };
-        }
-        return SOLID_COLOR_ITEM;
-      },
-      representationItems() {
-        if (this.activeProxyData) {
-          return this.activeProxyData.ui.find(
-            (prop) => prop.name === 'Representation'
-          ).values;
-        }
-        return [];
-      },
-      colorByItems() {
-        const list = [SOLID_COLOR_ITEM];
-        this.inputArrays.forEach((array) => {
-          if (array.size < 4 && array.location !== 'FIELDS') {
-            list.push({
-              value: `array${SEPARATOR}${array.location}${SEPARATOR}${
-                array.name
-              }`,
-              text: array.name,
-            });
-            // for (let i = 0; i < array.range.length; i++) {
-            //   list.push(`${array.location}|${array.name}|${i - 1}`);
-            // }
-          }
-        });
-        // console.log('LIST', this.inputArrays, list.join('\n'));
-        return list;
-      },
+    components: {
+      CollapsableItem,
+      LookupTableToolbar,
+      PalettePicker,
     },
+    computed: Object.assign(
+      {
+        lookupTable() {
+          const name = this.activeProxyData.colorBy.array[1];
+          const lut = this.lookupTables[name];
+          return lut;
+        },
+        colorValue() {
+          if (this.activeProxyData) {
+            const [
+              location,
+              name,
+              vectorComponent,
+            ] = this.activeProxyData.colorBy.array;
+            const mode =
+              location && name.length && this.activeProxyData.colorBy.mode;
+            this.vectorComponent = vectorComponent;
+
+            // console.log(JSON.stringify(this.activeProxyData.colorBy, null, 2));
+
+            if (mode !== 'array') {
+              return SOLID_COLOR_ITEM;
+            }
+
+            // Fetch LookupTable for any array available
+            if (!this.lookupTables[name]) {
+              this.$store.dispatch(Actions.COLOR_FETCH_LOOKUP_IMAGE, name);
+            }
+
+            return {
+              text: name,
+              value: `${mode}${SEPARATOR}${location}${SEPARATOR}${name}`,
+            };
+          }
+          return SOLID_COLOR_ITEM;
+        },
+        representationItems() {
+          if (this.activeProxyData) {
+            return this.activeProxyData.ui.find(
+              (prop) => prop.name === 'Representation'
+            ).values;
+          }
+          return [];
+        },
+        colorByItems() {
+          const list = [SOLID_COLOR_ITEM];
+          this.inputArrays.forEach((array) => {
+            if (array.size < 4 && array.location !== 'FIELDS') {
+              list.push({
+                value: `array${SEPARATOR}${array.location}${SEPARATOR}${
+                  array.name
+                }`,
+                text: array.name,
+              });
+              // for (let i = 0; i < array.range.length; i++) {
+              //   list.push(`${array.location}|${array.name}|${i - 1}`);
+              // }
+            }
+          });
+          // console.log('LIST', this.inputArrays, list.join('\n'));
+          return list;
+        },
+        timeIndex: {
+          get() {
+            return this.timeActiveIdx;
+          },
+          set(idx) {
+            this.$store.dispatch(Actions.TIME_ACTIVATE_INDEX, idx);
+          },
+        },
+      },
+      mapGetters({
+        lookupTables: Getters.COLOR_ARRAYS,
+        timeValues: Getters.TIME_VALUES,
+        timeActiveIdx: Getters.TIME_ACTIVE_IDX,
+      })
+    ),
     methods: {
+      updateColor(solidColor) {
+        this.diffuseColor = solidColor;
+      },
       applyColor(arg) {
         if (!arg || !arg.value) {
           return;

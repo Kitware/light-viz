@@ -15,6 +15,11 @@ export const Getters = objEnum([
   'BUSY_PROGRESS',
   'BUSY_COUNT',
 
+  // color
+  'COLOR_PRESETS',
+  'COLOR_ARRAYS',
+  'COLOR_LOOKUP_TABLE_WINDOWS',
+
   // index
   'APP_AUTO_APPLY',
   'APP_DARK_THEME',
@@ -35,6 +40,11 @@ export const Getters = objEnum([
   'PROXY_SOURCE_TO_REPRESENTATION_MAP',
   'PROXY_DATA_MAP',
   'PROXY_NAME_MAP',
+
+  // time
+  'TIME_VALUES',
+  'TIME_ACTIVE_IDX',
+  'TIME_ACTIVE_VALUE',
 
   // view
   'VIEW_ID',
@@ -57,6 +67,12 @@ export const Mutations = objEnum([
   'BUSY_PROGRESS_SET',
   'BUSY_COUNT_SET',
 
+  // color
+  'COLOR_ARRAYS_SET',
+  'COLOR_LOOKUP_TABLE_WINDOWS_SET',
+  'COLOR_PRESET_NAMES_SET',
+  'COLOR_PRESETS_SET',
+
   // index
   'APP_ROUTE_SET',
   'APP_AUTO_APPLY_SET',
@@ -77,6 +93,10 @@ export const Mutations = objEnum([
   'PROXY_SOURCE_TO_REPRESENTATION_SET',
   'PROXY_DATA_SET',
   'PROXY_NAME_SET',
+
+  // time
+  'TIME_VALUES_SET',
+  'TIME_ACTIVE_IDX_SET',
 
   // view
   'VIEW_ID_SET',
@@ -101,6 +121,11 @@ export const Actions = objEnum([
 
   // color
   'COLOR_BY',
+  'COLOR_CUSTOM_DATA_RANGE',
+  'COLOR_FETCH_LOOKUP_IMAGE',
+  'COLOR_FETCH_PRESET_IMAGE',
+  'COLOR_FETCH_PRESET_NAMES',
+  'COLOR_APPLY_PRESET',
 
   // index
   'APP_ROUTE_LANDING',
@@ -120,6 +145,12 @@ export const Actions = objEnum([
   'PROXY_NAME_FETCH',
   'PROXY_PIPELINE_FETCH',
   'PROXY_DATA_FETCH',
+  'PROXY_DATA_REFETCH',
+
+  // time
+  'TIME_FETCH_VALUES',
+  'TIME_ACTIVATE_INDEX',
+  'TIME_FETCH_ACTIVE_INDEX',
 
   // view
   'VIEW_RESET_CAMERA',

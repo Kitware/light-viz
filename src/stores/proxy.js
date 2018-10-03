@@ -114,6 +114,7 @@ export default {
         client.remote.ProxyManager.delete(id)
           .then(({ sources, view }) => {
             dispatch(Actions.PROXY_PIPELINE_FETCH);
+            dispatch(Actions.TIME_FETCH_VALUES);
           })
           .catch(console.error);
       }
@@ -121,7 +122,7 @@ export default {
     PROXY_NAME_FETCH({ rootState, commit }, id) {
       const client = rootState.network.client;
       if (client) {
-        client.remote.ProxyName.getProxyName(id)
+        client.remote.Lite.getProxyName(id)
           .then((info) => {
             commit(Mutations.PROXY_NAME_SET, info);
           })
@@ -170,6 +171,9 @@ export default {
             if (sources.length === 1) {
               dispatch(Actions.VIEW_RESET_CAMERA);
             }
+
+            // Fetch new time values
+            dispatch(Actions.TIME_FETCH_VALUES);
           })
           .catch(console.error);
       }
@@ -180,9 +184,23 @@ export default {
       if (client) {
         client.remote.ProxyManager.get(proxyId, needUI)
           .then((proxy) => {
+            console.log(JSON.stringify(proxy.data, null, 2));
             commit(Mutations.PROXY_DATA_SET, proxy);
           })
           .catch(console.error);
+      }
+    },
+    PROXY_DATA_REFETCH({ rootState, commit, state }) {
+      const client = rootState.network.client;
+      if (client) {
+        const proxies = state.pipeline;
+        for (let i = 0; i < proxies.length; i++) {
+          client.remote.ProxyManager.get(proxies[i].id, false)
+            .then((proxy) => {
+              commit(Mutations.PROXY_DATA_SET, proxy);
+            })
+            .catch(console.error);
+        }
       }
     },
   },

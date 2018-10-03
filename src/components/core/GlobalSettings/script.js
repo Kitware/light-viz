@@ -9,14 +9,6 @@ import {
   toBoolean,
 } from 'paraview-lite/src/proxyHelper';
 
-function floatToHex2(value) {
-  const integer = Math.floor(value * 255);
-  if (integer > 15) {
-    return integer.toString(16);
-  }
-  return `0${integer.toString(16)}`;
-}
-
 // ----------------------------------------------------------------------------
 // Component API
 // ----------------------------------------------------------------------------
@@ -130,11 +122,11 @@ export default generateComponentWithServerBinding(
             return '#000000';
           }
           if (this.gradient) {
-            return `linear-gradient(#${this.bg2
-              .map(floatToHex2)
-              .join('')}, #${this.bg.map(floatToHex2).join('')})`;
+            return `linear-gradient(${vtkMath.floatRGB2HexCode(
+              this.bg2
+            )}, ${vtkMath.floatRGB2HexCode(this.bg)})`;
           }
-          return `#${this.bg.map(floatToHex2).join('')}`;
+          return vtkMath.floatRGB2HexCode(this.bg);
         },
         set(value) {
           if (value.indexOf('gradient') !== -1) {

@@ -122,7 +122,7 @@ export default {
         client.remote.ViewPort.resetCamera(viewId).catch(console.error);
 
         if (state.viewProxy) {
-          client.remote.Camera.getCamera(viewId)
+          client.remote.Lite.getCamera(viewId)
             .then(
               ({ focalPoint, viewUp, position, centerOfRotation, bounds }) => {
                 // Update bounds in local vtk.js renderer

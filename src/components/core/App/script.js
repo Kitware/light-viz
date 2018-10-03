@@ -6,12 +6,13 @@ import ActionModules from 'paraview-lite/src/components/core/ActionModules';
 import BrowserIssues from 'paraview-lite/src/components/core/BrowserIssues';
 import ControlsDrawer from 'paraview-lite/src/components/core/ControlsDrawer';
 import ErrorBox from 'paraview-lite/src/components/core/ErrorBox';
+import FloatingLookupTable from 'paraview-lite/src/components/widgets/FloatingLookupTable';
 import Landing from 'paraview-lite/src/components/core/Landing';
 import LayoutView from 'paraview-lite/src/components/core/LayoutView';
-import SvgIcon from 'paraview-lite/src/components/widgets/SvgIcon';
 import ProgressBar from 'paraview-lite/src/components/widgets/ProgressBar';
-import { Actions } from 'paraview-lite/src/stores/types';
 import shortcuts from 'paraview-lite/src/shortcuts';
+import SvgIcon from 'paraview-lite/src/components/widgets/SvgIcon';
+import { Actions } from 'paraview-lite/src/stores/types';
 
 // ----------------------------------------------------------------------------
 // Component API
@@ -25,10 +26,11 @@ export default {
     BrowserIssues,
     ControlsDrawer,
     ErrorBox,
+    FloatingLookupTable,
     Landing,
     LayoutView,
-    SvgIcon,
     ProgressBar,
+    SvgIcon,
   },
   props: {},
   data() {
@@ -59,6 +61,29 @@ export default {
         return this.smallScreen ? 'lite-small-dark' : 'lite-dark';
       }
       return this.smallScreen ? 'lite-small' : 'lite';
+    },
+    floatingLookupTables() {
+      return Object.values(
+        this.$store.getters.COLOR_LOOKUP_TABLE_WINDOWS
+      ).filter((l) => l.visible);
+    },
+    lookupTables() {
+      return this.$store.getters.COLOR_ARRAYS;
+    },
+    dataFields() {
+      const arrayRanges = {};
+      const selectedProxies = this.$store.getters.PROXY_SELECTED_IDS;
+      const dataMap = this.$store.getters.PROXY_DATA_MAP;
+      const id = selectedProxies[0];
+      const pData = dataMap[id];
+      if (pData) {
+        const arrays = pData.data.arrays;
+        for (let i = 0; i < arrays.length; i++) {
+          const { name, range } = arrays[i];
+          arrayRanges[name] = range;
+        }
+      }
+      return arrayRanges;
     },
   }),
   watch: {

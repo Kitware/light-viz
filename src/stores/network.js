@@ -33,8 +33,10 @@ export default {
         .connect(config)
         .then((validClient) => {
           commit(Mutations.NETWORK_CLIENT_SET, validClient);
+          dispatch(Actions.TIME_FETCH_ACTIVE_INDEX);
           dispatch(Actions.PROXY_PIPELINE_FETCH);
           dispatch(Actions.APP_ROUTE_RUN);
+          dispatch(Actions.COLOR_FETCH_PRESET_NAMES, 500);
         })
         .catch((error) => {
           console.error(error);

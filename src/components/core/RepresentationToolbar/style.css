@@ -18,5 +18,15 @@
 .opacity {
   padding-top: 0;
   max-width: 200px;
+  width: 100px;
   margin-right: 20px !important;
+}
+
+.timeLabel {
+  display: block;
+  max-width: 200px;
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }

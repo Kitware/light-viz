@@ -44,7 +44,7 @@ export default {
     this.$store.commit(Mutations.VIEW_PROXY_SET, this.view);
 
     // Link server side camera to local
-    this.client.remote.Camera.getCamera('-1').then((cameraInfo) => {
+    this.client.remote.Lite.getCamera('-1').then((cameraInfo) => {
       this.updateCamera(cameraInfo);
       this.viewStream.pushCamera();
     });

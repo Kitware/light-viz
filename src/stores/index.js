@@ -6,6 +6,7 @@ import color from 'paraview-lite/src/stores/color';
 import modules from 'paraview-lite/src/stores/modules';
 import network from 'paraview-lite/src/stores/network';
 import proxy from 'paraview-lite/src/stores/proxy';
+import time from 'paraview-lite/src/stores/time';
 import view from 'paraview-lite/src/stores/view';
 
 import { Mutations } from 'paraview-lite/src/stores/types';
@@ -47,6 +48,7 @@ function createStore() {
       modules,
       network,
       proxy,
+      time,
       view,
     },
     getters: {

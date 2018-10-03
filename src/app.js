@@ -41,6 +41,19 @@ export function createViewer(
   registerModules(store);
   setInterval(() => store.dispatch(Actions.BUSY_UPDATE_PROGRESS, 1), 50);
 
+  // Fetch preset images
+  store.commit(Mutations.COLOR_PRESET_NAMES_SET, [
+    'Cool to Warm',
+    'Cool to Warm (Extended)',
+    'Rainbow Desaturated',
+    'Cold and Hot',
+    'erdc_rainbow_bright',
+    '2hot',
+    'erdc_iceFire_H',
+    'erdc_iceFire_L',
+    'Inferno (matplotlib)',
+  ]);
+
   /* eslint-disable no-new */
   new Vue({
     el: container || '#root-container',

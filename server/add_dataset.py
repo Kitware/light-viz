@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import json
 import shutil
@@ -79,11 +80,12 @@ def getBounds(ds):
 
 def importDataset(dataDir, datafile, description, autoApply=True):
     if not os.path.exists(datafile):
-        print "Data file \"%s\" does not exist" % datafile
+        print("Data file \"%s\" does not exist" % datafile)
         return
     basename = os.path.basename(datafile)
     filedir = os.path.join(dataDir, basename)
-    os.mkdir(filedir)
+    if not os.path.exists(filedir):
+        os.mkdir(filedir)
     shutil.copyfile(datafile, os.path.join(filedir, basename))
     result = {
         'name': basename,
@@ -119,8 +121,7 @@ def importDataset(dataDir, datafile, description, autoApply=True):
             loadArrayDataMultiBlock(ds, pointArrayMap, cellArrayMap)
             newBounds = getBounds(ds)
             bounds = unionBounds(bounds, newBounds)
-
-    result['data']['arrays'] = pointArrayMap.values() + cellArrayMap.values()
+    result['data']['arrays'] = list(pointArrayMap.values()) + list(cellArrayMap.values())
     result['data']['bounds'] = bounds
 
     tnpath = os.path.join(filedir, 'thumbnail0.png')

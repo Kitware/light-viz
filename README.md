@@ -11,6 +11,8 @@
 
 Provide a tailored user interface for Scientific Visualization using ParaViewWeb as backend.
 
+This project really aims to illustrate what can be done with ParaViewWeb but should not be used for production usage as it has been deprecated and is no longer supported.
+
 ## Installation
 
 ```

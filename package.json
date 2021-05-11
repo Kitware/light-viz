@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "commander": "2.13.0",
-    "open": "0.0.5",
+    "open": "6.0.0",
     "shelljs": "0.8.1"
   },
   "devDependencies": {
